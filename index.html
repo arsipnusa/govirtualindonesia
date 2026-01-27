@@ -200,7 +200,7 @@
                         <i class="ph-fill ph-moon block dark:hidden text-primary"></i>
                     </button>
                     
-<div id="auth-section">
+                    <div id="auth-section">
                         <button id="btn-login" onclick="loginWithGoogle()" class="bg-black dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-lg font-bold hover:scale-105 transition-all shadow-lg hover:shadow-primary/25 flex items-center gap-2">
                             <i class="ph-bold ph-google-logo"></i> Masuk
                         </button>
@@ -230,11 +230,11 @@
                                             <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-primary"><i class="ph-bold ph-plus-circle"></i></div>
                                             Submit Tour
                                         </a>
-                                        <a href="#" onclick="alert('Fitur Favorit akan membuka list')" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors">
+                                        <a href="#" onclick="showFavoritesModal()" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors">
                                             <div class="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-500"><i class="ph-bold ph-heart"></i></div>
                                             Favorit Saya
                                         </a>
-                                        <a href="#" onclick="alert('Fitur History akan membuka list')" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors">
+                                        <a href="#" onclick="showHistoryModal()" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors">
                                             <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-500"><i class="ph-bold ph-clock-counter-clockwise"></i></div>
                                             Riwayat
                                         </a>
@@ -561,6 +561,53 @@
         </div>
     </div>
 
+    <div id="favorites-modal" class="fixed inset-0 z-[130] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('favorites-modal').classList.add('hidden')"></div>
+        <div class="relative bg-white dark:bg-[#1e1e20] w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 animate-slide-up flex flex-col max-h-[80vh]">
+            
+            <div class="p-6 border-b border-gray-100 dark:border-white/10 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <i class="ph-fill ph-heart text-red-500"></i> Koleksi Favorit
+                </h3>
+                <button onclick="document.getElementById('favorites-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-red-500 transition">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto modal-scroll">
+                <div id="favorites-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="col-span-full text-center py-10">
+                        <i class="ph-duotone ph-heart-break text-4xl text-gray-300 mb-2"></i>
+                        <p class="text-gray-500">Belum ada lokasi favorit.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="history-modal" class="fixed inset-0 z-[130] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('history-modal').classList.add('hidden')"></div>
+        <div class="relative bg-white dark:bg-[#1e1e20] w-full max-w-md rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 animate-slide-up flex flex-col max-h-[80vh]">
+            
+            <div class="p-6 border-b border-gray-100 dark:border-white/10 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <i class="ph-fill ph-clock-counter-clockwise text-blue-500"></i> Riwayat Jelajah
+                </h3>
+                <button onclick="document.getElementById('history-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-red-500 transition">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+
+            <div class="p-0 overflow-y-auto modal-scroll">
+                <div id="history-list" class="divide-y divide-gray-100 dark:divide-white/5">
+                    <div class="p-6 text-center">
+                        <p class="text-gray-500 text-sm">Belum ada riwayat perjalanan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="radar-widget" class="fixed bottom-6 right-6 z-[90] flex flex-col items-end gap-3 pointer-events-none">
         
         <div id="radar-panel" class="pointer-events-auto hidden w-80 bg-white/90 dark:bg-[#12121a]/90 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 origin-bottom-right transform scale-95 opacity-0">
@@ -650,15 +697,15 @@
         // ==========================================
         // === FIREBASE CONFIGURATION (WAJIB DIISI) ===
         // ==========================================
-const firebaseConfig = {
-  apiKey: "AIzaSyCvIqMWF1X6wKkg0SYFOj1phP-v-M0ZvGw",
-  authDomain: "govirtual-web.firebaseapp.com",
-  projectId: "govirtual-web",
-  storageBucket: "govirtual-web.firebasestorage.app",
-  messagingSenderId: "295951677456",
-  appId: "1:295951677456:web:53308b4c56b65e7d83b295",
-  measurementId: "G-9DBGEQFTV4"
-};
+        const firebaseConfig = {
+          apiKey: "AIzaSyCvIqMWF1X6wKkg0SYFOj1phP-v-M0ZvGw",
+          authDomain: "govirtual-web.firebaseapp.com",
+          projectId: "govirtual-web",
+          storageBucket: "govirtual-web.firebasestorage.app",
+          messagingSenderId: "295951677456",
+          appId: "1:295951677456:web:53308b4c56b65e7d83b295",
+          measurementId: "G-9DBGEQFTV4"
+        };
 
         // Initialize Firebase
         let auth, db, user = null;
@@ -711,27 +758,154 @@ const firebaseConfig = {
             document.getElementById('submit-modal').classList.remove('hidden');
         }
 
-        // --- FEATURE LOGIC (FAVORITE & HISTORY & BADGES) ---
+        // ==========================================
+        // === LOGIKA REAL FIREBASE (NO MOCK UP) ===
+        // ==========================================
+
+        // 1. Simpan Riwayat saat Klik Link
         function visitTour(url, name, location) {
-            // 1. Simpan ke History (Jika Login)
+            // A. Buka Link dulu agar user tidak menunggu
+            window.open(url, '_blank');
+
+            // B. Simpan ke Database Background (jika login)
             if(user && db) {
                 db.collection('users').doc(user.uid).collection('history').add({
                     name: name,
                     location: location,
                     url: url,
+                    // Mengambil waktu server agar akurat
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                // Update Badges Count
-                incrementVisitCount(user.uid);
+                }).catch(err => console.error("Gagal simpan history:", err));
             }
-            // 2. Buka Link
-            window.open(url, '_blank');
         }
 
-        function toggleFavorite(name, location) {
-            if(!user) return alert("Silakan login untuk menyimpan favorit!");
-            // Logic simpan ke Firestore (Simplified)
-            alert(`Menambahkan ${name} ke Favorit!`);
+        // 2. Fitur Tambah/Hapus Favorit
+        async function toggleFavorite(name, location, url) {
+            if(!user) {
+                loginWithGoogle(); // Paksa login jika belum
+                return;
+            }
+
+            const favRef = db.collection('users').doc(user.uid).collection('favorites');
+            
+            // Cek apakah item dengan URL ini sudah ada di favorit?
+            const snapshot = await favRef.where('url', '==', url).get();
+
+            if (!snapshot.empty) {
+                // JIKA SUDAH ADA -> HAPUS (Unfavorite)
+                snapshot.forEach(doc => doc.ref.delete());
+                alert(`❌ Dihapus dari favorit: ${name}`);
+                
+                // Refresh list jika modal sedang terbuka
+                if(!document.getElementById('favorites-modal').classList.contains('hidden')) {
+                    showFavoritesModal(); 
+                }
+            } else {
+                // JIKA BELUM ADA -> SIMPAN (Favorite)
+                // Kita pakai gambar placeholder karena CSV tidak punya kolom gambar spesifik
+                const placeholderImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&size=128`;
+                
+                favRef.add({
+                    name: name,
+                    loc: location,
+                    url: url,
+                    img: placeholderImg,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    alert(`❤️ Disimpan ke favorit: ${name}`);
+                });
+            }
+        }
+
+        // 3. Menampilkan List Favorit (READ dari Database)
+        function showFavoritesModal() {
+            if(!user) return loginWithGoogle();
+
+            const list = document.getElementById('favorites-list');
+            list.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">Memuat data cloud...</div>'; // Loading state
+
+            db.collection('users').doc(user.uid).collection('favorites')
+                .orderBy('timestamp', 'desc') // Urutkan dari yang baru ditambah
+                .get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        list.innerHTML = `
+                            <div class="col-span-full text-center py-10">
+                                <i class="ph-duotone ph-heart-break text-4xl text-gray-300 mb-2"></i>
+                                <p class="text-gray-500">Belum ada lokasi favorit.</p>
+                            </div>`;
+                        return;
+                    }
+
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        html += `
+                            <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 transition group cursor-pointer relative">
+                                <div onclick="window.open('${data.url}', '_blank')" class="flex items-center gap-3 flex-1">
+                                    <div class="w-16 h-16 rounded-lg bg-gray-200 overflow-hidden shrink-0">
+                                        <img src="${data.img}" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4>
+                                        <p class="text-xs text-gray-500">${data.loc}</p>
+                                    </div>
+                                </div>
+                                <button onclick="toggleFavorite('${data.name}', '${data.loc}', '${data.url}')" class="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full transition z-10" title="Hapus">
+                                    <i class="ph-fill ph-trash"></i>
+                                </button>
+                            </div>`;
+                    });
+                    list.innerHTML = html;
+                })
+                .catch(err => {
+                    list.innerHTML = `<p class="text-red-500 text-center">Gagal memuat data: ${err.message}</p>`;
+                });
+
+            document.getElementById('favorites-modal').classList.remove('hidden');
+        }
+
+        // 4. Menampilkan Riwayat (READ dari Database)
+        function showHistoryModal() {
+            if(!user) return loginWithGoogle();
+
+            const list = document.getElementById('history-list');
+            list.innerHTML = '<div class="p-6 text-center text-gray-400">Memuat riwayat...</div>';
+
+            db.collection('users').doc(user.uid).collection('history')
+                .orderBy('timestamp', 'desc')
+                .limit(20) // Batasi hanya 20 terakhir agar cepat
+                .get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        list.innerHTML = `<div class="p-6 text-center"><p class="text-gray-500 text-sm">Belum ada riwayat perjalanan.</p></div>`;
+                        return;
+                    }
+
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        // Format Tanggal (Misal: "27 Jan, 10:30")
+                        const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Baru saja';
+                        
+                        html += `
+                            <div onclick="window.open('${data.url}', '_blank')" class="p-4 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center justify-between group cursor-pointer transition">
+                                <div class="flex items-center gap-3 overflow-hidden">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center shrink-0">
+                                        <i class="ph-bold ph-clock-counter-clockwise"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4>
+                                        <p class="text-xs text-gray-500">${date}</p>
+                                    </div>
+                                </div>
+                                <i class="ph-bold ph-caret-right text-gray-300 group-hover:text-primary transition shrink-0"></i>
+                            </div>`;
+                    });
+                    list.innerHTML = html;
+                });
+
+            document.getElementById('history-modal').classList.remove('hidden');
         }
 
         function submitReview() {
@@ -1197,7 +1371,7 @@ const firebaseConfig = {
                             <p class="text-xs text-gray-500 flex items-center gap-1"><i class="ph-fill ph-map-pin"></i> ${item.loc}</p>
                         </div>
                     </div>
-                    <button onclick="toggleFavorite('${item.name}', '${item.loc}')" class="absolute top-2 right-2 p-2 text-gray-400 hover:text-red-500 transition z-10" title="Simpan ke Favorit">
+                    <button onclick="toggleFavorite('${item.name.replace(/'/g, "\\'")}', '${item.loc}', '${item.url}')" class="absolute top-2 right-2 p-2 text-gray-400 hover:text-red-500 hover:scale-110 transition z-10" title="Simpan ke Favorit">
                         <i class="ph-bold ph-heart"></i>
                     </button>
                 </div>`).join('');
