@@ -226,10 +226,6 @@
                                         </div>
                                     </div>
                                     <div class="p-2 relative z-10">
-                                        <!-- <a href="#" onclick="showSubmitModal()" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors">
-                                            <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-primary"><i class="ph-bold ph-plus-circle"></i></div>
-                                            Submit Tour
-                                        </a> -->
                                         <a href="#" onclick="showFavoritesModal()" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors">
                                             <div class="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-500"><i class="ph-bold ph-heart"></i></div>
                                             Favorit Saya
@@ -519,14 +515,14 @@
                     <div id="review-form" class="bg-gray-50 dark:bg-white/5 p-4 rounded-xl">
                         <textarea id="review-input" class="w-full bg-transparent border border-gray-200 dark:border-white/20 rounded-lg p-3 text-sm focus:outline-none focus:border-primary text-gray-900 dark:text-white" rows="3" placeholder="Bagikan pengalaman virtualmu..."></textarea>
                         <div class="flex justify-between items-center mt-3">
-                            <div class="flex gap-1 text-yellow-400 text-lg">
-                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300"></i>
-                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300"></i>
-                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300"></i>
-                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300"></i>
-                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300"></i>
+                            <div class="flex gap-1 text-yellow-400 text-lg" id="star-container">
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300" onclick="setRating(1)"></i>
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300" onclick="setRating(2)"></i>
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300" onclick="setRating(3)"></i>
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300" onclick="setRating(4)"></i>
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300" onclick="setRating(5)"></i>
                             </div>
-                            <button onclick="submitReview()" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary/80 transition">Kirim Ulasan</button>
+                            <button id="btn-submit-review" onclick="submitReview()" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary/80 transition">Kirim Ulasan</button>
                         </div>
                     </div>
                 </div>
@@ -537,27 +533,6 @@
                     Jelajahi Peta Lengkap <i class="ph-bold ph-arrow-right ml-1"></i>
                 </button>
             </div>
-        </div>
-    </div>
-
-    <div id="submit-modal" class="fixed inset-0 z-[130] hidden flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('submit-modal').classList.add('hidden')"></div>
-        <div class="relative bg-white dark:bg-[#1e1e20] w-full max-w-lg rounded-2xl p-8 shadow-2xl border border-gray-200 dark:border-white/10 animate-slide-up">
-            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Submit Karya Virtual</h3>
-            <p class="text-gray-500 text-sm mb-6">Punya konten 360/Virtual Tour? Daftarkan agar masuk ke database Govirtual.</p>
-            
-            <div class="space-y-4">
-                <input type="text" placeholder="Nama Lokasi" class="w-full p-3 rounded-lg bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/20 text-sm focus:border-primary outline-none">
-                <input type="text" placeholder="Link Virtual Tour (URL)" class="w-full p-3 rounded-lg bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/20 text-sm focus:border-primary outline-none">
-                <select class="w-full p-3 rounded-lg bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/20 text-sm focus:border-primary outline-none text-gray-500">
-                    <option>Pilih Kategori</option>
-                    <option>Pariwisata</option>
-                    <option>Infrastruktur</option>
-                    <option>Pendidikan</option>
-                </select>
-                <button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition shadow-lg mt-2">Kirim Pengajuan</button>
-            </div>
-            <button onclick="document.getElementById('submit-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="ph-bold ph-x text-xl"></i></button>
         </div>
     </div>
 
@@ -754,10 +729,6 @@
             });
         }
 
-        function showSubmitModal() {
-            document.getElementById('submit-modal').classList.remove('hidden');
-        }
-
         // ==========================================
         // === LOGIKA REAL FIREBASE (NO MOCK UP) ===
         // ==========================================
@@ -908,13 +879,102 @@
             document.getElementById('history-modal').classList.remove('hidden');
         }
 
+        // --- REVIEW SYSTEM ---
+        let currentReviewListener = null; 
+        let currentRating = 5; 
+
+        function loadReviews(categoryId) {
+            const list = document.getElementById('review-list');
+            list.innerHTML = '<p class="text-sm text-gray-500 italic animate-pulse">Menghubungkan ke komunitas...</p>';
+
+            if (currentReviewListener) currentReviewListener();
+
+            currentReviewListener = db.collection('reviews')
+                .where('categoryId', '==', categoryId)
+                .orderBy('timestamp', 'desc')
+                .limit(20)
+                .onSnapshot((snapshot) => {
+                    if (snapshot.empty) {
+                        list.innerHTML = '<p class="text-sm text-gray-500 italic">Belum ada ulasan untuk sektor ini. Jadilah yang pertama!</p>';
+                        return;
+                    }
+
+                    let html = '';
+                    snapshot.forEach((doc) => {
+                        const r = doc.data();
+                        let starsHtml = '';
+                        for(let i=1; i<=5; i++) {
+                            starsHtml += i <= r.rating ? '<i class="ph-fill ph-star text-yellow-400 text-xs"></i>' : '<i class="ph-fill ph-star text-gray-300 text-xs"></i>';
+                        }
+                        const timeString = r.timestamp ? new Date(r.timestamp.seconds * 1000).toLocaleDateString('id-ID') : 'Baru saja';
+
+                        html += `
+                        <div class="flex gap-3 animate-slide-up">
+                            <img src="${r.userPhoto || 'https://ui-avatars.com/api/?name=User'}" class="w-8 h-8 rounded-full border border-gray-200 dark:border-white/10 shrink-0">
+                            <div class="bg-gray-100 dark:bg-white/5 p-3 rounded-lg rounded-tl-none w-full">
+                                <div class="flex justify-between items-start mb-1">
+                                    <span class="font-bold text-xs text-gray-900 dark:text-white">${r.userName}</span>
+                                    <span class="text-[10px] text-gray-400">${timeString}</span>
+                                </div>
+                                <div class="flex mb-1">${starsHtml}</div>
+                                <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${r.text}</p>
+                            </div>
+                        </div>`;
+                    });
+                    list.innerHTML = html;
+                }, (error) => {
+                    console.error("Error loading reviews:", error);
+                    list.innerHTML = '<p class="text-sm text-red-500">Gagal memuat ulasan. Pastikan Anda online.</p>';
+                });
+        }
+
         function submitReview() {
-            if(!user) return alert("Silakan login untuk memberi ulasan!");
-            const text = document.getElementById('review-input').value;
-            if(!text) return;
-            // Logic simpan review ke Firestore
-            alert("Terima kasih! Ulasan Anda telah terkirim.");
-            document.getElementById('review-input').value = "";
+            if(!user) {
+                alert("Ups! Anda harus Login dulu untuk memberi ulasan.");
+                loginWithGoogle();
+                return;
+            }
+
+            const textInput = document.getElementById('review-input');
+            const text = textInput.value.trim();
+            const btn = document.getElementById('btn-submit-review');
+
+            if(!text) return alert("Tulis sesuatu dulu dong!");
+
+            btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i>';
+            btn.disabled = true;
+
+            db.collection('reviews').add({
+                categoryId: currentActiveCatId, 
+                userId: user.uid,
+                userName: user.displayName,
+                userPhoto: user.photoURL,
+                text: text,
+                rating: currentRating,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                textInput.value = "";
+                setRating(5); 
+                btn.innerHTML = 'Kirim <i class="ph-bold ph-paper-plane-right"></i>';
+                btn.disabled = false;
+            }).catch((error) => {
+                console.error("Error writing review: ", error);
+                alert("Gagal mengirim ulasan: " + error.message);
+                btn.innerHTML = 'Kirim <i class="ph-bold ph-paper-plane-right"></i>';
+                btn.disabled = false;
+            });
+        }
+
+        function setRating(n) {
+            currentRating = n;
+            const stars = document.getElementById('star-container').children;
+            for (let i = 0; i < stars.length; i++) {
+                if (i < n) {
+                    stars[i].className = "ph-fill ph-star cursor-pointer text-yellow-400 transition transform hover:scale-110";
+                } else {
+                    stars[i].className = "ph-fill ph-star cursor-pointer text-gray-300 transition";
+                }
+            }
         }
 
         function incrementVisitCount(uid) {
@@ -1332,6 +1392,9 @@
                 document.getElementById('review-section').classList.remove('hidden');
                 
                 renderModalGrid('Semua');
+
+                // Load Review from Firebase
+                loadReviews(categoryId);
 
             } else {
                 tabsContainer.parentElement.classList.add('hidden');
