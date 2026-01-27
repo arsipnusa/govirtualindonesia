@@ -11,6 +11,10 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <script>
         tailwind.config = {
@@ -189,15 +193,44 @@
                     <a href="#map" class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition">PETA</a>
                     <a href="#kategori" class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition">SEKTOR</a>
                     <a href="#populer" class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition">TRENDING</a>
-                    <a href="#partners" class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition">IN-FLIGHT PARTNERS</a>
+                    
                     <div class="h-4 w-px bg-gray-300 dark:bg-white/20"></div>
                     <button onclick="toggleTheme()" class="text-lg text-gray-500 dark:text-yellow-400 hover:scale-110 transition">
                         <i class="ph-fill ph-sun hidden dark:block"></i>
                         <i class="ph-fill ph-moon block dark:hidden text-primary"></i>
                     </button>
-                    <button onclick="document.getElementById('search-input').focus()" class="bg-black dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-lg font-bold hover:scale-105 transition-all shadow-lg hover:shadow-primary/25">
-                        Cari Lokasi
-                    </button>
+                    
+                    <div id="auth-section">
+                        <button id="btn-login" onclick="loginWithGoogle()" class="bg-black dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-lg font-bold hover:scale-105 transition-all shadow-lg hover:shadow-primary/25 flex items-center gap-2">
+                            <i class="ph-bold ph-google-logo"></i> Masuk
+                        </button>
+                        
+                        <div id="user-profile" class="hidden relative group">
+                            <button class="flex items-center gap-2 focus:outline-none">
+                                <img id="user-avatar" src="" class="w-9 h-9 rounded-full border-2 border-primary">
+                                <span id="user-name" class="hidden lg:block font-bold text-gray-900 dark:text-white max-w-[100px] truncate">User</span>
+                                <i class="ph-bold ph-caret-down text-gray-500"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-56 bg-white dark:bg-[#1e1e20] rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 overflow-hidden transform scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all origin-top-right pointer-events-none group-hover:pointer-events-auto">
+                                <div class="p-3 border-b border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-black/20">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Level Penjelajah</p>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <i class="ph-fill ph-medal text-yellow-500"></i>
+                                        <span id="user-badge" class="font-bold text-sm text-gray-900 dark:text-white">Newbie</span>
+                                    </div>
+                                </div>
+                                <div class="p-2">
+                                    <a href="#" onclick="showSubmitModal()" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-sm text-gray-700 dark:text-gray-200"><i class="ph-bold ph-plus-circle text-primary"></i> Submit Tour</a>
+                                    <a href="#" onclick="alert('Fitur Favorit akan membuka list')" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-sm text-gray-700 dark:text-gray-200"><i class="ph-bold ph-heart text-red-500"></i> Favorit Saya</a>
+                                    <a href="#" onclick="alert('Fitur History akan membuka list')" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-sm text-gray-700 dark:text-gray-200"><i class="ph-bold ph-clock-counter-clockwise text-blue-500"></i> Riwayat</a>
+                                </div>
+                                <div class="p-2 border-t border-gray-100 dark:border-white/10">
+                                    <button onclick="logout()" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-sm text-red-600 dark:text-red-400"><i class="ph-bold ph-sign-out"></i> Keluar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <button onclick="toggleMenu()" class="md:hidden text-2xl text-gray-800 dark:text-white p-1">
                     <i class="ph-bold ph-list"></i>
@@ -438,6 +471,7 @@
     <div id="category-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center px-4">
         <div id="modal-backdrop" onclick="closeModal()" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 modal-backdrop-enter"></div>
         <div id="modal-content" class="relative w-full max-w-4xl bg-white dark:bg-[#12121a] rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 transition-all duration-500 ease-out modal-content-enter flex flex-col max-h-[85vh]">
+            
             <div class="relative p-8 md:p-10 bg-gray-50 dark:bg-white/5 shrink-0">
                 <button onclick="closeModal()" class="absolute top-6 right-6 w-10 h-10 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-red-50 transition-all z-10 shadow-sm"><i class="ph-bold ph-x text-lg"></i></button>
                 <div class="flex items-start gap-6">
@@ -449,15 +483,63 @@
                     </div>
                 </div>
             </div>
-            <div class="p-8 md:p-10 overflow-y-auto modal-scroll bg-white dark:bg-[#12121a]">
-                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">Destinasi Tersedia</h3>
-                <div id="modal-grid-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+            <div class="px-8 md:px-10 pt-4 pb-0 bg-white dark:bg-[#12121a] border-b border-gray-100 dark:border-white/5 hidden">
+                <div id="modal-tabs" class="flex gap-3 overflow-x-auto no-scrollbar pb-4">
+                    </div>
             </div>
+
+            <div class="p-8 md:p-10 overflow-y-auto modal-scroll bg-white dark:bg-[#12121a] flex-1">
+                <div id="modal-grid-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    </div>
+                
+                <div id="review-section" class="mt-10 border-t border-gray-100 dark:border-white/10 pt-8 hidden">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Ulasan Komunitas</h3>
+                    <div id="review-list" class="space-y-3 mb-6">
+                        <p class="text-sm text-gray-500 italic">Belum ada ulasan.</p>
+                    </div>
+                    <div id="review-form" class="bg-gray-50 dark:bg-white/5 p-4 rounded-xl">
+                        <textarea id="review-input" class="w-full bg-transparent border border-gray-200 dark:border-white/20 rounded-lg p-3 text-sm focus:outline-none focus:border-primary text-gray-900 dark:text-white" rows="3" placeholder="Bagikan pengalaman virtualmu..."></textarea>
+                        <div class="flex justify-between items-center mt-3">
+                            <div class="flex gap-1 text-yellow-400 text-lg">
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300"></i>
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300"></i>
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300"></i>
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300"></i>
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300"></i>
+                            </div>
+                            <button onclick="submitReview()" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary/80 transition">Kirim Ulasan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-black/20 text-center shrink-0">
-            <button onclick="closeModal(); setTimeout(() => window.location.href='#map', 300)" class="text-primary font-bold hover:underline">
-                Jelajahi Peta Lengkap <i class="ph-bold ph-arrow-right ml-1"></i>
-            </button>
+                <button onclick="closeModal(); setTimeout(() => window.location.href='#map', 300)" class="text-primary font-bold hover:underline">
+                    Jelajahi Peta Lengkap <i class="ph-bold ph-arrow-right ml-1"></i>
+                </button>
             </div>
+        </div>
+    </div>
+
+    <div id="submit-modal" class="fixed inset-0 z-[130] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('submit-modal').classList.add('hidden')"></div>
+        <div class="relative bg-white dark:bg-[#1e1e20] w-full max-w-lg rounded-2xl p-8 shadow-2xl border border-gray-200 dark:border-white/10 animate-slide-up">
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Submit Karya Virtual</h3>
+            <p class="text-gray-500 text-sm mb-6">Punya konten 360/Virtual Tour? Daftarkan agar masuk ke database Govirtual.</p>
+            
+            <div class="space-y-4">
+                <input type="text" placeholder="Nama Lokasi" class="w-full p-3 rounded-lg bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/20 text-sm focus:border-primary outline-none">
+                <input type="text" placeholder="Link Virtual Tour (URL)" class="w-full p-3 rounded-lg bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/20 text-sm focus:border-primary outline-none">
+                <select class="w-full p-3 rounded-lg bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/20 text-sm focus:border-primary outline-none text-gray-500">
+                    <option>Pilih Kategori</option>
+                    <option>Pariwisata</option>
+                    <option>Infrastruktur</option>
+                    <option>Pendidikan</option>
+                </select>
+                <button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition shadow-lg mt-2">Kirim Pengajuan</button>
+            </div>
+            <button onclick="document.getElementById('submit-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="ph-bold ph-x text-xl"></i></button>
         </div>
     </div>
 
@@ -512,10 +594,28 @@
 
     <script>
         // ==========================================
+        // === KONFIGURASI LINK SPREADSHEET ===
+        // ==========================================
+        // ISI LINK CSV DI BAWAH INI UNTUK SETIAP KATEGORI
+        const SHEET_URLS = {
+            'infrastruktur': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIvK72ykG4OND6TbQdD_ACi4Sv6TRlq8g9SKh_CNB_IkYKhB_rwlsD97sZpIoJNRB5NfC8Su87kD2p/pub?gid=0&single=true&output=csv',
+            'budaya': 'LINK_CSV_BUDAYA_DISINI',
+            'pariwisata': 'LINK_CSV_PARIWISATA_DISINI',
+            'religi': 'LINK_CSV_RELIGI_DISINI',
+            'warisan': 'LINK_CSV_WARISAN_DISINI',
+            'maritim': 'LINK_CSV_MARITIM_DISINI',
+            'pemerintahan': 'LINK_CSV_PEMERINTAHAN_DISINI',
+            'kesehatan': 'LINK_CSV_KESEHATAN_DISINI',
+            'pendidikan': 'LINK_CSV_PENDIDIKAN_DISINI',
+            'mice': 'LINK_CSV_MICE_DISINI',
+            'investasi': 'LINK_CSV_INVESTASI_DISINI'
+        };
+
+        // ==========================================
         // === GLOBAL CONFIG & VARIABLES ===
         // ==========================================
         
-        // GANTI LINK INI DENGAN CSV ANDA
+        // CSV RADAR (TETAP SEPERTI SEBELUMNYA)
         const RADAR_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2nDXKAPsG_If3CedztM4rgPTZQKh-44TLjOfKkK2rrT_rMp9NLZoaoajAToIWxnsGSz0ujXWqMybt/pub?gid=839999161&single=true&output=csv'; 
         const STATS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2nDXKAPsG_If3CedztM4rgPTZQKh-44TLjOfKkK2rrT_rMp9NLZoaoajAToIWxnsGSz0ujXWqMybt/pub?gid=839999161&single=true&output=csv'; 
 
@@ -526,12 +626,142 @@
         let watchId = null;
         let isRadarOpen = false;
         
-        // --- VARIABEL BARU (SOLUSI OPTIMASI) ---
         let cachedLocations = [];      
         let isRadarDataLoaded = false; 
 
         // ==========================================
-        // === 1. FUNGSI LOAD DATA (CUKUP SEKALI) ===
+        // === FIREBASE CONFIGURATION (WAJIB DIISI) ===
+        // ==========================================
+const firebaseConfig = {
+  apiKey: "AIzaSyCvIqMWF1X6wKkg0SYFOj1phP-v-M0ZvGw",
+  authDomain: "govirtual-web.firebaseapp.com",
+  projectId: "govirtual-web",
+  storageBucket: "govirtual-web.firebasestorage.app",
+  messagingSenderId: "295951677456",
+  appId: "1:295951677456:web:53308b4c56b65e7d83b295",
+  measurementId: "G-9DBGEQFTV4"
+};
+
+        // Initialize Firebase
+        let auth, db, user = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            db = firebase.firestore();
+            console.log("Firebase Connected!");
+        } catch (error) {
+            console.warn("Firebase Config belum diisi. Fitur login dinonaktifkan sementara.");
+        }
+
+        // --- AUTH LOGIC ---
+        function loginWithGoogle() {
+            if(!auth) return alert("Firebase belum dikonfigurasi!");
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(e => alert(e.message));
+        }
+
+        function logout() {
+            if(auth) auth.signOut();
+        }
+
+        // Listener Status Login
+        if(auth) {
+            auth.onAuthStateChanged((currentUser) => {
+                const btnLogin = document.getElementById('btn-login');
+                const userProfile = document.getElementById('user-profile');
+                
+                if (currentUser) {
+                    // User Logged In
+                    user = currentUser;
+                    btnLogin.classList.add('hidden');
+                    userProfile.classList.remove('hidden');
+                    document.getElementById('user-avatar').src = user.photoURL;
+                    document.getElementById('user-name').innerText = user.displayName;
+                    
+                    // Cek Badge (Gamifikasi Sederhana)
+                    checkBadges(user.uid);
+                } else {
+                    // User Logged Out
+                    user = null;
+                    btnLogin.classList.remove('hidden');
+                    userProfile.classList.add('hidden');
+                }
+            });
+        }
+
+        function showSubmitModal() {
+            document.getElementById('submit-modal').classList.remove('hidden');
+        }
+
+        // --- FEATURE LOGIC (FAVORITE & HISTORY & BADGES) ---
+        function visitTour(url, name, location) {
+            // 1. Simpan ke History (Jika Login)
+            if(user && db) {
+                db.collection('users').doc(user.uid).collection('history').add({
+                    name: name,
+                    location: location,
+                    url: url,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                // Update Badges Count
+                incrementVisitCount(user.uid);
+            }
+            // 2. Buka Link
+            window.open(url, '_blank');
+        }
+
+        function toggleFavorite(name, location) {
+            if(!user) return alert("Silakan login untuk menyimpan favorit!");
+            // Logic simpan ke Firestore (Simplified)
+            alert(`Menambahkan ${name} ke Favorit!`);
+        }
+
+        function submitReview() {
+            if(!user) return alert("Silakan login untuk memberi ulasan!");
+            const text = document.getElementById('review-input').value;
+            if(!text) return;
+            // Logic simpan review ke Firestore
+            alert("Terima kasih! Ulasan Anda telah terkirim.");
+            document.getElementById('review-input').value = "";
+        }
+
+        function incrementVisitCount(uid) {
+            // Logic sederhana menaikkan counter visit di Firestore untuk Badges
+            // Jika > 5 visit -> Unlock Badge "Explorer"
+        }
+
+        function checkBadges(uid) {
+            // Fetch data user dari Firestore, cek jumlah visit, update UI Badge
+            // Mockup:
+            document.getElementById('user-badge').innerText = "Explorer";
+        }
+
+        // ==========================================
+        // === FUNGSI FETCH CSV UMUM ===
+        // ==========================================
+        async function fetchCSV(url) {
+            if (!url || url.includes('LINK_CSV')) return []; // Skip jika link belum diisi
+            try {
+                const response = await fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now());
+                const data = await response.text();
+                const rows = data.replace(/\r/g, '').split('\n').slice(1);
+                return rows.map(row => {
+                    const cols = row.split(',').map(item => item.trim());
+                    if(cols.length < 2) return null;
+                    return {
+                        name: cols[1] || "Nama Tidak Diketahui",
+                        loc: cols[2] || "Indonesia",
+                        url: cols[5] || "#"
+                    };
+                }).filter(item => item !== null);
+            } catch (e) {
+                console.error("Gagal load CSV:", url, e);
+                return [];
+            }
+        }
+
+        // ==========================================
+        // === 1. FUNGSI LOAD DATA RADAR ===
         // ==========================================
         
         async function loadRadarData() {
@@ -741,22 +971,44 @@
         }
 
         // ==========================================
-        // === 6. DATA & SEARCH LOGIC (RESTORED) ===
+        // === 6. DATA & SEARCH LOGIC ===
         // ==========================================
 
         const categories = [
-            { id: 'infrastruktur', name: 'Infrastruktur', icon: 'ph-bridge', count: 42, span: 'md:col-span-2 md:row-span-2', bg: 'https://images.unsplash.com/photo-1545558014-8692077e9b5c', items: [{ name: "Jembatan Suramadu", loc: "Jawa Timur" }, { name: "Bendungan Jatiluhur", loc: "Jawa Barat" }] },
-            { id: 'budaya', name: 'Seni & Budaya', icon: 'ph-paint-brush-broad', count: 24, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1605634563604-949479b0c727', items: [{ name: "Keraton Yogya", loc: "DIY" }] },
-            { id: 'pariwisata', name: 'Pariwisata', icon: 'ph-airplane-tilt', count: 85, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4', items: [{ name: "Raja Ampat", loc: "Papua" }] },
-            { id: 'religi', name: 'Religi', icon: 'ph-mosque', count: 18, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1602127278278-838634569584', items: [{ name: "Masjid Istiqlal", loc: "Jakarta" }] },
-            { id: 'warisan', name: 'Warisan Budaya', icon: 'ph-columns', count: 12, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1590053158066-73356e897621', items: [{ name: "Candi Prambanan", loc: "DIY" }] },
-            { id: 'maritim', name: 'Kepulauan', icon: 'ph-boat', count: 50, span: 'md:col-span-2', bg: 'https://images.unsplash.com/photo-1589309736404-2e142a2acdf9', items: [{ name: "Labuan Bajo", loc: "NTT" }] },
-            { id: 'pemerintahan', name: 'Pemerintahan', icon: 'ph-bank', count: 15, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1575024227063-424a8069324c', items: [{ name: "Istana Negara IKN", loc: "Kaltim" }] },
-            { id: 'kesehatan', name: 'Kesehatan', icon: 'ph-heartbeat', count: 22, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d', items: [{ name: "RSCM Kencana", loc: "Jakarta" }] },
-            { id: 'pendidikan', name: 'Pendidikan', icon: 'ph-graduation-cap', count: 30, span: 'md:col-span-2', bg: 'https://images.unsplash.com/photo-1562774053-701939374585', items: [{ name: "Universitas Indonesia", loc: "Depok" }] },
-            { id: 'mice', name: 'MICE', icon: 'ph-presentation-chart', count: 10, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04', items: [{ name: "ICE BSD", loc: "Tangerang" }] },
-            { id: 'investasi', name: 'Investasi', icon: 'ph-trend-up', count: 8, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1611974765270-ca1258634369', items: [{ name: "Kawasan Industri", loc: "Cikarang" }] },
+            { id: 'infrastruktur', name: 'Infrastruktur', icon: 'ph-bridge', count: 0, span: 'md:col-span-2 md:row-span-2', bg: 'https://infopublik.id/assets/upload/headline//FotoJet_-_2024-09-02T235743_108-min_(2).jpg', items: [] },
+            { id: 'budaya', name: 'Seni & Budaya', icon: 'ph-paint-brush-broad', count: 0, span: 'md:col-span-1', bg: 'https://www.finansialku.com/wp-content/uploads/2019/05/Sampai-Mancanegara-Lho-Ini-Dia-10-Budaya-Indonesia-Mendunia-04-Tari-Barong-Finansialku.jpg', items: [] },
+            { id: 'pariwisata', name: 'Pariwisata', icon: 'ph-airplane-tilt', count: 0, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4', items: [] },
+            { id: 'religi', name: 'Religi', icon: 'ph-mosque', count: 0, span: 'md:col-span-1', bg: 'https://eticon.co.id/wp-content/uploads/2022/01/Rekomendasi-tempat-wisata-religi-Islam-di-Indonesia.jpg', items: [] },
+            { id: 'warisan', name: 'Warisan Budaya', icon: 'ph-columns', count: 0, span: 'md:col-span-1', bg: 'https://www.gotravelaindonesia.com/wp-content/uploads/daftar-warisan-budaya-di-indonesia.jpg', items: [] },
+            { id: 'maritim', name: 'Kepulauan', icon: 'ph-boat', count: 0, span: 'md:col-span-2', bg: 'https://superlive.id/storage/superadventure/2018/10/22/07ef3dc28e67.jpg', items: [] },
+            { id: 'pemerintahan', name: 'Pemerintahan', icon: 'ph-bank', count: 0, span: 'md:col-span-1', bg: 'https://tangerangkota.go.id/assets/storage/files/photos/50013sejarah-singkat-kota-tangerang-dari-kota-industri-sampai-gerbang-globalisasi-50013.jpg', items: [] },
+            { id: 'kesehatan', name: 'Kesehatan', icon: 'ph-heartbeat', count: 0, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d', items: [] },
+            { id: 'pendidikan', name: 'Pendidikan', icon: 'ph-graduation-cap', count: 0, span: 'md:col-span-2', bg: 'https://images.unsplash.com/photo-1562774053-701939374585', items: [] },
+            { id: 'mice', name: 'MICE', icon: 'ph-presentation-chart', count: 0, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04', items: [] },
+            { id: 'investasi', name: 'Investasi', icon: 'ph-trend-up', count: 0, span: 'md:col-span-1', bg: 'https://cdn.brighton.co.id/Uploads/Images/15775139/QL1wQ6AP/15992-1.webp', items: [] },
         ];
+
+        // LOGIC BARU: LOAD SEMUA CSV KATEGORI
+        async function loadAllCategories() {
+            console.log("Memulai sinkronisasi kategori...");
+            for (let cat of categories) {
+                const url = SHEET_URLS[cat.id];
+                if(url && !url.includes('LINK_CSV')) {
+                    const countEl = document.getElementById(`count-${cat.id}`);
+                    if(countEl) countEl.innerText = "Memuat...";
+
+                    const items = await fetchCSV(url);
+                    cat.items = items;
+                    cat.count = items.length;
+
+                    if(countEl) countEl.innerText = `${items.length} Lokasi`;
+                } else {
+                     const countEl = document.getElementById(`count-${cat.id}`);
+                     if(countEl) countEl.innerText = "Segera Hadir";
+                }
+            }
+            updateSearchIndex();
+        }
 
         const popularTours = [
             { name: "Labuan Bajo", loc: "Nusa Tenggara Timur", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQSUnKtSvgEWMI-wQUXnHpM1T3M123dvmmExkG_Bnna37l40XVsPZDky2KpupptEyU8zek0xqQOlrf7SOG4KQ4ixng&s=19", link: "https://govirtual.id/virtual-tour/labuan_bajo/", lat: -8.453, lng: 119.873 },
@@ -781,7 +1033,7 @@
             'warisan': "Saksi bisu sejarah. Menyusuri lorong waktu melalui situs-situs megah masa lampau."
         };
 
-        // --- RENDER GRID SEKTOR ---
+        // --- RENDER GRID SEKTOR (UPDATED WITH ID FOR COUNTER) ---
         const catGrid = document.getElementById('category-grid');
         categories.forEach(cat => {
             catGrid.innerHTML += `
@@ -794,43 +1046,152 @@
                         <div class="mb-auto"><div class="w-12 h-12 rounded-lg bg-white/10 backdrop-blur-md flex items-center justify-center text-white mb-2 group-hover:bg-primary group-hover:text-white transition-colors"><i class="ph ${cat.icon} text-2xl"></i></div></div>
                         <div class="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                             <h3 class="text-2xl font-bold text-white mb-1">${cat.name}</h3>
-                            <div class="flex items-center gap-2 text-xs font-bold text-secondary uppercase tracking-wider"><span>${cat.count} Lokasi</span><i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i></div>
+                            <div class="flex items-center gap-2 text-xs font-bold text-secondary uppercase tracking-wider"><span id="count-${cat.id}">Memuat...</span><i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i></div>
                         </div>
                     </div>
                 </div>
             `;
         });
 
-        // --- SEARCH LOGIC (RESTORED) ---
-        const allSearchData = [
-            ...categories.map(c => ({ type: 'Kategori', id: c.id, name: c.name, sub: c.count + ' Lokasi Virtual', icon: c.icon, action: 'modal' })),
-            ...popularTours.map(t => ({ type: 'Tour', name: t.name, sub: t.loc, icon: 'ph-map-pin', action: 'link', link: t.link }))
-        ];
+        // --- SEARCH LOGIC (UPDATED WITH DESTINATIONS) ---
+        let allSearchData = [];
+
+        function updateSearchIndex() {
+            let tempSearchData = [];
+
+            // 1. Loop semua kategori
+            categories.forEach(cat => {
+                tempSearchData.push({
+                    type: 'Kategori',
+                    id: cat.id,
+                    name: cat.name,
+                    sub: (cat.items ? cat.items.length : 0) + ' Lokasi Virtual',
+                    icon: cat.icon,
+                    action: 'modal'
+                });
+
+                if (cat.items && cat.items.length > 0) {
+                    cat.items.forEach(item => {
+                        tempSearchData.push({
+                            type: 'Destinasi',       
+                            name: item.name,         
+                            sub: item.loc + ' • ' + cat.name, 
+                            icon: 'ph-navigation-arrow', 
+                            action: 'link',          
+                            link: item.url           
+                        });
+                    });
+                }
+            });
+
+            popularTours.forEach(t => {
+                tempSearchData.push({
+                    type: 'Trending',
+                    name: t.name,
+                    sub: t.loc,
+                    icon: 'ph-fire',
+                    action: 'link',
+                    link: t.link
+                });
+            });
+
+            allSearchData = tempSearchData;
+            console.log("Database Pencarian Updated:", allSearchData.length, "item siap dicari.");
+        }
 
         const searchInput = document.getElementById('search-input');
         const dropdownContainer = document.querySelector('#search-dropdown > div');
         const modal = document.getElementById('category-modal');
 
+        // ==========================================
+        // === LOGIKA TAB & FILTER MODAL BARU ===
+        // ==========================================
+
+        let currentActiveCatId = null; // Menyimpan ID kategori yg sedang dibuka
+
         function openModal(categoryId) {
+            currentActiveCatId = categoryId;
             const catData = categories.find(c => c.id === categoryId);
             if (!catData) return;
+
+            // 1. Set Info Header
             document.getElementById('modal-title').innerText = catData.name;
             document.getElementById('modal-icon').className = `ph-fill ${catData.icon} text-3xl md:text-4xl`;
             document.getElementById('modal-desc').innerText = categoryCopywriting[categoryId] || "Jelajahi koleksi virtual tour terbaik.";
             
-            const gridContent = document.getElementById('modal-grid-content');
-            gridContent.innerHTML = catData.items.map(item => `
-                <div class="flex items-center gap-4 p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 transition cursor-pointer group">
-                    <div class="w-12 h-12 rounded-lg bg-white dark:bg-black shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition"><i class="ph-fill ph-goggles text-xl"></i></div>
-                    <div><h4 class="font-bold text-gray-900 dark:text-white text-sm">${item.name}</h4><p class="text-xs text-gray-500">${item.loc}</p></div>
-                </div>`).join('');
+            // 2. Buat Daftar Lokasi Unik (Kabupaten) dari Data CSV
+            const uniqueLocs = ['Semua', ...new Set(catData.items.map(item => item.loc))];
 
+            // 3. Render Tombol Tab
+            const tabsContainer = document.getElementById('modal-tabs');
+            
+            if (catData.items.length > 0) {
+                tabsContainer.innerHTML = uniqueLocs.map(loc => {
+                    return `<button onclick="renderModalGrid('${loc}')" 
+                        class="tab-btn px-5 py-2 rounded-full text-sm font-bold border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:border-primary hover:text-primary transition-all whitespace-nowrap" 
+                        data-loc="${loc}">
+                        ${loc}
+                    </button>`;
+                }).join('');
+                
+                tabsContainer.parentElement.classList.remove('hidden');
+                
+                // Show Review Section
+                document.getElementById('review-section').classList.remove('hidden');
+                
+                renderModalGrid('Semua');
+
+            } else {
+                tabsContainer.parentElement.classList.add('hidden');
+                document.getElementById('review-section').classList.add('hidden');
+                document.getElementById('modal-grid-content').innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400 italic">Belum ada data untuk kategori ini.</div>`;
+            }
+
+            // 4. Animasi Buka Modal
+            const modal = document.getElementById('category-modal');
             modal.classList.remove('hidden');
             setTimeout(() => {
                 document.getElementById('modal-backdrop').classList.add('modal-backdrop-active');
                 document.getElementById('modal-content').classList.add('modal-content-active');
             }, 10);
             hideDropdownWithDelay();
+        }
+
+        function renderModalGrid(filterLoc) {
+            const catData = categories.find(c => c.id === currentActiveCatId);
+            if (!catData) return;
+
+            let displayItems = catData.items;
+            if (filterLoc !== 'Semua') {
+                displayItems = catData.items.filter(item => item.loc === filterLoc);
+            }
+
+            // MODIFIKASI: Gunakan visitTour() untuk handle klik, dan tambah tombol Favorit
+            const gridContent = document.getElementById('modal-grid-content');
+            gridContent.innerHTML = displayItems.map(item => `
+                <div class="relative group animate-slide-up">
+                    <div onclick="visitTour('${item.url}', '${item.name}', '${item.loc}')" class="flex items-center gap-4 p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 hover:bg-white dark:hover:bg-white/10 transition cursor-pointer text-left"> 
+                        <div class="w-12 h-12 rounded-lg bg-white dark:bg-black shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition shrink-0">
+                            <i class="ph-fill ph-goggles text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">${item.name}</h4>
+                            <p class="text-xs text-gray-500 flex items-center gap-1"><i class="ph-fill ph-map-pin"></i> ${item.loc}</p>
+                        </div>
+                    </div>
+                    <button onclick="toggleFavorite('${item.name}', '${item.loc}')" class="absolute top-2 right-2 p-2 text-gray-400 hover:text-red-500 transition z-10" title="Simpan ke Favorit">
+                        <i class="ph-bold ph-heart"></i>
+                    </button>
+                </div>`).join('');
+
+            // Update Style Tombol Tab
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if(btn.dataset.loc === filterLoc) {
+                    btn.className = "tab-btn px-5 py-2 rounded-full text-sm font-bold bg-black dark:bg-white text-white dark:text-black border border-black dark:border-white transition-all whitespace-nowrap shadow-lg";
+                } else {
+                    btn.className = "tab-btn px-5 py-2 rounded-full text-sm font-bold border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:border-primary hover:text-primary transition-all whitespace-nowrap bg-transparent";
+                }
+            });
         }
 
         function closeModal() {
@@ -855,14 +1216,26 @@
 
         function renderResults(results) {
             if (results.length === 0) { dropdownContainer.innerHTML = `<div class="p-4 text-center text-gray-500 text-sm">Tidak ditemukan hasil.</div>`; return; }
-            let html = `<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Hasil Pencarian</p>`;
+            let html = `<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2 text-left">Hasil Pencarian</p>`; 
             results.forEach(item => {
-                let iconColor = item.type === 'Kategori' ? 'text-purple-400 bg-purple-500/20' : 'text-blue-400 bg-blue-500/20';
+                let iconColor = 'text-gray-400';
+                if(item.type === 'Kategori') iconColor = 'text-purple-400 bg-purple-500/20';
+                else if(item.type === 'Destinasi') iconColor = 'text-green-400 bg-green-500/20';
+                else if(item.type === 'Trending') iconColor = 'text-blue-400 bg-blue-500/20';
+
+                // Modifikasi Action agar menggunakan visitTour untuk Destinasi
+                let clickAction = "";
+                if(item.action === 'modal') clickAction = `openModal('${item.id}')`;
+                else if(item.type === 'Destinasi' || item.type === 'Trending') clickAction = `visitTour('${item.link}', '${item.name}', '${item.sub}')`;
+                else clickAction = `window.open('${item.link}', '_blank')`;
+
                 html += `
-                    <div onclick="${item.action === 'modal' ? `openModal('${item.id}')` : `window.open('${item.link}', '_blank')`}" class="search-item flex items-center justify-between p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
+                    <div onclick="${clickAction}" class="search-item flex items-center justify-between p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg ${iconColor} flex items-center justify-center"><i class="ph-fill ${item.icon} text-xl"></i></div>
-                            <div><h4 class="text-gray-200 font-medium text-sm md:text-base">${item.name}</h4><p class="text-gray-500 text-xs">${item.sub}</p></div>
+                            <div class="w-10 h-10 rounded-lg ${iconColor} flex items-center justify-center shrink-0"><i class="ph-fill ${item.icon} text-xl"></i></div>
+                            <div class="text-left"> <h4 class="text-gray-200 font-medium text-sm md:text-base line-clamp-1">${item.name}</h4>
+                                <p class="text-gray-500 text-xs">${item.sub}</p>
+                            </div>
                         </div>
                         <div class="w-8 h-8 rounded-lg border border-gray-600 flex items-center justify-center text-gray-400 group-hover/item:bg-primary group-hover/item:border-primary group-hover/item:text-white transition-all"><i class="ph-bold ${item.action === 'modal' ? 'ph-cards' : 'ph-arrow-right'}"></i></div>
                     </div>`;
@@ -872,13 +1245,15 @@
 
         function renderDefault() {
             const defaults = popularTours.slice(0, 3).map(t => ({ type: 'Trending', name: t.name, sub: t.loc, icon: 'ph-fire', link: t.link }));
-            let html = `<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Rekomendasi Populer</p>`;
+            let html = `<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2 text-left">Rekomendasi Populer</p>`; 
             defaults.forEach(item => {
                 html += `
-                    <div onclick="window.open('${item.link}', '_blank')" class="search-item flex items-center justify-between p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
+                    <div onclick="visitTour('${item.link}', '${item.name}', '${item.sub}')" class="search-item flex items-center justify-between p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center"><i class="ph-fill ${item.icon} text-xl"></i></div>
-                            <div><h4 class="text-gray-200 font-medium text-sm md:text-base">${item.name}</h4><p class="text-gray-500 text-xs">${item.sub}</p></div>
+                            <div class="w-10 h-10 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center shrink-0"><i class="ph-fill ${item.icon} text-xl"></i></div>
+                            <div class="text-left"> <h4 class="text-gray-200 font-medium text-sm md:text-base">${item.name}</h4>
+                                <p class="text-gray-500 text-xs">${item.sub}</p>
+                            </div>
                         </div>
                         <div class="w-8 h-8 rounded-lg border border-gray-600 flex items-center justify-center text-gray-400 group-hover/item:bg-primary group-hover/item:border-primary group-hover/item:text-white transition-all"><i class="ph-bold ph-arrow-up-right"></i></div>
                     </div>`;
@@ -962,14 +1337,15 @@
             updateMapTiles('dark');
 
             // SYSTEM INIT
+            loadAllCategories(); // MEMANGGIL FUNGSI BARU
             initBackgroundRadar(); 
             sendVisitorHit();      
             fetchVisitorStats();   
         };
 
-                // --- RENDER GRID 6 DESTINASI ---
+        // --- RENDER GRID 6 DESTINASI ---
         document.getElementById('tour-grid').innerHTML = popularTours.map(tour => `
-            <div onclick="window.open('${tour.link}', '_blank')" class="bg-white dark:bg-cardDark border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-500 group reveal cursor-pointer">
+            <div onclick="visitTour('${tour.link}', '${tour.name}', '${tour.loc}')" class="bg-white dark:bg-cardDark border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-500 group reveal cursor-pointer">
                 <div class="h-64 overflow-hidden relative">
                     <img src="${tour.img}?q=80&w=500&auto=format" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
                     <div class="absolute bottom-4 left-4 text-white"><h3 class="text-2xl font-bold mb-1 drop-shadow-lg">${tour.name}</h3><div class="flex items-center text-gray-200 text-sm drop-shadow-md"><i class="ph-fill ph-map-pin mr-1 text-primary"></i> ${tour.loc}</div></div>
