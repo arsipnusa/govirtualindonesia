@@ -256,34 +256,68 @@
         </nav>
     </div>
 
-    <div id="mobile-menu" class="fixed inset-0 z-[110] hidden">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="toggleMenu()"></div>
-        <div class="relative w-full h-full flex justify-center items-start pt-24 px-4 pointer-events-none">
-            <div class="w-full max-w-xs bg-white dark:bg-[#1A1A24] rounded-xl shadow-2xl p-6 border border-gray-100 dark:border-white/5 pointer-events-auto">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center gap-2">
-                        <img src="https://govirtual.id/web/image/logo-govirtual.webp" alt="Logo" class="h-8 w-auto object-contain brightness-0 dark:brightness-100">
-                    </div>
-                    <button onclick="toggleMenu()" class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20 transition">
-                        <i class="ph-bold ph-x"></i>
-                    </button>
+<div id="mobile-menu" class="fixed inset-0 z-[110] hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="toggleMenu()"></div>
+    <div class="relative w-full h-full flex justify-center items-start pt-20 px-4 pointer-events-none">
+        <div class="w-full max-w-xs bg-white dark:bg-[#1A1A24] rounded-xl shadow-2xl p-6 border border-gray-100 dark:border-white/5 pointer-events-auto flex flex-col max-h-[80vh] overflow-y-auto">
+            
+            <div class="flex items-center justify-between mb-6 shrink-0">
+                <div class="flex items-center gap-2">
+                    <img src="https://govirtual.id/web/image/logo-govirtual.webp" alt="Logo" class="h-8 w-auto object-contain brightness-0 dark:brightness-100">
                 </div>
-                <div class="flex flex-col space-y-1">
-                    <a href="#map" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Peta Digital</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
-                    <a href="#kategori" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Sektor Virtual</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
-                    <a href="#populer" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Trending</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
+                <button onclick="toggleMenu()" class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20 transition">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+
+            <div id="mobile-auth-container" class="mb-6 p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 shrink-0">
+                
+                <button id="mobile-btn-login" onclick="loginWithGoogle(); toggleMenu()" class="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-bold shadow-lg flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-google-logo"></i> Masuk / Daftar
+                </button>
+
+                <div id="mobile-user-profile" class="hidden">
+                    <div class="flex items-center gap-3 mb-4">
+                        <img id="mobile-user-avatar" src="" class="w-12 h-12 rounded-full border-2 border-primary object-cover">
+                        <div>
+                            <p id="mobile-user-name" class="font-bold text-gray-900 dark:text-white line-clamp-1">User Name</p>
+                            <div class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                                <i class="ph-fill ph-medal text-yellow-500"></i> Explorer
+                            </div>
+                        </div>
+                    </div>
                     
-                    <a href="#partners" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">In-Flight Partners</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
-                    <div class="pt-3 mt-1 border-t border-gray-100 dark:border-white/5">
-                        <button onclick="toggleTheme()" class="w-full flex justify-between items-center p-3 bg-gray-50 dark:bg-white/5 rounded-lg group border border-gray-100 dark:border-white/5">
-                            <span class="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2"><i class="ph-fill ph-moon-stars text-lg"></i> Ganti Tema</span>
-                            <div class="w-10 h-6 bg-gray-300 dark:bg-primary rounded-full relative transition-colors duration-300"><div class="absolute top-1 left-1 dark:left-5 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm"></div></div>
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <button onclick="showFavoritesModal(); toggleMenu()" class="flex flex-col items-center justify-center p-2 bg-white dark:bg-black/20 rounded-lg border border-gray-100 dark:border-white/5 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5">
+                            <i class="ph-bold ph-heart text-red-500 text-lg mb-1"></i> Favorit
+                        </button>
+                        <button onclick="showHistoryModal(); toggleMenu()" class="flex flex-col items-center justify-center p-2 bg-white dark:bg-black/20 rounded-lg border border-gray-100 dark:border-white/5 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5">
+                            <i class="ph-bold ph-clock-counter-clockwise text-blue-500 text-lg mb-1"></i> Riwayat
                         </button>
                     </div>
+
+                    <button onclick="logout(); toggleMenu()" class="w-full py-2 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition">
+                        Keluar Akun
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col space-y-1 w-full">
+                <a href="#map" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Peta Digital</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
+                <a href="#kategori" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Sektor Virtual</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
+                <a href="#populer" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Trending</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
+                <a href="#partners" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">In-Flight Partners</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
+                
+                <div class="pt-3 mt-1 border-t border-gray-100 dark:border-white/5 w-full">
+                    <button onclick="toggleTheme()" class="w-full flex justify-between items-center p-3 bg-gray-50 dark:bg-white/5 rounded-lg group border border-gray-100 dark:border-white/5">
+                        <span class="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2"><i class="ph-fill ph-moon-stars text-lg"></i> Ganti Tema</span>
+                        <div class="w-10 h-6 bg-gray-300 dark:bg-primary rounded-full relative transition-colors duration-300"><div class="absolute top-1 left-1 dark:left-5 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm"></div></div>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <main class="max-w-7xl mx-auto px-6 w-full relative pt-24">
 
@@ -710,26 +744,48 @@
         }
 
         // Listener Status Login
+// Listener Status Login (Updated untuk Mobile & Desktop)
         if(auth) {
             auth.onAuthStateChanged((currentUser) => {
+                // Elemen Desktop
                 const btnLogin = document.getElementById('btn-login');
                 const userProfile = document.getElementById('user-profile');
                 
+                // Elemen Mobile (BARU)
+                const mobileBtnLogin = document.getElementById('mobile-btn-login');
+                const mobileUserProfile = document.getElementById('mobile-user-profile');
+                
                 if (currentUser) {
-                    // User Logged In
+                    // --- User Logged In ---
                     user = currentUser;
+
+                    // Update Desktop UI
                     btnLogin.classList.add('hidden');
                     userProfile.classList.remove('hidden');
                     document.getElementById('user-avatar').src = user.photoURL;
                     document.getElementById('user-name').innerText = user.displayName;
                     
-                    // Cek Badge (Gamifikasi Sederhana)
+                    // Update Mobile UI
+                    if(mobileBtnLogin) mobileBtnLogin.classList.add('hidden');
+                    if(mobileUserProfile) {
+                        mobileUserProfile.classList.remove('hidden');
+                        document.getElementById('mobile-user-avatar').src = user.photoURL;
+                        document.getElementById('mobile-user-name').innerText = user.displayName;
+                    }
+
+                    // Cek Badge
                     checkBadges(user.uid);
                 } else {
-                    // User Logged Out
+                    // --- User Logged Out ---
                     user = null;
+
+                    // Update Desktop UI
                     btnLogin.classList.remove('hidden');
                     userProfile.classList.add('hidden');
+
+                    // Update Mobile UI
+                    if(mobileBtnLogin) mobileBtnLogin.classList.remove('hidden');
+                    if(mobileUserProfile) mobileUserProfile.classList.add('hidden');
                 }
             });
         }
