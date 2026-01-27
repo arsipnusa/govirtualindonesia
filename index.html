@@ -166,8 +166,8 @@
 </head>
 <body class="antialiased selection:bg-secondary selection:text-white dark:selection:text-space overflow-x-hidden">
 
-    <div id="radar-toast" class="fixed bottom-24 right-6 z-[95] hidden transition-all duration-300">
-        <div class="animate-slide-up bg-white/90 dark:bg-[#1e1e20]/90 backdrop-blur-md border border-green-500/30 shadow-2xl rounded-2xl p-4 flex items-center gap-3 w-72 md:w-80 relative overflow-hidden group">
+    <div id="radar-toast" class="fixed bottom-24 right-4 md:right-6 z-[95] hidden transition-all duration-300 w-[90vw] max-w-xs md:w-80">
+        <div class="animate-slide-up bg-white/90 dark:bg-[#1e1e20]/90 backdrop-blur-md border border-green-500/30 shadow-2xl rounded-2xl p-4 flex items-center gap-3 relative overflow-hidden group">
             <div class="absolute -left-4 top-0 bottom-0 w-1 bg-green-500 rounded-full"></div>
             <div class="w-10 h-10 rounded-full bg-green-500/10 text-green-500 flex items-center justify-center shrink-0 animate-pulse">
                 <i class="ph-fill ph-map-pin text-xl"></i>
@@ -583,9 +583,9 @@
         </div>
     </div>
 
-<div id="radar-widget" class="fixed bottom-6 right-6 z-[90] flex flex-col items-end gap-3 pointer-events-none">
+    <div id="radar-widget" class="fixed bottom-6 right-4 md:right-6 z-[90] flex flex-col items-end gap-3 pointer-events-none">
         
-        <div id="radar-panel" class="pointer-events-auto hidden w-80 bg-white/90 dark:bg-[#12121a]/90 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 origin-bottom-right transform scale-95 opacity-0">
+        <div id="radar-panel" class="pointer-events-auto hidden w-[85vw] md:w-80 max-w-xs bg-white/90 dark:bg-[#12121a]/90 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 origin-bottom-right transform scale-95 opacity-0">
             <div class="p-5 relative overflow-hidden">
                 <div class="flex justify-between items-start mb-4 relative z-10">
                     <div>
