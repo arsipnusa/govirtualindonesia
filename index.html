@@ -1297,27 +1297,38 @@
         ];
 
         // LOGIC BARU: LOAD SEMUA CSV KATEGORI
+// LOGIC OPTIMASI: LOAD SEMUA CSV SECARA PARALEL (Jauh Lebih Cepat)
         async function loadAllCategories() {
-            console.log("Memulai sinkronisasi kategori...");
-            for (let cat of categories) {
+            console.log("Memulai sinkronisasi kategori (Mode Paralel)...");
+            
+            // Kita buat array "janji" (promises) untuk mengambil semua data sekaligus
+            const fetchPromises = categories.map(async (cat) => {
                 const url = SHEET_URLS[cat.id];
-                if(url && !url.includes('LINK_CSV')) {
-                    const countEl = document.getElementById(`count-${cat.id}`);
+                const countEl = document.getElementById(`count-${cat.id}`);
+                
+                if (url && !url.includes('LINK_CSV')) {
                     if(countEl) countEl.innerText = "Memuat...";
-
+                    
+                    // Fetch data
                     const items = await fetchCSV(url);
+                    
+                    // Simpan data ke object kategori
                     cat.items = items;
                     cat.count = items.length;
 
+                    // Update UI angka
                     if(countEl) countEl.innerText = `${items.length} Lokasi`;
                 } else {
-                     const countEl = document.getElementById(`count-${cat.id}`);
-                     if(countEl) countEl.innerText = "Segera Hadir";
+                    if(countEl) countEl.innerText = "Segera Hadir";
                 }
-            }
+            });
+
+            // Tunggu sampai SEMUA request selesai bersamaan
+            await Promise.all(fetchPromises);
+            
+            console.log("Semua kategori berhasil dimuat.");
             updateSearchIndex();
         }
-
         const popularTours = [
             { name: "Labuan Bajo", loc: "Nusa Tenggara Timur", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQSUnKtSvgEWMI-wQUXnHpM1T3M123dvmmExkG_Bnna37l40XVsPZDky2KpupptEyU8zek0xqQOlrf7SOG4KQ4ixng&s=19", link: "https://govirtual.id/virtual-tour/labuan_bajo/", lat: -8.453, lng: 119.873 },
             { name: "Kota Bogor", loc: "Jawa Barat", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQrLzjKfi2JYhBvz5v5tCgYxemJtzG1-HZujFKP1AtJ2Gy3ZjaIZrOMqK9Eyc2LriPfLPqSMO68IU1RzVUrq0prXWI&s=19", link: "https://bogor.govirtual.id/tourism/", lat: -6.597, lng: 106.799 },
@@ -1347,7 +1358,8 @@
             catGrid.innerHTML += `
                 <div onclick="openModal('${cat.id}')" class="group relative overflow-hidden rounded-xl p-6 hover:shadow-2xl transition-all duration-500 cursor-pointer ${cat.span} h-full min-h-[220px]">
                     <div class="absolute inset-0 bg-gray-200 dark:bg-cardDark">
-                        <img src="${cat.bg}?q=80&w=800&auto=format" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        // Tambahkan loading="lazy"
+<img src="${cat.bg}?q=80&w=800&auto=format" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 group-hover:opacity-90 transition-opacity"></div>
                     </div>
                     <div class="relative z-10 flex flex-col justify-end h-full">
@@ -1639,7 +1651,7 @@
         document.getElementById('tour-grid').innerHTML = popularTours.map(tour => `
             <div onclick="visitTour('${tour.link}', '${tour.name}', '${tour.loc}')" class="bg-white dark:bg-cardDark border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-500 group reveal cursor-pointer">
                 <div class="h-64 overflow-hidden relative">
-                    <img src="${tour.img}?q=80&w=500&auto=format" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+                    <img src="${tour.img}?q=80&w=500&auto=format" loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
                     <div class="absolute bottom-4 left-4 text-white"><h3 class="text-2xl font-bold mb-1 drop-shadow-lg">${tour.name}</h3><div class="flex items-center text-gray-200 text-sm drop-shadow-md"><i class="ph-fill ph-map-pin mr-1 text-primary"></i> ${tour.loc}</div></div>
                 </div>
                 <div class="p-6"><button class="w-full py-3 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-primary hover:text-white font-bold transition-all flex items-center justify-center gap-2 text-gray-900 dark:text-white">Mulai Jelajah</button></div>
