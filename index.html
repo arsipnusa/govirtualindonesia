@@ -620,63 +620,65 @@
         </div>
     </div>
 
-<div id="radar-widget" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center gap-4 w-full max-w-md pointer-events-none">
+<div id="radar-widget" class="fixed z-[90] flex flex-col gap-3 pointer-events-none transition-all duration-500
+        /* POSISI MOBILE: Nempel Kiri-Kanan (Margin 1rem), Tengah Bawah */
+        bottom-6 inset-x-4 items-center
+        /* POSISI DESKTOP: Reset Inset, Pojok Kanan Bawah, Lebar Otomatis */
+        md:inset-x-auto md:right-8 md:bottom-8 md:items-end md:w-auto">
         
-        <div id="radar-panel" class="pointer-events-auto hidden w-[90%] bg-white/90 dark:bg-[#12121a]/90 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) origin-bottom transform translate-y-4 opacity-0">
-            <div class="p-5 relative">
-                <div class="flex justify-between items-center mb-4 border-b border-gray-100 dark:border-white/5 pb-3">
+        <div id="radar-panel" class="pointer-events-auto hidden w-full md:w-80 bg-white/90 dark:bg-[#12121a]/90 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) opacity-0 transform translate-y-4 origin-bottom md:origin-bottom-right ring-1 ring-black/5">
+            <div class="p-4 relative">
+                <div class="flex justify-between items-start mb-3 pb-3 border-b border-gray-100 dark:border-white/5">
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary animate-pulse">
+                        <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary animate-pulse shrink-0">
                             <i class="ph-fill ph-radar text-lg"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-base text-gray-900 dark:text-white leading-none">Radar Area</h3>
-                            <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Mendeteksi radius 5km</p>
+                            <h3 class="font-bold text-sm text-gray-900 dark:text-white leading-tight">Radar Area</h3>
+                            <p class="text-[10px] text-gray-500 dark:text-gray-400">Radius 5km</p>
                         </div>
                     </div>
-                    <button onclick="toggleRadar()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-red-500 transition"><i class="ph-bold ph-x"></i></button>
+                    <button onclick="toggleRadar()" class="text-gray-400 hover:text-red-500 transition p-1"><i class="ph-bold ph-x"></i></button>
                 </div>
 
-                <div id="radar-scanning" class="flex flex-col items-center justify-center py-4 text-center">
-                    <div class="relative w-20 h-20 mb-3 flex items-center justify-center">
+                <div id="radar-scanning" class="flex flex-col items-center justify-center py-2 text-center">
+                    <div class="relative w-16 h-16 mb-2 flex items-center justify-center">
                         <div class="radar-circle w-full h-full border-secondary"></div>
                         <div class="radar-circle w-full h-full border-primary animation-delay-500"></div>
-                        <i class="ph-fill ph-navigation-arrow text-2xl text-gray-900 dark:text-white z-10"></i>
+                        <i class="ph-fill ph-navigation-arrow text-xl text-gray-900 dark:text-white z-10"></i>
                     </div>
-                    <p id="radar-status-text" class="text-xs font-bold text-gray-900 dark:text-white animate-pulse">Mencari sinyal GPS...</p>
-                    <p id="radar-coords" class="text-[10px] font-mono text-gray-400 mt-1">Menunggu izin lokasi...</p>
+                    <p id="radar-status-text" class="text-xs font-bold text-gray-900 dark:text-white animate-pulse">Memindai...</p>
                 </div>
 
-                <div id="radar-result" class="hidden">
-                    <div class="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl p-3 flex items-center gap-3">
+                <div id="radar-result" class="hidden animate-slide-up">
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 border border-green-200 dark:border-green-500/20 rounded-xl p-3 flex items-center gap-3">
                         <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white shrink-0 shadow-lg shadow-green-500/20">
-                            <i class="ph-bold ph-map-pin"></i>
+                            <i class="ph-bold ph-map-pin text-xl"></i>
                         </div>
-                        <div class="flex-1 min-w-0 text-left">
-                            <p class="text-[10px] uppercase font-bold text-green-600 dark:text-green-400 tracking-wider">Ditemukan</p>
-                            <h4 id="radar-location-name" class="font-bold text-gray-900 dark:text-white text-sm truncate">Nama Lokasi</h4>
+                        <div class="flex-1 min-w-0"> <p class="text-[10px] uppercase font-bold text-green-600 dark:text-green-400 tracking-wider mb-0.5">Ditemukan</p>
+                            <h4 id="radar-location-name" class="font-bold text-gray-900 dark:text-white text-sm truncate">Nama Lokasi Panjang...</h4>
                         </div>
-                        <a id="radar-link" href="#" target="_blank" class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg transition shadow-lg whitespace-nowrap">
+                        <a id="radar-link" href="#" target="_blank" class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg transition shadow-md whitespace-nowrap shrink-0">
                             Buka
                         </a>
                     </div>
                 </div>
 
                 <div id="radar-empty" class="hidden text-center py-2">
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Tidak ada virtual tour di dekatmu.</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 italic">Belum ada lokasi di dekatmu.</p>
                 </div>
             </div>
         </div>
 
-        <button onclick="toggleRadar()" id="radar-btn" class="pointer-events-auto group relative flex items-center gap-3 bg-[#1e1e20] dark:bg-white text-white dark:text-black px-6 py-3.5 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 border border-white/10 dark:border-black/5">
-            <div class="absolute inset-0 rounded-full bg-gradient-to-r from-primary/50 to-secondary/50 blur-lg opacity-50 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+        <button onclick="toggleRadar()" id="radar-btn" class="pointer-events-auto group relative flex items-center justify-center gap-2.5 bg-[#1e1e20] dark:bg-white text-white dark:text-black px-5 py-3 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 border border-white/10 dark:border-black/5 ring-4 ring-black/5 dark:ring-white/10">
             
             <i class="ph-fill ph-broadcast text-xl animate-pulse text-secondary dark:text-primary"></i>
-            <span class="font-bold tracking-wide text-sm">Scan Sekitar</span>
             
-            <span class="flex h-2 w-2 relative">
+            <span class="font-bold tracking-wide text-sm whitespace-nowrap">Scan Sekitar</span>
+            
+            <span class="flex h-2.5 w-2.5 relative">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border-2 border-[#1e1e20] dark:border-white"></span>
             </span>
         </button>
     </div>
