@@ -583,7 +583,7 @@
         </div>
     </div>
 
-    <div id="radar-widget" class="fixed bottom-6 right-6 z-[90] flex flex-col items-end gap-3 pointer-events-none">
+<div id="radar-widget" class="fixed bottom-6 right-6 z-[90] flex flex-col items-end gap-3 pointer-events-none">
         
         <div id="radar-panel" class="pointer-events-auto hidden w-80 bg-white/90 dark:bg-[#12121a]/90 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 origin-bottom-right transform scale-95 opacity-0">
             <div class="p-5 relative overflow-hidden">
@@ -627,8 +627,10 @@
 
         <button onclick="toggleRadar()" id="radar-btn" class="pointer-events-auto group relative w-14 h-14 bg-gradient-to-r from-secondary to-primary rounded-full shadow-2xl flex items-center justify-center text-white transition-transform hover:scale-110 active:scale-95">
             <span class="absolute inset-0 rounded-full bg-white/30 hidden md:block animate-radar-ping opacity-75"></span>
+            
             <i class="ph-fill ph-broadcast text-2xl relative z-10 group-hover:rotate-180 transition-transform duration-500"></i>
-            <span class="absolute right-full mr-3 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">Scan Area</span>
+            
+            <span class="absolute right-full mr-3 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap hidden md:block">Scan Area</span>
         </button>
     </div>
 
