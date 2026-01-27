@@ -9,7 +9,6 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -1186,11 +1185,6 @@
                 });
 
                 animateValue("visitor-count", 0, monthlyCount, 2000);
-                window.chartDataCounts = counts;
-                window.chartDataLabels = dateObjects.map(d => ['Min','Sen','Sel','Rab','Kam','Jum','Sab'][d.getDay()]);
-                
-                const isDark = document.documentElement.classList.contains('dark');
-                renderDynamicChart(isDark ? 'dark' : 'light');
 
             } catch (e) { console.error("Stats Error:", e); }
         }
@@ -1332,7 +1326,7 @@
                             sub: item.loc + ' • ' + cat.name, 
                             icon: 'ph-navigation-arrow', 
                             action: 'link',          
-                            link: item.url           
+                            link: item.url            
                         });
                     });
                 }
@@ -1534,25 +1528,6 @@
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
         renderDefault();
 
-        // --- CHART & MAP RENDERERS ---
-        function renderDynamicChart(theme) {
-            const ctx = document.getElementById('myChart'); if(!ctx) return;
-            if (chartInstance) chartInstance.destroy();
-            
-            const counts = window.chartDataCounts || [10, 20, 15, 30, 25, 40, 35];
-            const labels = window.chartDataLabels || ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
-
-            const color = theme === 'dark' ? '#00d4ff' : '#7000ff';
-            const gridColor = theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
-            const bgColor = theme === 'dark' ? 'rgba(0, 212, 255, 0.1)' : 'rgba(112, 0, 255, 0.1)';
-
-            chartInstance = new Chart(ctx, {
-                type: 'line',
-                data: { labels: labels, datasets: [{ label: 'Visitor', data: counts, borderColor: color, backgroundColor: bgColor, fill: true, tension: 0.4 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: gridColor } }, y: { grid: { color: gridColor } } } }
-            });
-        }
-
         // --- INIT ALL ---
         window.onload = function() {
             typeWriter("typewriter-1", "Virtual Reality", 50, function() {
@@ -1596,7 +1571,7 @@
             // SYSTEM INIT
             loadAllCategories(); // MEMANGGIL FUNGSI BARU
             initBackgroundRadar(); 
-            sendVisitorHit();      
+            sendVisitorHit();       
             fetchVisitorStats();   
         };
 
@@ -1620,7 +1595,6 @@
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
             updateMapTiles(isDark ? 'dark' : 'light');
-            renderDynamicChart(isDark ? 'dark' : 'light');
         }
         function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
         const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }); }, { threshold: 0.1 });
