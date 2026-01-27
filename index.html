@@ -193,6 +193,7 @@
                     <a href="#map" class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition">PETA</a>
                     <a href="#kategori" class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition">SEKTOR</a>
                     <a href="#populer" class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition">TRENDING</a>
+                    <a href="#pilihan-warga" class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition">PILIHAN WARGA</a>
                     
                     <div class="h-4 w-px bg-gray-300 dark:bg-white/20"></div>
                     <button onclick="toggleTheme()" class="text-lg text-gray-500 dark:text-yellow-400 hover:scale-110 transition">
@@ -269,7 +270,7 @@
                     <a href="#map" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Peta Digital</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
                     <a href="#kategori" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Sektor Virtual</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
                     <a href="#populer" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Trending</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
-                    
+                    <a href="#pilihan-warga" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Pilihan Warga</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
                     <a href="#partners" onclick="toggleMenu()" class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition group"><span class="font-semibold text-gray-700 dark:text-gray-200 text-sm">In-Flight Partners</span><i class="ph-bold ph-caret-right text-gray-400 group-hover:text-primary dark:group-hover:text-white"></i></a>
                     <div class="pt-3 mt-1 border-t border-gray-100 dark:border-white/5">
                         <button onclick="toggleTheme()" class="w-full flex justify-between items-center p-3 bg-gray-50 dark:bg-white/5 rounded-lg group border border-gray-100 dark:border-white/5">
@@ -366,13 +367,24 @@
         <section id="populer" class="py-24 border-t border-gray-200 dark:border-white/5">
             <div class="text-center mb-16 reveal">
                 <span class="text-secondary font-bold tracking-wider uppercase text-sm">Pilihan Komunitas</span>
-                <h2 class="text-4xl font-bold text-gray-900 dark:text-white mt-2">6 Destinasi Terbaik Minggu Ini 🔥</h2>
+                <h2 class="text-4xl font-bold text-gray-900 dark:text-white mt-2">Destinasi Terbaik</h2>
                 <p class="text-gray-500 dark:text-gray-400 mt-4">Lokasi pilihan dengan akses virtual terlengkap.</p>
             </div>
             <div id="tour-grid" class="grid md:grid-cols-3 gap-6 reveal"></div>
         </section>
 
-
+        <section id="pilihan-warga" class="py-24 border-t border-gray-200 dark:border-white/5 bg-gray-50 dark:bg-black/20">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center mb-16 reveal">
+                    <span class="text-secondary font-bold tracking-wider uppercase text-sm">Vox Populi</span>
+                    <h2 class="text-4xl font-bold text-gray-900 dark:text-white mt-2">Pilihan Warga Net 🌟</h2>
+                    <p class="text-gray-500 dark:text-gray-400 mt-4">Lokasi dengan ulasan terbaik dari komunitas Govirtual.</p>
+                </div>
+                <div id="top-rated-grid" class="grid md:grid-cols-3 gap-6 reveal">
+                    <div class="col-span-3 text-center text-gray-500 animate-pulse">Sedang mengkurasi ulasan terbaik...</div>
+                </div>
+            </div>
+        </section>
 
         <section id="partners" class="py-24 bg-white dark:bg-cardDark border-t border-gray-200 dark:border-white/5">
             <div class="max-w-7xl mx-auto px-6">
@@ -482,10 +494,76 @@
         </div>
     </footer>
 
+    <div id="detail-modal" class="fixed inset-0 z-[140] hidden flex items-center justify-center px-4">
+        <div id="detail-backdrop" class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity" onclick="closeDetailModal()"></div>
+        <div class="relative w-full max-w-4xl bg-white dark:bg-[#12121a] rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 flex flex-col md:flex-row h-[85vh] md:h-[600px] animate-slide-up">
+            
+            <div class="w-full md:w-2/5 bg-gray-50 dark:bg-black/30 p-8 flex flex-col relative">
+                <button onclick="closeDetailModal()" class="absolute top-4 left-4 md:hidden w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white"><i class="ph-bold ph-arrow-left"></i></button>
+                
+                <div class="mb-6">
+                    <span id="detail-cat" class="text-xs font-bold tracking-widest text-secondary uppercase mb-2 block">KATEGORI</span>
+                    <h2 id="detail-title" class="text-3xl font-extrabold text-gray-900 dark:text-white leading-tight mb-2">Nama Lokasi</h2>
+                    <p id="detail-loc" class="text-gray-500 flex items-center gap-2"><i class="ph-fill ph-map-pin text-primary"></i> Lokasi</p>
+                </div>
+
+                <div class="mb-8">
+                    <div class="flex items-end gap-3 mb-2">
+                        <span id="detail-rating-score" class="text-5xl font-black text-gray-900 dark:text-white">0.0</span>
+                        <div class="mb-2">
+                            <div class="flex text-yellow-400 text-lg" id="detail-stars-display">
+                                </div>
+                            <p class="text-xs text-gray-500 mt-1"><span id="detail-review-count">0</span> Ulasan</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-auto space-y-3">
+                    <button id="btn-start-tour" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-3 group">
+                        <span>Mulai Jelajah</span>
+                        <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                    <button id="btn-fav-detail" class="w-full border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="ph-bold ph-heart"></i> Simpan ke Favorit
+                    </button>
+                </div>
+            </div>
+
+            <div class="w-full md:w-3/5 bg-white dark:bg-[#12121a] flex flex-col">
+                <div class="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center">
+                    <h3 class="font-bold text-lg text-gray-900 dark:text-white">Ulasan Pengunjung</h3>
+                    <button onclick="closeDetailModal()" class="hidden md:flex w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 items-center justify-center text-gray-500 hover:text-red-500 transition"><i class="ph-bold ph-x"></i></button>
+                </div>
+                
+                <div id="detail-review-list" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar bg-gray-50/50 dark:bg-black/10">
+                    <div class="text-center py-10 text-gray-400">Belum ada ulasan. Jadilah yang pertama!</div>
+                </div>
+
+                <div class="p-6 border-t border-gray-100 dark:border-white/5 bg-white dark:bg-[#12121a] relative z-20">
+                    <div class="flex flex-col gap-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-gray-400 uppercase">Beri Rating</span>
+                            <div class="flex gap-1 text-2xl text-gray-300" id="input-star-container">
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-400 transition" onclick="setInputRating(1)"></i>
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-400 transition" onclick="setInputRating(2)"></i>
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-400 transition" onclick="setInputRating(3)"></i>
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-400 transition" onclick="setInputRating(4)"></i>
+                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-400 transition" onclick="setInputRating(5)"></i>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <input id="detail-review-input" type="text" placeholder="Tulis pengalamanmu disini..." class="flex-1 bg-gray-100 dark:bg-white/5 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none text-gray-900 dark:text-white">
+                            <button onclick="submitLocationReview()" class="bg-black dark:bg-white text-white dark:text-black w-12 h-12 rounded-xl flex items-center justify-center hover:scale-105 transition shadow-lg"><i class="ph-fill ph-paper-plane-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="category-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center px-4">
         <div id="modal-backdrop" onclick="closeModal()" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 modal-backdrop-enter"></div>
         <div id="modal-content" class="relative w-full max-w-4xl bg-white dark:bg-[#12121a] rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 transition-all duration-500 ease-out modal-content-enter flex flex-col max-h-[85vh]">
-            
             <div class="relative p-8 md:p-10 bg-gray-50 dark:bg-white/5 shrink-0">
                 <button onclick="closeModal()" class="absolute top-6 right-6 w-10 h-10 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-red-50 transition-all z-10 shadow-sm"><i class="ph-bold ph-x text-lg"></i></button>
                 <div class="flex items-start gap-6">
@@ -497,37 +575,12 @@
                     </div>
                 </div>
             </div>
-
             <div class="px-8 md:px-10 pt-4 pb-0 bg-white dark:bg-[#12121a] border-b border-gray-100 dark:border-white/5 hidden">
-                <div id="modal-tabs" class="flex gap-3 overflow-x-auto no-scrollbar pb-4">
-                    </div>
+                <div id="modal-tabs" class="flex gap-3 overflow-x-auto no-scrollbar pb-4"></div>
             </div>
-
             <div class="p-8 md:p-10 overflow-y-auto modal-scroll bg-white dark:bg-[#12121a] flex-1">
-                <div id="modal-grid-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    </div>
-                
-                <div id="review-section" class="mt-10 border-t border-gray-100 dark:border-white/10 pt-8 hidden">
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Ulasan Komunitas</h3>
-                    <div id="review-list" class="space-y-3 mb-6">
-                        <p class="text-sm text-gray-500 italic">Belum ada ulasan.</p>
-                    </div>
-                    <div id="review-form" class="bg-gray-50 dark:bg-white/5 p-4 rounded-xl">
-                        <textarea id="review-input" class="w-full bg-transparent border border-gray-200 dark:border-white/20 rounded-lg p-3 text-sm focus:outline-none focus:border-primary text-gray-900 dark:text-white" rows="3" placeholder="Bagikan pengalaman virtualmu..."></textarea>
-                        <div class="flex justify-between items-center mt-3">
-                            <div class="flex gap-1 text-yellow-400 text-lg" id="star-container">
-                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300" onclick="setRating(1)"></i>
-                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300" onclick="setRating(2)"></i>
-                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300" onclick="setRating(3)"></i>
-                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300" onclick="setRating(4)"></i>
-                                <i class="ph-fill ph-star cursor-pointer hover:text-yellow-300" onclick="setRating(5)"></i>
-                            </div>
-                            <button id="btn-submit-review" onclick="submitReview()" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary/80 transition">Kirim Ulasan</button>
-                        </div>
-                    </div>
-                </div>
+                <div id="modal-grid-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
-
             <div class="p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-black/20 text-center shrink-0">
                 <button onclick="closeModal(); setTimeout(() => window.location.href='#map', 300)" class="text-primary font-bold hover:underline">
                     Jelajahi Peta Lengkap <i class="ph-bold ph-arrow-right ml-1"></i>
@@ -539,106 +592,54 @@
     <div id="favorites-modal" class="fixed inset-0 z-[130] hidden flex items-center justify-center px-4">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('favorites-modal').classList.add('hidden')"></div>
         <div class="relative bg-white dark:bg-[#1e1e20] w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 animate-slide-up flex flex-col max-h-[80vh]">
-            
             <div class="p-6 border-b border-gray-100 dark:border-white/10 flex justify-between items-center">
-                <h3 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <i class="ph-fill ph-heart text-red-500"></i> Koleksi Favorit
-                </h3>
-                <button onclick="document.getElementById('favorites-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-red-500 transition">
-                    <i class="ph-bold ph-x"></i>
-                </button>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2"><i class="ph-fill ph-heart text-red-500"></i> Koleksi Favorit</h3>
+                <button onclick="document.getElementById('favorites-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-red-500 transition"><i class="ph-bold ph-x"></i></button>
             </div>
-
-            <div class="p-6 overflow-y-auto modal-scroll">
-                <div id="favorites-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="col-span-full text-center py-10">
-                        <i class="ph-duotone ph-heart-break text-4xl text-gray-300 mb-2"></i>
-                        <p class="text-gray-500">Belum ada lokasi favorit.</p>
-                    </div>
-                </div>
-            </div>
+            <div class="p-6 overflow-y-auto modal-scroll"><div id="favorites-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div></div>
         </div>
     </div>
 
     <div id="history-modal" class="fixed inset-0 z-[130] hidden flex items-center justify-center px-4">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('history-modal').classList.add('hidden')"></div>
         <div class="relative bg-white dark:bg-[#1e1e20] w-full max-w-md rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 animate-slide-up flex flex-col max-h-[80vh]">
-            
             <div class="p-6 border-b border-gray-100 dark:border-white/10 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <i class="ph-fill ph-clock-counter-clockwise text-blue-500"></i> Riwayat Jelajah
-                </h3>
-                <button onclick="document.getElementById('history-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-red-500 transition">
-                    <i class="ph-bold ph-x"></i>
-                </button>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2"><i class="ph-fill ph-clock-counter-clockwise text-blue-500"></i> Riwayat Jelajah</h3>
+                <button onclick="document.getElementById('history-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-red-500 transition"><i class="ph-bold ph-x"></i></button>
             </div>
-
-            <div class="p-0 overflow-y-auto modal-scroll">
-                <div id="history-list" class="divide-y divide-gray-100 dark:divide-white/5">
-                    <div class="p-6 text-center">
-                        <p class="text-gray-500 text-sm">Belum ada riwayat perjalanan.</p>
-                    </div>
-                </div>
-            </div>
+            <div class="p-0 overflow-y-auto modal-scroll"><div id="history-list" class="divide-y divide-gray-100 dark:divide-white/5"></div></div>
         </div>
     </div>
 
     <div id="radar-widget" class="fixed bottom-6 right-4 md:right-6 z-[90] flex flex-col items-end gap-3 pointer-events-none">
-        
         <div id="radar-panel" class="pointer-events-auto hidden w-[85vw] md:w-80 max-w-xs bg-white/90 dark:bg-[#12121a]/90 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 origin-bottom-right transform scale-95 opacity-0">
             <div class="p-5 relative overflow-hidden">
                 <div class="flex justify-between items-start mb-4 relative z-10">
-                    <div>
-                        <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2"><i class="ph-fill ph-radar text-secondary"></i> Radar Area</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Arsip Nusa & Govirtual</p>
-                    </div>
+                    <div><h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2"><i class="ph-fill ph-radar text-secondary"></i> Radar Area</h3><p class="text-xs text-gray-500 dark:text-gray-400">Arsip Nusa & Govirtual</p></div>
                     <button onclick="toggleRadar()" class="text-gray-400 hover:text-red-500 transition"><i class="ph-bold ph-x"></i></button>
                 </div>
-
                 <div id="radar-scanning" class="flex flex-col items-center justify-center py-6 text-center">
-                    <div class="relative w-24 h-24 mb-4 flex items-center justify-center">
-                        <div class="radar-circle w-full h-full"></div>
-                        <div class="radar-circle w-full h-full"></div>
-                        <div class="radar-circle w-full h-full"></div>
-                        <i class="ph-fill ph-navigation-arrow text-3xl text-secondary z-10"></i>
-                    </div>
-                    <p id="radar-status-text" class="text-sm font-medium text-gray-600 dark:text-gray-300 animate-pulse">Menunggu Sinyal GPS...</p>
-                    <p id="radar-coords" class="text-[10px] font-mono text-gray-400 mt-2">Pastikan lokasi aktif</p>
+                    <div class="relative w-24 h-24 mb-4 flex items-center justify-center"><div class="radar-circle w-full h-full"></div><div class="radar-circle w-full h-full"></div><div class="radar-circle w-full h-full"></div><i class="ph-fill ph-navigation-arrow text-3xl text-secondary z-10"></i></div>
+                    <p id="radar-status-text" class="text-sm font-medium text-gray-600 dark:text-gray-300 animate-pulse">Menunggu Sinyal GPS...</p><p id="radar-coords" class="text-[10px] font-mono text-gray-400 mt-2">Pastikan lokasi aktif</p>
                 </div>
-
                 <div id="radar-result" class="hidden">
                     <div class="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl p-4 text-center">
-                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white mx-auto mb-3 shadow-lg shadow-green-500/30">
-                            <i class="ph-fill ph-check text-2xl"></i>
-                        </div>
-                        <h4 class="font-bold text-gray-900 dark:text-white mb-1">Lokasi Ditemukan!</h4>
-                        <p id="radar-location-name" class="text-sm text-green-600 dark:text-green-400 font-medium mb-4">Nama Lokasi</p>
-                        <a id="radar-link" href="#" target="_blank" class="block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg text-sm transition-all shadow-lg hover:shadow-green-500/25">
-                            Buka Virtual Tour
-                        </a>
+                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white mx-auto mb-3 shadow-lg shadow-green-500/30"><i class="ph-fill ph-check text-2xl"></i></div>
+                        <h4 class="font-bold text-gray-900 dark:text-white mb-1">Lokasi Ditemukan!</h4><p id="radar-location-name" class="text-sm text-green-600 dark:text-green-400 font-medium mb-4">Nama Lokasi</p>
+                        <a id="radar-link" href="#" target="_blank" class="block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg text-sm transition-all shadow-lg hover:shadow-green-500/25">Buka Virtual Tour</a>
                     </div>
                 </div>
-
-                <div id="radar-empty" class="hidden text-center py-4">
-                    <p class="text-sm text-red-500 dark:text-red-400 italic">Belum ada konten di titik Anda.</p>
-                </div>
+                <div id="radar-empty" class="hidden text-center py-4"><p class="text-sm text-red-500 dark:text-red-400 italic">Belum ada konten di titik Anda.</p></div>
             </div>
         </div>
-
         <button onclick="toggleRadar()" id="radar-btn" class="pointer-events-auto group relative w-14 h-14 bg-gradient-to-r from-secondary to-primary rounded-full shadow-2xl flex items-center justify-center text-white transition-transform hover:scale-110 active:scale-95">
-            <span class="absolute inset-0 rounded-full bg-white/30 hidden md:block animate-radar-ping opacity-75"></span>
-            
-            <i class="ph-fill ph-broadcast text-2xl relative z-10 group-hover:rotate-180 transition-transform duration-500"></i>
-            
+            <span class="absolute inset-0 rounded-full bg-white/30 hidden md:block animate-radar-ping opacity-75"></span><i class="ph-fill ph-broadcast text-2xl relative z-10 group-hover:rotate-180 transition-transform duration-500"></i>
             <span class="absolute right-full mr-3 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap hidden md:block">Scan Area</span>
         </button>
     </div>
 
     <script>
-        // ==========================================
-        // === KONFIGURASI LINK SPREADSHEET ===
-        // ==========================================
-        // ISI LINK CSV DI BAWAH INI UNTUK SETIAP KATEGORI
+        // CONFIG SPREADSHEET
         const SHEET_URLS = {
             'infrastruktur': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIvK72ykG4OND6TbQdD_ACi4Sv6TRlq8g9SKh_CNB_IkYKhB_rwlsD97sZpIoJNRB5NfC8Su87kD2p/pub?gid=0&single=true&output=csv',
             'budaya': 'LINK_CSV_BUDAYA_DISINI',
@@ -652,28 +653,14 @@
             'mice': 'LINK_CSV_MICE_DISINI',
             'investasi': 'LINK_CSV_INVESTASI_DISINI'
         };
-
-        // ==========================================
-        // === GLOBAL CONFIG & VARIABLES ===
-        // ==========================================
-        
-        // CSV RADAR (TETAP SEPERTI SEBELUMNYA)
         const RADAR_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2nDXKAPsG_If3CedztM4rgPTZQKh-44TLjOfKkK2rrT_rMp9NLZoaoajAToIWxnsGSz0ujXWqMybt/pub?gid=839999161&single=true&output=csv'; 
         const STATS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2nDXKAPsG_If3CedztM4rgPTZQKh-44TLjOfKkK2rrT_rMp9NLZoaoajAToIWxnsGSz0ujXWqMybt/pub?gid=839999161&single=true&output=csv'; 
-
-        // Google Form Config (Untuk Hit Counter)
         const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse"; 
         const GOOGLE_FORM_ENTRY_ID = "entry.123456"; 
 
-        let watchId = null;
-        let isRadarOpen = false;
-        
-        let cachedLocations = [];      
-        let isRadarDataLoaded = false; 
+        let watchId = null, isRadarOpen = false, cachedLocations = [], isRadarDataLoaded = false; 
 
-        // ==========================================
-        // === FIREBASE CONFIGURATION (WAJIB DIISI) ===
-        // ==========================================
+        // FIREBASE CONFIG
         const firebaseConfig = {
           apiKey: "AIzaSyCvIqMWF1X6wKkg0SYFOj1phP-v-M0ZvGw",
           authDomain: "govirtual-web.firebaseapp.com",
@@ -684,550 +671,260 @@
           measurementId: "G-9DBGEQFTV4"
         };
 
-        // Initialize Firebase
         let auth, db, user = null;
         try {
             firebase.initializeApp(firebaseConfig);
             auth = firebase.auth();
             db = firebase.firestore();
             console.log("Firebase Connected!");
-        } catch (error) {
-            console.warn("Firebase Config belum diisi. Fitur login dinonaktifkan sementara.");
-        }
+        } catch (error) { console.warn("Firebase Config Error"); }
 
-        // --- AUTH LOGIC ---
+        // --- AUTH ---
         function loginWithGoogle() {
-            if(!auth) return alert("Firebase belum dikonfigurasi!");
+            if(!auth) return alert("Firebase Error");
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider).catch(e => alert(e.message));
         }
-
-        function logout() {
-            if(auth) auth.signOut();
-        }
-
-        // Listener Status Login
+        function logout() { if(auth) auth.signOut(); }
         if(auth) {
-            auth.onAuthStateChanged((currentUser) => {
-                const btnLogin = document.getElementById('btn-login');
-                const userProfile = document.getElementById('user-profile');
-                
-                if (currentUser) {
-                    // User Logged In
-                    user = currentUser;
-                    btnLogin.classList.add('hidden');
-                    userProfile.classList.remove('hidden');
+            auth.onAuthStateChanged((u) => {
+                if(u) {
+                    user = u;
+                    document.getElementById('btn-login').classList.add('hidden');
+                    document.getElementById('user-profile').classList.remove('hidden');
                     document.getElementById('user-avatar').src = user.photoURL;
                     document.getElementById('user-name').innerText = user.displayName;
-                    
-                    // Cek Badge (Gamifikasi Sederhana)
-                    checkBadges(user.uid);
                 } else {
-                    // User Logged Out
                     user = null;
-                    btnLogin.classList.remove('hidden');
-                    userProfile.classList.add('hidden');
+                    document.getElementById('btn-login').classList.remove('hidden');
+                    document.getElementById('user-profile').classList.add('hidden');
                 }
             });
         }
 
-        // ==========================================
-        // === LOGIKA REAL FIREBASE (NO MOCK UP) ===
-        // ==========================================
+        // --- DETAIL MODAL LOGIC (NEW CORE FEATURE) ---
+        let currentDetailItem = null;
+        let currentDetailListener = null;
+        let userRatingInput = 5;
 
-        // 1. Simpan Riwayat saat Klik Link
-        function visitTour(url, name, location) {
-            // A. Buka Link dulu agar user tidak menunggu
-            window.open(url, '_blank');
-
-            // B. Simpan ke Database Background (jika login)
-            if(user && db) {
-                db.collection('users').doc(user.uid).collection('history').add({
-                    name: name,
-                    location: location,
-                    url: url,
-                    // Mengambil waktu server agar akurat
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                }).catch(err => console.error("Gagal simpan history:", err));
-            }
-        }
-
-        // 2. Fitur Tambah/Hapus Favorit
-        async function toggleFavorite(name, location, url) {
-            if(!user) {
-                loginWithGoogle(); // Paksa login jika belum
-                return;
-            }
-
-            const favRef = db.collection('users').doc(user.uid).collection('favorites');
+        // Buka Modal Detail
+        function openDetailModal(url, name, loc) {
+            currentDetailItem = { url, name, loc };
+            const modal = document.getElementById('detail-modal');
             
-            // Cek apakah item dengan URL ini sudah ada di favorit?
-            const snapshot = await favRef.where('url', '==', url).get();
+            // Set Info
+            document.getElementById('detail-title').innerText = name;
+            document.getElementById('detail-loc').innerHTML = `<i class="ph-fill ph-map-pin text-primary"></i> ${loc}`;
+            document.getElementById('btn-start-tour').onclick = () => visitTour(url, name, loc);
+            
+            // Set Fav Button
+            document.getElementById('btn-fav-detail').onclick = () => toggleFavorite(name, loc, url);
 
-            if (!snapshot.empty) {
-                // JIKA SUDAH ADA -> HAPUS (Unfavorite)
-                snapshot.forEach(doc => doc.ref.delete());
-                alert(`❌ Dihapus dari favorit: ${name}`);
-                
-                // Refresh list jika modal sedang terbuka
-                if(!document.getElementById('favorites-modal').classList.contains('hidden')) {
-                    showFavoritesModal(); 
-                }
-            } else {
-                // JIKA BELUM ADA -> SIMPAN (Favorite)
-                // Kita pakai gambar placeholder karena CSV tidak punya kolom gambar spesifik
-                const placeholderImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&size=128`;
-                
-                favRef.add({
-                    name: name,
-                    loc: location,
-                    url: url,
-                    img: placeholderImg,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                }).then(() => {
-                    alert(`❤️ Disimpan ke favorit: ${name}`);
-                });
-            }
+            // Reset UI
+            document.getElementById('detail-rating-score').innerText = "0.0";
+            document.getElementById('detail-stars-display').innerHTML = "";
+            document.getElementById('detail-review-count').innerText = "0";
+            document.getElementById('detail-review-list').innerHTML = '<div class="text-center py-10 text-gray-400 animate-pulse">Mengambil data rating...</div>';
+            
+            // Load Reviews & Rating
+            loadLocationReviews(url);
+            
+            modal.classList.remove('hidden');
         }
 
-        // 3. Menampilkan List Favorit (READ dari Database)
-        function showFavoritesModal() {
-            if(!user) return loginWithGoogle();
-
-            const list = document.getElementById('favorites-list');
-            list.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">Memuat data cloud...</div>'; // Loading state
-
-            db.collection('users').doc(user.uid).collection('favorites')
-                .orderBy('timestamp', 'desc') // Urutkan dari yang baru ditambah
-                .get()
-                .then(snapshot => {
-                    if (snapshot.empty) {
-                        list.innerHTML = `
-                            <div class="col-span-full text-center py-10">
-                                <i class="ph-duotone ph-heart-break text-4xl text-gray-300 mb-2"></i>
-                                <p class="text-gray-500">Belum ada lokasi favorit.</p>
-                            </div>`;
-                        return;
-                    }
-
-                    let html = '';
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        html += `
-                            <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 transition group cursor-pointer relative">
-                                <div onclick="window.open('${data.url}', '_blank')" class="flex items-center gap-3 flex-1">
-                                    <div class="w-16 h-16 rounded-lg bg-gray-200 overflow-hidden shrink-0">
-                                        <img src="${data.img}" class="w-full h-full object-cover">
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4>
-                                        <p class="text-xs text-gray-500">${data.loc}</p>
-                                    </div>
-                                </div>
-                                <button onclick="toggleFavorite('${data.name}', '${data.loc}', '${data.url}')" class="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full transition z-10" title="Hapus">
-                                    <i class="ph-fill ph-trash"></i>
-                                </button>
-                            </div>`;
-                    });
-                    list.innerHTML = html;
-                })
-                .catch(err => {
-                    list.innerHTML = `<p class="text-red-500 text-center">Gagal memuat data: ${err.message}</p>`;
-                });
-
-            document.getElementById('favorites-modal').classList.remove('hidden');
+        function closeDetailModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+            if(currentDetailListener) currentDetailListener(); // Stop listening
         }
 
-        // 4. Menampilkan Riwayat (READ dari Database)
-        function showHistoryModal() {
-            if(!user) return loginWithGoogle();
+        function loadLocationReviews(url) {
+            if(currentDetailListener) currentDetailListener();
 
-            const list = document.getElementById('history-list');
-            list.innerHTML = '<div class="p-6 text-center text-gray-400">Memuat riwayat...</div>';
-
-            db.collection('users').doc(user.uid).collection('history')
+            currentDetailListener = db.collection('reviews')
+                .where('locationUrl', '==', url)
                 .orderBy('timestamp', 'desc')
-                .limit(20) // Batasi hanya 20 terakhir agar cepat
-                .get()
-                .then(snapshot => {
-                    if (snapshot.empty) {
-                        list.innerHTML = `<div class="p-6 text-center"><p class="text-gray-500 text-sm">Belum ada riwayat perjalanan.</p></div>`;
-                        return;
-                    }
-
+                .onSnapshot(snapshot => {
+                    const list = document.getElementById('detail-review-list');
+                    let totalRating = 0;
+                    let count = 0;
                     let html = '';
+
                     snapshot.forEach(doc => {
-                        const data = doc.data();
-                        // Format Tanggal (Misal: "27 Jan, 10:30")
-                        const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Baru saja';
-                        
-                        html += `
-                            <div onclick="window.open('${data.url}', '_blank')" class="p-4 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center justify-between group cursor-pointer transition">
-                                <div class="flex items-center gap-3 overflow-hidden">
-                                    <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center shrink-0">
-                                        <i class="ph-bold ph-clock-counter-clockwise"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4>
-                                        <p class="text-xs text-gray-500">${date}</p>
-                                    </div>
-                                </div>
-                                <i class="ph-bold ph-caret-right text-gray-300 group-hover:text-primary transition shrink-0"></i>
-                            </div>`;
-                    });
-                    list.innerHTML = html;
-                });
-
-            document.getElementById('history-modal').classList.remove('hidden');
-        }
-
-        // --- REVIEW SYSTEM ---
-        let currentReviewListener = null; 
-        let currentRating = 5; 
-
-        function loadReviews(categoryId) {
-            const list = document.getElementById('review-list');
-            list.innerHTML = '<p class="text-sm text-gray-500 italic animate-pulse">Menghubungkan ke komunitas...</p>';
-
-            if (currentReviewListener) currentReviewListener();
-
-            currentReviewListener = db.collection('reviews')
-                .where('categoryId', '==', categoryId)
-                .orderBy('timestamp', 'desc')
-                .limit(20)
-                .onSnapshot((snapshot) => {
-                    if (snapshot.empty) {
-                        list.innerHTML = '<p class="text-sm text-gray-500 italic">Belum ada ulasan untuk sektor ini. Jadilah yang pertama!</p>';
-                        return;
-                    }
-
-                    let html = '';
-                    snapshot.forEach((doc) => {
                         const r = doc.data();
-                        let starsHtml = '';
-                        for(let i=1; i<=5; i++) {
-                            starsHtml += i <= r.rating ? '<i class="ph-fill ph-star text-yellow-400 text-xs"></i>' : '<i class="ph-fill ph-star text-gray-300 text-xs"></i>';
-                        }
-                        const timeString = r.timestamp ? new Date(r.timestamp.seconds * 1000).toLocaleDateString('id-ID') : 'Baru saja';
+                        totalRating += r.rating;
+                        count++;
+                        
+                        let stars = '';
+                        for(let i=1; i<=5; i++) stars += i<=r.rating ? '<i class="ph-fill ph-star text-yellow-400 text-xs"></i>' : '<i class="ph-fill ph-star text-gray-300 text-xs"></i>';
+                        const date = r.timestamp ? new Date(r.timestamp.seconds*1000).toLocaleDateString() : 'Baru saja';
 
                         html += `
                         <div class="flex gap-3 animate-slide-up">
-                            <img src="${r.userPhoto || 'https://ui-avatars.com/api/?name=User'}" class="w-8 h-8 rounded-full border border-gray-200 dark:border-white/10 shrink-0">
+                            <img src="${r.userPhoto}" class="w-8 h-8 rounded-full bg-gray-200 shrink-0">
                             <div class="bg-gray-100 dark:bg-white/5 p-3 rounded-lg rounded-tl-none w-full">
-                                <div class="flex justify-between items-start mb-1">
-                                    <span class="font-bold text-xs text-gray-900 dark:text-white">${r.userName}</span>
-                                    <span class="text-[10px] text-gray-400">${timeString}</span>
-                                </div>
-                                <div class="flex mb-1">${starsHtml}</div>
-                                <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${r.text}</p>
+                                <div class="flex justify-between"><span class="font-bold text-xs text-gray-900 dark:text-white">${r.userName}</span><span class="text-[10px] text-gray-400">${date}</span></div>
+                                <div class="flex mb-1">${stars}</div>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">${r.text}</p>
                             </div>
                         </div>`;
                     });
-                    list.innerHTML = html;
-                }, (error) => {
-                    console.error("Error loading reviews:", error);
-                    list.innerHTML = '<p class="text-sm text-red-500">Gagal memuat ulasan. Pastikan Anda online.</p>';
+
+                    if(count === 0) {
+                        list.innerHTML = '<div class="text-center py-10 text-gray-400 italic">Belum ada ulasan. Jadilah yang pertama!</div>';
+                    } else {
+                        list.innerHTML = html;
+                    }
+
+                    // Update Score Header
+                    const avg = count > 0 ? (totalRating / count).toFixed(1) : "0.0";
+                    document.getElementById('detail-rating-score').innerText = avg;
+                    document.getElementById('detail-review-count').innerText = count;
+                    
+                    let bigStars = '';
+                    for(let i=1; i<=5; i++) bigStars += i<=Math.round(avg) ? '<i class="ph-fill ph-star"></i>' : '<i class="ph-fill ph-star text-gray-300 dark:text-gray-700"></i>';
+                    document.getElementById('detail-stars-display').innerHTML = bigStars;
                 });
         }
 
-        function submitReview() {
-            if(!user) {
-                alert("Ups! Anda harus Login dulu untuk memberi ulasan.");
-                loginWithGoogle();
-                return;
+        function setInputRating(n) {
+            userRatingInput = n;
+            const container = document.getElementById('input-star-container').children;
+            for(let i=0; i<5; i++) {
+                container[i].className = i<n ? "ph-fill ph-star cursor-pointer text-yellow-400 transition" : "ph-fill ph-star cursor-pointer text-gray-300 transition";
             }
+        }
 
-            const textInput = document.getElementById('review-input');
-            const text = textInput.value.trim();
-            const btn = document.getElementById('btn-submit-review');
-
-            if(!text) return alert("Tulis sesuatu dulu dong!");
-
-            btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i>';
-            btn.disabled = true;
+        function submitLocationReview() {
+            if(!user) return loginWithGoogle();
+            const text = document.getElementById('detail-review-input').value.trim();
+            if(!text) return alert("Isi ulasan dulu!");
 
             db.collection('reviews').add({
-                categoryId: currentActiveCatId, 
+                locationUrl: currentDetailItem.url,
+                locationName: currentDetailItem.name, // Store name for Top Rated query
+                locationLoc: currentDetailItem.loc,   // Store loc for Top Rated query
                 userId: user.uid,
                 userName: user.displayName,
                 userPhoto: user.photoURL,
+                rating: userRatingInput,
                 text: text,
-                rating: currentRating,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
-                textInput.value = "";
-                setRating(5); 
-                btn.innerHTML = 'Kirim <i class="ph-bold ph-paper-plane-right"></i>';
-                btn.disabled = false;
-            }).catch((error) => {
-                console.error("Error writing review: ", error);
-                alert("Gagal mengirim ulasan: " + error.message);
-                btn.innerHTML = 'Kirim <i class="ph-bold ph-paper-plane-right"></i>';
-                btn.disabled = false;
+                document.getElementById('detail-review-input').value = "";
+                setInputRating(5);
             });
         }
 
-        function setRating(n) {
-            currentRating = n;
-            const stars = document.getElementById('star-container').children;
-            for (let i = 0; i < stars.length; i++) {
-                if (i < n) {
-                    stars[i].className = "ph-fill ph-star cursor-pointer text-yellow-400 transition transform hover:scale-110";
-                } else {
-                    stars[i].className = "ph-fill ph-star cursor-pointer text-gray-300 transition";
-                }
-            }
-        }
-
-        function incrementVisitCount(uid) {
-            // Logic sederhana menaikkan counter visit di Firestore untuk Badges
-            // Jika > 5 visit -> Unlock Badge "Explorer"
-        }
-
-        function checkBadges(uid) {
-            // Fetch data user dari Firestore, cek jumlah visit, update UI Badge
-            // Mockup:
-            document.getElementById('user-badge').innerText = "Explorer";
-        }
-
-        // ==========================================
-        // === FUNGSI FETCH CSV UMUM ===
-        // ==========================================
-        async function fetchCSV(url) {
-            if (!url || url.includes('LINK_CSV')) return []; // Skip jika link belum diisi
-            try {
-                const response = await fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now());
-                const data = await response.text();
-                const rows = data.replace(/\r/g, '').split('\n').slice(1);
-                return rows.map(row => {
-                    const cols = row.split(',').map(item => item.trim());
-                    if(cols.length < 2) return null;
-                    return {
-                        name: cols[1] || "Nama Tidak Diketahui",
-                        loc: cols[2] || "Indonesia",
-                        url: cols[5] || "#"
-                    };
-                }).filter(item => item !== null);
-            } catch (e) {
-                console.error("Gagal load CSV:", url, e);
-                return [];
-            }
-        }
-
-        // ==========================================
-        // === 1. FUNGSI LOAD DATA RADAR ===
-        // ==========================================
-        
-        async function loadRadarData() {
-            if (isRadarDataLoaded) {
-                console.log("Menggunakan data cache (Offline mode)");
-                return; 
-            }
-
-            try {
-                console.log("Mendownload data baru dari Google Sheets...");
-                const response = await fetch(RADAR_CSV_URL + '&t=' + Date.now());
-                const data = await response.text();
-                
-                const rows = data.replace(/\r/g, '').split('\n').slice(1);
-                
-                cachedLocations = rows.map(row => {
-                    const cols = row.split(',').map(item => item.trim());
-                    if (cols.length < 5) return null;
-                    if (isNaN(parseFloat(cols[2])) || isNaN(parseFloat(cols[3]))) return null;
-
-                    return {
-                        name: cols[1],
-                        lat: parseFloat(cols[2]),
-                        lng: parseFloat(cols[3]),
-                        radius: parseFloat(cols[4]),
-                        url: cols[5]
-                    };
-                }).filter(item => item !== null); 
-
-                isRadarDataLoaded = true;
-                console.log("Data berhasil disimpan:", cachedLocations.length, "lokasi.");
-
-            } catch (e) {
-                console.error("Gagal download CSV:", e);
-                const statusText = document.getElementById('radar-status-text');
-                if(statusText) statusText.innerText = "Gagal koneksi database";
-            }
-        }
-
-        // ==========================================
-        // === 2. FUNGSI HITUNG JARAK ===
-        // ==========================================
-
-        function getNearestLocation(userLat, userLng) {
-            for (let loc of cachedLocations) {
-                const distance = calculateDistance(userLat, userLng, loc.lat, loc.lng);
-                if (distance <= loc.radius) {
-                    return { ...loc, distance };
-                }
-            }
-            return null;
-        }
-
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371e3; 
-            const phi1 = lat1 * Math.PI/180;
-            const phi2 = lat2 * Math.PI/180;
-            const dPhi = (lat2-lat1) * Math.PI/180;
-            const dLambda = (lon2-lon1) * Math.PI/180;
-            const a = Math.sin(dPhi/2) * Math.sin(dPhi/2) + Math.cos(phi1) * Math.cos(phi2) * Math.sin(dLambda/2) * Math.sin(dLambda/2);
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        }
-
-        // ==========================================
-        // === 3. LOGIC TOMBOL MANUAL (ACTIVE SCAN) ===
-        // ==========================================
-
-        async function toggleRadar() {
-            const panel = document.getElementById('radar-panel');
-            const toast = document.getElementById('radar-toast');
-            isRadarOpen = !isRadarOpen;
-
-            if(isRadarOpen) {
-                toast.classList.add('hidden'); 
-                panel.classList.remove('hidden');
-                setTimeout(() => { panel.classList.remove('scale-95', 'opacity-0'); panel.classList.add('scale-100', 'opacity-100'); }, 10);
-                
-                document.getElementById('radar-status-text').innerText = "Menyiapkan Data...";
-                await loadRadarData(); 
-                startRadarTracking();
-            } else {
-                panel.classList.remove('scale-100', 'opacity-100'); panel.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => panel.classList.add('hidden'), 300);
-                stopRadarTracking();
-            }
-        }
-
-        function startRadarTracking() {
-            if (!navigator.geolocation) {
-                document.getElementById('radar-status-text').innerText = "GPS Error";
-                return;
-            }
-            document.getElementById('radar-status-text').innerText = "Mencari sinyal GPS...";
-            
-            watchId = navigator.geolocation.watchPosition((position) => {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                document.getElementById('radar-coords').innerText = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-                document.getElementById('radar-status-text').innerText = "Memindai Area...";
-
-                const nearest = getNearestLocation(lat, lng);
-
-                if (nearest) {
-                    showRadarResult(nearest.name, nearest.url);
-                } else {
-                    showRadarEmpty();
-                }
-            }, (err) => {
-                document.getElementById('radar-status-text').innerText = "Izin Ditolak/GPS Mati";
-            }, { enableHighAccuracy: true });
-        }
-
-        function stopRadarTracking() {
-            if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
-        }
-
-        // ==========================================
-        // === 4. LOGIC AUTO SCAN (BACKGROUND) ===
-        // ==========================================
-        
-        async function initBackgroundRadar() {
-            if (!navigator.geolocation) return;
-            await loadRadarData(); 
-
-            navigator.geolocation.getCurrentPosition((position) => {
-                const nearest = getNearestLocation(position.coords.latitude, position.coords.longitude);
-                if (nearest) {
-                    document.getElementById('toast-location').innerText = `Dekat ${nearest.name} (${nearest.distance.toFixed(0)}m)`;
-                    document.getElementById('toast-link').href = nearest.url.startsWith('http') ? nearest.url : `https://${nearest.url}`;
-                    document.getElementById('radar-toast').classList.remove('hidden');
-                }
-            }); 
-        }
-
-        // ==========================================
-        // === 5. STATS SYSTEM & UI LOGIC ===
-        // ==========================================
-
-        function sendVisitorHit() {
-            if (sessionStorage.getItem('visited')) return; 
-            const submitURL = `${GOOGLE_FORM_URL}?${GOOGLE_FORM_ENTRY_ID}=Hit&submit=Submit`;
-            fetch(submitURL, { mode: 'no-cors' }).then(() => sessionStorage.setItem('visited', 'true'));
-        }
-
-        async function fetchVisitorStats() {
-            try {
-                const response = await fetch(STATS_CSV_URL + '&t=' + Date.now());
-                const data = await response.text();
-                const rows = data.split('\n').slice(1);
-                
-                const now = new Date();
-                let monthlyCount = 0;
-                const counts = [0,0,0,0,0,0,0]; 
-                const dateObjects = [];
-                for(let i=6; i>=0; i--) { const d = new Date(); d.setDate(now.getDate()-i); dateObjects.push(d); }
-
-                rows.forEach(row => {
-                    const cols = row.split(',');
-                    if (cols[0]) {
-                        const ts = new Date(cols[0].replace(/"/g, ''));
-                        if (!isNaN(ts)) {
-                            if (ts.getMonth() === now.getMonth() && ts.getFullYear() === now.getFullYear()) monthlyCount++;
-                            for(let j=0; j<7; j++) {
-                                if(ts.getDate() === dateObjects[j].getDate() && ts.getMonth() === dateObjects[j].getMonth()) counts[j]++;
-                            }
+        // --- TOP RATED LOGIC (PILIHAN WARGA) ---
+        // Karena Firestore tidak bisa aggregasi client-side mudah, kita query review rating 5 terbaru
+        function loadTopRated() {
+            const grid = document.getElementById('top-rated-grid');
+            // Query: Get reviews with rating 5, order by date desc, limit 10
+            // Note: This requires composite index (rating desc, timestamp desc)
+            db.collection('reviews')
+                .where('rating', '==', 5)
+                .orderBy('timestamp', 'desc')
+                .limit(20)
+                .get()
+                .then(snapshot => {
+                    const uniqueLocs = new Map();
+                    snapshot.forEach(doc => {
+                        const d = doc.data();
+                        if(!uniqueLocs.has(d.locationUrl)) {
+                            uniqueLocs.set(d.locationUrl, {
+                                name: d.locationName || "Lokasi Virtual",
+                                loc: d.locationLoc || "Indonesia",
+                                url: d.locationUrl,
+                                user: d.userName
+                            });
                         }
+                    });
+
+                    // Ambil 3 teratas unik
+                    const items = Array.from(uniqueLocs.values()).slice(0, 3);
+                    
+                    if(items.length === 0) {
+                        grid.innerHTML = '<div class="col-span-3 text-center text-gray-500 italic">Belum ada data rating tinggi.</div>';
+                        return;
                     }
+
+                    grid.innerHTML = items.map(item => `
+                        <div onclick="openDetailModal('${item.url}', '${item.name}', '${item.loc}')" class="bg-white dark:bg-cardDark border border-yellow-400/30 rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-yellow-500/10 transition-all duration-500 group cursor-pointer relative">
+                            <div class="absolute top-3 right-3 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded shadow-lg z-10"><i class="ph-fill ph-star"></i> 5.0</div>
+                            <div class="h-48 overflow-hidden bg-gray-200 dark:bg-black relative">
+                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-blue-500 text-white text-4xl font-bold opacity-80">
+                                    ${item.name.charAt(0)}
+                                </div>
+                                <div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                    <h3 class="text-white font-bold truncate">${item.name}</h3>
+                                    <p class="text-gray-300 text-xs truncate"><i class="ph-fill ph-map-pin"></i> ${item.loc}</p>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                                    <i class="ph-fill ph-user-circle text-primary"></i> Direkomendasikan oleh <b>${item.user}</b>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
                 });
-
-                animateValue("visitor-count", 0, monthlyCount, 2000);
-                window.chartDataCounts = counts;
-                window.chartDataLabels = dateObjects.map(d => ['Min','Sen','Sel','Rab','Kam','Jum','Sab'][d.getDay()]);
-                
-                const isDark = document.documentElement.classList.contains('dark');
-                renderDynamicChart(isDark ? 'dark' : 'light');
-
-            } catch (e) { console.error("Stats Error:", e); }
         }
 
-        function animateValue(id, start, end, duration) {
-            const obj = document.getElementById(id); if(!obj) return;
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const currentVal = Math.floor(progress * (end - start) + start);
-                obj.innerHTML = currentVal.toLocaleString('id-ID');
-                if (progress < 1) window.requestAnimationFrame(step);
-                else { if (end > 1000) obj.innerHTML = (end / 1000).toFixed(1) + "K"; else obj.innerHTML = end; }
-            };
-            window.requestAnimationFrame(step);
+
+        // --- STANDARD LOGIC ---
+        function visitTour(url, name, location) {
+            window.open(url, '_blank');
+            if(user && db) {
+                db.collection('users').doc(user.uid).collection('history').add({
+                    name: name, location: location, url: url, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+        }
+        async function toggleFavorite(name, location, url) {
+            if(!user) return loginWithGoogle();
+            const favRef = db.collection('users').doc(user.uid).collection('favorites');
+            const snap = await favRef.where('url', '==', url).get();
+            if(!snap.empty) {
+                snap.forEach(d => d.ref.delete());
+                alert("Dihapus dari Favorit");
+                if(!document.getElementById('favorites-modal').classList.contains('hidden')) showFavoritesModal();
+            } else {
+                favRef.add({ name, loc: location, url, img: `https://ui-avatars.com/api/?name=${name}`, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                alert("Disimpan ke Favorit");
+            }
+        }
+        function showFavoritesModal() {
+            if(!user) return loginWithGoogle();
+            const list = document.getElementById('favorites-list');
+            list.innerHTML = 'Loading...';
+            db.collection('users').doc(user.uid).collection('favorites').orderBy('timestamp', 'desc').get().then(s => {
+                if(s.empty) { list.innerHTML='Kosong'; return; }
+                list.innerHTML = s.docs.map(d => { const dt=d.data(); return `
+                    <div onclick="openDetailModal('${dt.url}','${dt.name}','${dt.loc}')" class="flex gap-3 p-3 rounded bg-gray-50 dark:bg-white/5 cursor-pointer">
+                        <img src="${dt.img}" class="w-12 h-12 rounded bg-gray-300">
+                        <div><h4 class="font-bold text-sm dark:text-white">${dt.name}</h4><p class="text-xs text-gray-500">${dt.loc}</p></div>
+                    </div>` 
+                }).join('');
+            });
+            document.getElementById('favorites-modal').classList.remove('hidden');
+        }
+        function showHistoryModal() {
+            if(!user) return loginWithGoogle();
+            const list = document.getElementById('history-list');
+            list.innerHTML = 'Loading...';
+            db.collection('users').doc(user.uid).collection('history').orderBy('timestamp', 'desc').limit(10).get().then(s => {
+                if(s.empty) { list.innerHTML='Kosong'; return; }
+                list.innerHTML = s.docs.map(d => { const dt=d.data(); return `
+                    <div onclick="openDetailModal('${dt.url}','${dt.name}','${dt.location}')" class="p-3 border-b dark:border-white/10 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5">
+                        <h4 class="font-bold text-sm dark:text-white">${dt.name}</h4>
+                        <p class="text-xs text-gray-500">${new Date(dt.timestamp.seconds*1000).toLocaleDateString()}</p>
+                    </div>` 
+                }).join('');
+            });
+            document.getElementById('history-modal').classList.remove('hidden');
         }
 
-        function showRadarResult(name, url) {
-            document.getElementById('radar-scanning').classList.add('hidden');
-            document.getElementById('radar-empty').classList.add('hidden');
-            document.getElementById('radar-result').classList.remove('hidden');
-            document.getElementById('radar-location-name').innerText = name;
-            document.getElementById('radar-link').href = url.startsWith('http') ? url : `https://${url}`;
-        }
-
-        function showRadarEmpty() {
-            document.getElementById('radar-scanning').classList.remove('hidden');
-            document.getElementById('radar-result').classList.add('hidden');
-            document.getElementById('radar-empty').classList.remove('hidden');
-            document.getElementById('radar-status-text').innerText = "Tidak ada lokasi dekat.";
-        }
-
-        // ==========================================
-        // === 6. DATA & SEARCH LOGIC ===
-        // ==========================================
-
+        // --- INIT & UTILS ---
         const categories = [
             { id: 'infrastruktur', name: 'Infrastruktur', icon: 'ph-bridge', count: 0, span: 'md:col-span-2 md:row-span-2', bg: 'https://infopublik.id/assets/upload/headline//FotoJet_-_2024-09-02T235743_108-min_(2).jpg', items: [] },
             { id: 'budaya', name: 'Seni & Budaya', icon: 'ph-paint-brush-broad', count: 0, span: 'md:col-span-1', bg: 'https://www.finansialku.com/wp-content/uploads/2019/05/Sampai-Mancanegara-Lho-Ini-Dia-10-Budaya-Indonesia-Mendunia-04-Tari-Barong-Finansialku.jpg', items: [] },
@@ -1242,28 +939,6 @@
             { id: 'investasi', name: 'Investasi', icon: 'ph-trend-up', count: 0, span: 'md:col-span-1', bg: 'https://cdn.brighton.co.id/Uploads/Images/15775139/QL1wQ6AP/15992-1.webp', items: [] },
         ];
 
-        // LOGIC BARU: LOAD SEMUA CSV KATEGORI
-        async function loadAllCategories() {
-            console.log("Memulai sinkronisasi kategori...");
-            for (let cat of categories) {
-                const url = SHEET_URLS[cat.id];
-                if(url && !url.includes('LINK_CSV')) {
-                    const countEl = document.getElementById(`count-${cat.id}`);
-                    if(countEl) countEl.innerText = "Memuat...";
-
-                    const items = await fetchCSV(url);
-                    cat.items = items;
-                    cat.count = items.length;
-
-                    if(countEl) countEl.innerText = `${items.length} Lokasi`;
-                } else {
-                     const countEl = document.getElementById(`count-${cat.id}`);
-                     if(countEl) countEl.innerText = "Segera Hadir";
-                }
-            }
-            updateSearchIndex();
-        }
-
         const popularTours = [
             { name: "Labuan Bajo", loc: "Nusa Tenggara Timur", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQSUnKtSvgEWMI-wQUXnHpM1T3M123dvmmExkG_Bnna37l40XVsPZDky2KpupptEyU8zek0xqQOlrf7SOG4KQ4ixng&s=19", link: "https://govirtual.id/virtual-tour/labuan_bajo/", lat: -8.453, lng: 119.873 },
             { name: "Kota Bogor", loc: "Jawa Barat", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQrLzjKfi2JYhBvz5v5tCgYxemJtzG1-HZujFKP1AtJ2Gy3ZjaIZrOMqK9Eyc2LriPfLPqSMO68IU1RzVUrq0prXWI&s=19", link: "https://bogor.govirtual.id/tourism/", lat: -6.597, lng: 106.799 },
@@ -1273,287 +948,35 @@
             { name: "Lampung Selatan", loc: "Lampung", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Bakauheni_Port.jpg/1280px-Bakauheni_Port.jpg", link: "https://lampung-selatan.govirtual.id/tourism1/", lat: -5.700, lng: 105.600 }
         ];
 
-        const categoryCopywriting = {
-            'infrastruktur': "Pilar kemajuan bangsa. Saksikan bagaimana beton dan baja dirangkai menjadi nadi kehidupan nusantara.",
-            'pariwisata': "Surga tersembunyi yang menantimu. Dari pantai berpasir putih hingga puncak gunung di atas awan.",
-            'budaya': "Warisan leluhur yang tak lekang waktu. Rasakan detak jantung tradisi dalam setiap gerak dan rupa.",
-            'religi': "Ketenangan dalam keberagaman. Ruang spiritual yang menyatukan hati dan menyejukkan jiwa.",
-            'pemerintahan': "Pusat kendali negara. Mengintip ruang pengambilan keputusan yang membentuk masa depan.",
-            'kesehatan': "Garda terdepan kemanusiaan. Teknologi dan empati yang bersatu demi kehidupan yang lebih baik.",
-            'pendidikan': "Kawah candradimuka masa depan. Tempat lahirnya para pemikir dan pemimpin besar.",
-            'mice': "Panggung dunia. Ruang pertemuan gagasan global yang melahirkan inovasi tanpa batas.",
-            'investasi': "Lahan peluang emas. Dimana visi bertemu dengan potensi ekonomi yang menjanjikan.",
-            'maritim': "Kejayaan di atas ombak. Menjelajahi untaian zamrud khatulistiwa dari sudut pandang samudra.",
-            'warisan': "Saksi bisu sejarah. Menyusuri lorong waktu melalui situs-situs megah masa lampau."
-        };
-
-        // --- RENDER GRID SEKTOR (UPDATED WITH ID FOR COUNTER) ---
-        const catGrid = document.getElementById('category-grid');
-        categories.forEach(cat => {
-            catGrid.innerHTML += `
-                <div onclick="openModal('${cat.id}')" class="group relative overflow-hidden rounded-xl p-6 hover:shadow-2xl transition-all duration-500 cursor-pointer ${cat.span} h-full min-h-[220px]">
-                    <div class="absolute inset-0 bg-gray-200 dark:bg-cardDark">
-                        <img src="${cat.bg}?q=80&w=800&auto=format" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 group-hover:opacity-90 transition-opacity"></div>
-                    </div>
-                    <div class="relative z-10 flex flex-col justify-end h-full">
-                        <div class="mb-auto"><div class="w-12 h-12 rounded-lg bg-white/10 backdrop-blur-md flex items-center justify-center text-white mb-2 group-hover:bg-primary group-hover:text-white transition-colors"><i class="ph ${cat.icon} text-2xl"></i></div></div>
-                        <div class="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                            <h3 class="text-2xl font-bold text-white mb-1">${cat.name}</h3>
-                            <div class="flex items-center gap-2 text-xs font-bold text-secondary uppercase tracking-wider"><span id="count-${cat.id}">Memuat...</span><i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-
-        // --- SEARCH LOGIC (UPDATED WITH DESTINATIONS) ---
-        let allSearchData = [];
-
-        function updateSearchIndex() {
-            let tempSearchData = [];
-
-            // 1. Loop semua kategori
-            categories.forEach(cat => {
-                tempSearchData.push({
-                    type: 'Kategori',
-                    id: cat.id,
-                    name: cat.name,
-                    sub: (cat.items ? cat.items.length : 0) + ' Lokasi Virtual',
-                    icon: cat.icon,
-                    action: 'modal'
-                });
-
-                if (cat.items && cat.items.length > 0) {
-                    cat.items.forEach(item => {
-                        tempSearchData.push({
-                            type: 'Destinasi',       
-                            name: item.name,         
-                            sub: item.loc + ' • ' + cat.name, 
-                            icon: 'ph-navigation-arrow', 
-                            action: 'link',          
-                            link: item.url           
-                        });
-                    });
+        async function loadAllCategories() {
+            for (let cat of categories) {
+                const url = SHEET_URLS[cat.id];
+                if(url && !url.includes('LINK_CSV')) {
+                    const countEl = document.getElementById(`count-${cat.id}`);
+                    if(countEl) countEl.innerText = "...";
+                    const items = await fetchCSV(url);
+                    cat.items = items;
+                    cat.count = items.length;
+                    if(countEl) countEl.innerText = `${items.length} Lokasi`;
                 }
-            });
-
-            popularTours.forEach(t => {
-                tempSearchData.push({
-                    type: 'Trending',
-                    name: t.name,
-                    sub: t.loc,
-                    icon: 'ph-fire',
-                    action: 'link',
-                    link: t.link
-                });
-            });
-
-            allSearchData = tempSearchData;
-            console.log("Database Pencarian Updated:", allSearchData.length, "item siap dicari.");
-        }
-
-        const searchInput = document.getElementById('search-input');
-        const dropdownContainer = document.querySelector('#search-dropdown > div');
-        const modal = document.getElementById('category-modal');
-
-        // ==========================================
-        // === LOGIKA TAB & FILTER MODAL BARU ===
-        // ==========================================
-
-        let currentActiveCatId = null; // Menyimpan ID kategori yg sedang dibuka
-
-        function openModal(categoryId) {
-            currentActiveCatId = categoryId;
-            const catData = categories.find(c => c.id === categoryId);
-            if (!catData) return;
-
-            // 1. Set Info Header
-            document.getElementById('modal-title').innerText = catData.name;
-            document.getElementById('modal-icon').className = `ph-fill ${catData.icon} text-3xl md:text-4xl`;
-            document.getElementById('modal-desc').innerText = categoryCopywriting[categoryId] || "Jelajahi koleksi virtual tour terbaik.";
-            
-            // 2. Buat Daftar Lokasi Unik (Kabupaten) dari Data CSV
-            const uniqueLocs = ['Semua', ...new Set(catData.items.map(item => item.loc))];
-
-            // 3. Render Tombol Tab
-            const tabsContainer = document.getElementById('modal-tabs');
-            
-            if (catData.items.length > 0) {
-                tabsContainer.innerHTML = uniqueLocs.map(loc => {
-                    return `<button onclick="renderModalGrid('${loc}')" 
-                        class="tab-btn px-5 py-2 rounded-full text-sm font-bold border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:border-primary hover:text-primary transition-all whitespace-nowrap" 
-                        data-loc="${loc}">
-                        ${loc}
-                    </button>`;
-                }).join('');
-                
-                tabsContainer.parentElement.classList.remove('hidden');
-                
-                // Show Review Section
-                document.getElementById('review-section').classList.remove('hidden');
-                
-                renderModalGrid('Semua');
-
-                // Load Review from Firebase
-                loadReviews(categoryId);
-
-            } else {
-                tabsContainer.parentElement.classList.add('hidden');
-                document.getElementById('review-section').classList.add('hidden');
-                document.getElementById('modal-grid-content').innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400 italic">Belum ada data untuk kategori ini.</div>`;
             }
-
-            // 4. Animasi Buka Modal
-            const modal = document.getElementById('category-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('modal-backdrop').classList.add('modal-backdrop-active');
-                document.getElementById('modal-content').classList.add('modal-content-active');
-            }, 10);
-            hideDropdownWithDelay();
+            updateSearchIndex();
         }
 
-        function renderModalGrid(filterLoc) {
-            const catData = categories.find(c => c.id === currentActiveCatId);
-            if (!catData) return;
-
-            let displayItems = catData.items;
-            if (filterLoc !== 'Semua') {
-                displayItems = catData.items.filter(item => item.loc === filterLoc);
-            }
-
-            // MODIFIKASI: Gunakan visitTour() untuk handle klik, dan tambah tombol Favorit
-            const gridContent = document.getElementById('modal-grid-content');
-            gridContent.innerHTML = displayItems.map(item => `
-                <div class="relative group animate-slide-up">
-                    <div onclick="visitTour('${item.url}', '${item.name}', '${item.loc}')" class="flex items-center gap-4 p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 hover:bg-white dark:hover:bg-white/10 transition cursor-pointer text-left"> 
-                        <div class="w-12 h-12 rounded-lg bg-white dark:bg-black shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition shrink-0">
-                            <i class="ph-fill ph-goggles text-xl"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">${item.name}</h4>
-                            <p class="text-xs text-gray-500 flex items-center gap-1"><i class="ph-fill ph-map-pin"></i> ${item.loc}</p>
-                        </div>
-                    </div>
-                    <button onclick="toggleFavorite('${item.name.replace(/'/g, "\\'")}', '${item.loc}', '${item.url}')" class="absolute top-2 right-2 p-2 text-gray-400 hover:text-red-500 hover:scale-110 transition z-10" title="Simpan ke Favorit">
-                        <i class="ph-bold ph-heart"></i>
-                    </button>
-                </div>`).join('');
-
-            // Update Style Tombol Tab
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                if(btn.dataset.loc === filterLoc) {
-                    btn.className = "tab-btn px-5 py-2 rounded-full text-sm font-bold bg-black dark:bg-white text-white dark:text-black border border-black dark:border-white transition-all whitespace-nowrap shadow-lg";
-                } else {
-                    btn.className = "tab-btn px-5 py-2 rounded-full text-sm font-bold border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:border-primary hover:text-primary transition-all whitespace-nowrap bg-transparent";
-                }
-            });
+        async function fetchCSV(url) {
+            try {
+                const response = await fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now());
+                const data = await response.text();
+                const rows = data.replace(/\r/g, '').split('\n').slice(1);
+                return rows.map(row => {
+                    const cols = row.split(',').map(item => item.trim());
+                    if(cols.length < 2) return null;
+                    return { name: cols[1] || "Nama Tidak Diketahui", loc: cols[2] || "Indonesia", url: cols[5] || "#" };
+                }).filter(item => item !== null);
+            } catch (e) { return []; }
         }
 
-        function closeModal() {
-            document.getElementById('modal-backdrop').classList.remove('modal-backdrop-active');
-            document.getElementById('modal-content').classList.remove('modal-content-active');
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
-        }
-
-        function showDropdown() { 
-            const d = document.getElementById('search-dropdown'); 
-            d.classList.remove('dropdown-enter'); 
-            d.classList.add('dropdown-active'); 
-        }
-        
-        function hideDropdownWithDelay() { 
-            setTimeout(() => { 
-                const d = document.getElementById('search-dropdown'); 
-                d.classList.remove('dropdown-active'); 
-                d.classList.add('dropdown-enter'); 
-            }, 200); 
-        }
-
-        function renderResults(results) {
-            if (results.length === 0) { dropdownContainer.innerHTML = `<div class="p-4 text-center text-gray-500 text-sm">Tidak ditemukan hasil.</div>`; return; }
-            let html = `<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2 text-left">Hasil Pencarian</p>`; 
-            results.forEach(item => {
-                let iconColor = 'text-gray-400';
-                if(item.type === 'Kategori') iconColor = 'text-purple-400 bg-purple-500/20';
-                else if(item.type === 'Destinasi') iconColor = 'text-green-400 bg-green-500/20';
-                else if(item.type === 'Trending') iconColor = 'text-blue-400 bg-blue-500/20';
-
-                // Modifikasi Action agar menggunakan visitTour untuk Destinasi
-                let clickAction = "";
-                if(item.action === 'modal') clickAction = `openModal('${item.id}')`;
-                else if(item.type === 'Destinasi' || item.type === 'Trending') clickAction = `visitTour('${item.link}', '${item.name}', '${item.sub}')`;
-                else clickAction = `window.open('${item.link}', '_blank')`;
-
-                html += `
-                    <div onclick="${clickAction}" class="search-item flex items-center justify-between p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg ${iconColor} flex items-center justify-center shrink-0"><i class="ph-fill ${item.icon} text-xl"></i></div>
-                            <div class="text-left"> <h4 class="text-gray-200 font-medium text-sm md:text-base line-clamp-1">${item.name}</h4>
-                                <p class="text-gray-500 text-xs">${item.sub}</p>
-                            </div>
-                        </div>
-                        <div class="w-8 h-8 rounded-lg border border-gray-600 flex items-center justify-center text-gray-400 group-hover/item:bg-primary group-hover/item:border-primary group-hover/item:text-white transition-all"><i class="ph-bold ${item.action === 'modal' ? 'ph-cards' : 'ph-arrow-right'}"></i></div>
-                    </div>`;
-            });
-            dropdownContainer.innerHTML = html;
-        }
-
-        function renderDefault() {
-            const defaults = popularTours.slice(0, 3).map(t => ({ type: 'Trending', name: t.name, sub: t.loc, icon: 'ph-fire', link: t.link }));
-            let html = `<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2 text-left">Rekomendasi Populer</p>`; 
-            defaults.forEach(item => {
-                html += `
-                    <div onclick="visitTour('${item.link}', '${item.name}', '${item.sub}')" class="search-item flex items-center justify-between p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center shrink-0"><i class="ph-fill ${item.icon} text-xl"></i></div>
-                            <div class="text-left"> <h4 class="text-gray-200 font-medium text-sm md:text-base">${item.name}</h4>
-                                <p class="text-gray-500 text-xs">${item.sub}</p>
-                            </div>
-                        </div>
-                        <div class="w-8 h-8 rounded-lg border border-gray-600 flex items-center justify-center text-gray-400 group-hover/item:bg-primary group-hover/item:border-primary group-hover/item:text-white transition-all"><i class="ph-bold ph-arrow-up-right"></i></div>
-                    </div>`;
-            });
-            dropdownContainer.innerHTML = html;
-        }
-        
-        searchInput.addEventListener('input', (e) => {
-            const keyword = e.target.value.toLowerCase();
-            if (keyword.length === 0) { renderDefault(); return; }
-            const filtered = allSearchData.filter(item => item.name.toLowerCase().includes(keyword));
-            renderResults(filtered);
-        });
-        
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const firstItem = document.querySelector('.search-item');
-                if (firstItem) { firstItem.click(); searchInput.blur(); }
-            }
-        });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-        renderDefault();
-
-        // --- CHART & MAP RENDERERS ---
-        function renderDynamicChart(theme) {
-            const ctx = document.getElementById('myChart'); if(!ctx) return;
-            if (chartInstance) chartInstance.destroy();
-            
-            const counts = window.chartDataCounts || [10, 20, 15, 30, 25, 40, 35];
-            const labels = window.chartDataLabels || ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
-
-            const color = theme === 'dark' ? '#00d4ff' : '#7000ff';
-            const gridColor = theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
-            const bgColor = theme === 'dark' ? 'rgba(0, 212, 255, 0.1)' : 'rgba(112, 0, 255, 0.1)';
-
-            chartInstance = new Chart(ctx, {
-                type: 'line',
-                data: { labels: labels, datasets: [{ label: 'Visitor', data: counts, borderColor: color, backgroundColor: bgColor, fill: true, tension: 0.4 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: gridColor } }, y: { grid: { color: gridColor } } } }
-            });
-        }
-
-        // --- INIT ALL ---
+        // INIT
         window.onload = function() {
             typeWriter("typewriter-1", "Virtual Reality", 50, function() {
                 typeWriter("typewriter-2", "Redefined A New Era.", 50, function() {
@@ -1565,67 +988,122 @@
                 });
             });
 
-            // NAVBAR OBSERVER
             const navbar = document.getElementById('navbar');
             const heroSection = document.getElementById('hero-section');
             const navObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (!entry.isIntersecting) { navbar.classList.remove('-translate-y-32', 'opacity-0'); } 
-                    else { navbar.classList.add('-translate-y-32', 'opacity-0'); }
+                    if (!entry.isIntersecting) { navbar.classList.remove('-translate-y-32', 'opacity-0'); } else { navbar.classList.add('-translate-y-32', 'opacity-0'); }
                 });
             }, { rootMargin: "-100px 0px 0px 0px", threshold: 0 });
             if(heroSection) navObserver.observe(heroSection);
 
-            // MAP INIT
             const map = L.map('map-canvas').setView([-2.5, 118], 5);
-            window.map = map;
+            updateMapTiles('dark');
             popularTours.forEach(t => {
                 const icon = L.divIcon({ className:'bg-transparent', html:`<div class="custom-marker-container relative w-full h-full flex items-center justify-center group"><div class="pulse-ring"></div><div class="custom-marker-head" style="background-image: url('${t.img}');"></div></div>`, iconSize:[50,50] });
                 const m = L.marker([t.lat, t.lng], {icon}).addTo(map);
-                m.on('mouseover', function() {
-                    document.getElementById('preview-img').src = t.img;
-                    document.getElementById('preview-title').innerText = t.name;
-                    document.getElementById('preview-loc').innerText = t.loc;
-                    document.getElementById('map-preview-card').classList.remove('opacity-0', 'translate-y-4');
-                });
-                m.on('mouseout', function() { document.getElementById('map-preview-card').classList.add('opacity-0', 'translate-y-4'); });
-                m.on('click', () => window.open(t.link));
+                m.on('click', () => openDetailModal(t.link, t.name, t.loc));
             });
-            updateMapTiles('dark');
 
-            // SYSTEM INIT
-            loadAllCategories(); // MEMANGGIL FUNGSI BARU
-            initBackgroundRadar(); 
-            sendVisitorHit();      
-            fetchVisitorStats();   
+            loadAllCategories();
+            initBackgroundRadar();
+            sendVisitorHit();
+            fetchVisitorStats();
+            loadTopRated(); // Load Section Baru
         };
 
-        // --- RENDER GRID 6 DESTINASI ---
+        // --- RENDER GRID ---
+        const catGrid = document.getElementById('category-grid');
+        categories.forEach(cat => {
+            catGrid.innerHTML += `
+                <div onclick="openModal('${cat.id}')" class="group relative overflow-hidden rounded-xl p-6 hover:shadow-2xl transition-all duration-500 cursor-pointer ${cat.span} h-full min-h-[220px]">
+                    <div class="absolute inset-0 bg-gray-200 dark:bg-cardDark"><img src="${cat.bg}?q=80&w=800&auto=format" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 group-hover:opacity-90 transition-opacity"></div></div>
+                    <div class="relative z-10 flex flex-col justify-end h-full"><div class="mb-auto"><div class="w-12 h-12 rounded-lg bg-white/10 backdrop-blur-md flex items-center justify-center text-white mb-2 group-hover:bg-primary group-hover:text-white transition-colors"><i class="ph ${cat.icon} text-2xl"></i></div></div>
+                    <div class="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"><h3 class="text-2xl font-bold text-white mb-1">${cat.name}</h3><div class="flex items-center gap-2 text-xs font-bold text-secondary uppercase tracking-wider"><span id="count-${cat.id}">...</span><i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i></div></div></div>
+                </div>`;
+        });
+        
         document.getElementById('tour-grid').innerHTML = popularTours.map(tour => `
-            <div onclick="visitTour('${tour.link}', '${tour.name}', '${tour.loc}')" class="bg-white dark:bg-cardDark border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-500 group reveal cursor-pointer">
-                <div class="h-64 overflow-hidden relative">
-                    <img src="${tour.img}?q=80&w=500&auto=format" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
-                    <div class="absolute bottom-4 left-4 text-white"><h3 class="text-2xl font-bold mb-1 drop-shadow-lg">${tour.name}</h3><div class="flex items-center text-gray-200 text-sm drop-shadow-md"><i class="ph-fill ph-map-pin mr-1 text-primary"></i> ${tour.loc}</div></div>
-                </div>
-                <div class="p-6"><button class="w-full py-3 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-primary hover:text-white font-bold transition-all flex items-center justify-center gap-2 text-gray-900 dark:text-white">Mulai Jelajah</button></div>
+            <div onclick="openDetailModal('${tour.link}', '${tour.name}', '${tour.loc}')" class="bg-white dark:bg-cardDark border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-500 group reveal cursor-pointer">
+                <div class="h-64 overflow-hidden relative"><img src="${tour.img}?q=80&w=500&auto=format" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700"><div class="absolute bottom-4 left-4 text-white"><h3 class="text-2xl font-bold mb-1 drop-shadow-lg">${tour.name}</h3><div class="flex items-center text-gray-200 text-sm drop-shadow-md"><i class="ph-fill ph-map-pin mr-1 text-primary"></i> ${tour.loc}</div></div></div>
+                <div class="p-6"><button class="w-full py-3 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-primary hover:text-white font-bold transition-all flex items-center justify-center gap-2 text-gray-900 dark:text-white">Lihat Detail & Rating</button></div>
             </div>`).join('');
 
-        // --- HELPER FUNCTIONS ---
-        function typeWriter(id, txt, spd, cb) { let i=0; let el=document.getElementById(id); el.classList.add('typing-cursor'); function t(){if(i<txt.length){el.innerHTML+=txt.charAt(i);i++;setTimeout(t,spd)}else{el.classList.remove('typing-cursor');if(cb)cb()}} t(); }
-        let currentLayer;
-        function updateMapTiles(theme) {
-             if (currentLayer) window.map.removeLayer(currentLayer);
-             currentLayer = L.tileLayer(theme === 'dark' ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' }).addTo(window.map);
+        // --- HELPERS ---
+        let allSearchData = [];
+        function updateSearchIndex() {
+            allSearchData = [];
+            categories.forEach(cat => {
+                allSearchData.push({ type: 'Kategori', id: cat.id, name: cat.name, sub: (cat.items?.length||0)+' Lokasi', icon: cat.icon, action: 'modal' });
+                cat.items?.forEach(item => allSearchData.push({ type: 'Destinasi', name: item.name, sub: item.loc, icon: 'ph-navigation-arrow', action: 'detail', link: item.url, loc: item.loc }));
+            });
+            popularTours.forEach(t => allSearchData.push({ type: 'Trending', name: t.name, sub: t.loc, icon: 'ph-fire', action: 'detail', link: t.link, loc: t.loc }));
         }
-        function toggleTheme() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            updateMapTiles(isDark ? 'dark' : 'light');
-            renderDynamicChart(isDark ? 'dark' : 'light');
-        }
-        function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
-        const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }); }, { threshold: 0.1 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+        const searchInput = document.getElementById('search-input');
+        const dropdownContainer = document.querySelector('#search-dropdown > div');
+        
+        function renderResults(results) {
+            if (results.length === 0) { dropdownContainer.innerHTML = `<div class="p-4 text-center text-gray-500 text-sm">Tidak ditemukan.</div>`; return; }
+            let html = `<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2 text-left">Hasil Pencarian</p>`; 
+            results.forEach(item => {
+                let iconColor = 'text-gray-400';
+                if(item.type === 'Kategori') iconColor = 'text-purple-400 bg-purple-500/20';
+                else if(item.type === 'Destinasi') iconColor = 'text-green-400 bg-green-500/20';
+                
+                let clickAction = item.action === 'modal' ? `openModal('${item.id}')` : `openDetailModal('${item.link}', '${item.name}', '${item.loc || 'Indonesia'}')`;
+                html += `<div onclick="${clickAction}" class="search-item flex items-center justify-between p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
+                        <div class="flex items-center gap-4"><div class="w-10 h-10 rounded-lg ${iconColor} flex items-center justify-center shrink-0"><i class="ph-fill ${item.icon} text-xl"></i></div><div class="text-left"> <h4 class="text-gray-200 font-medium text-sm md:text-base line-clamp-1">${item.name}</h4><p class="text-gray-500 text-xs">${item.sub}</p></div></div>
+                        <div class="w-8 h-8 rounded-lg border border-gray-600 flex items-center justify-center text-gray-400 group-hover/item:bg-primary group-hover/item:border-primary group-hover/item:text-white transition-all"><i class="ph-bold ${item.action==='modal'?'ph-cards':'ph-arrow-right'}"></i></div>
+                    </div>`;
+            });
+            dropdownContainer.innerHTML = html;
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const k = e.target.value.toLowerCase();
+            if (k.length === 0) { dropdownContainer.innerHTML=''; return; }
+            renderResults(allSearchData.filter(i => i.name.toLowerCase().includes(k)));
+        });
+
+        // Other Modal Logic
+        let currentActiveCatId = null;
+        function openModal(categoryId) {
+            currentActiveCatId = categoryId;
+            const catData = categories.find(c => c.id === categoryId);
+            if (!catData) return;
+            document.getElementById('modal-title').innerText = catData.name;
+            const uniqueLocs = ['Semua', ...new Set(catData.items.map(item => item.loc))];
+            const tabsContainer = document.getElementById('modal-tabs');
+            if (catData.items.length > 0) {
+                tabsContainer.innerHTML = uniqueLocs.map(loc => `<button onclick="renderModalGrid('${loc}')" class="tab-btn px-5 py-2 rounded-full text-sm font-bold border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:border-primary hover:text-primary transition-all whitespace-nowrap" data-loc="${loc}">${loc}</button>`).join('');
+                tabsContainer.parentElement.classList.remove('hidden');
+                renderModalGrid('Semua');
+            } else {
+                tabsContainer.parentElement.classList.add('hidden');
+                document.getElementById('modal-grid-content').innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400 italic">Belum ada data.</div>`;
+            }
+            document.getElementById('category-modal').classList.remove('hidden');
+        }
+
+        function renderModalGrid(filterLoc) {
+            const catData = categories.find(c => c.id === currentActiveCatId);
+            let displayItems = filterLoc === 'Semua' ? catData.items : catData.items.filter(item => item.loc === filterLoc);
+            document.getElementById('modal-grid-content').innerHTML = displayItems.map(item => `
+                <div onclick="openDetailModal('${item.url}', '${item.name}', '${item.loc}')" class="flex items-center gap-4 p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 hover:bg-white dark:hover:bg-white/10 transition cursor-pointer group animate-slide-up text-left"> 
+                    <div class="w-12 h-12 rounded-lg bg-white dark:bg-black shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition shrink-0"><i class="ph-fill ph-goggles text-xl"></i></div>
+                    <div class="flex-1"><h4 class="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">${item.name}</h4><p class="text-xs text-gray-500 flex items-center gap-1"><i class="ph-fill ph-map-pin"></i> ${item.loc}</p></div>
+                </div>`).join('');
+        }
+
+        function closeModal() { document.getElementById('category-modal').classList.add('hidden'); }
+        function showDropdown() { document.getElementById('search-dropdown').classList.add('dropdown-active'); }
+        function hideDropdownWithDelay() { setTimeout(() => document.getElementById('search-dropdown').classList.remove('dropdown-active'), 200); }
+        function typeWriter(id, txt, spd, cb) { let i=0; let el=document.getElementById(id); el.classList.add('typing-cursor'); function t(){if(i<txt.length){el.innerHTML+=txt.charAt(i);i++;setTimeout(t,spd)}else{el.classList.remove('typing-cursor');if(cb)cb()}} t(); }
+        function updateMapTiles(theme) { currentLayer = L.tileLayer(theme === 'dark' ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' }).addTo(window.map); }
+        function toggleTheme() { document.documentElement.classList.toggle('dark'); updateMapTiles(document.documentElement.classList.contains('dark') ? 'dark' : 'light'); }
+        function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+        document.querySelectorAll('.reveal').forEach(el => new IntersectionObserver((entries) => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }), { threshold: 0.1 }).observe(el));
     </script>
 </body>
 </html>
