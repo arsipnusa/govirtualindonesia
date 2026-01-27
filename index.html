@@ -36,18 +36,9 @@
                         'slide-up': 'slideUp 0.5s ease-out forwards',
                     },
                     keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
-                        },
-                        cursor: {
-                            '0%, 100%': { borderColor: 'transparent' },
-                            '50%': { borderColor: 'currentColor' },
-                        },
-                        slideUp: {
-                            '0%': { transform: 'translateY(20px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
-                        }
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
+                        cursor: { '0%, 100%': { borderColor: 'transparent' }, '50%': { borderColor: 'currentColor' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
                     }
                 }
             }
@@ -55,115 +46,46 @@
     </script>
 
     <style>
-        /* FIX HORIZONTAL SCROLL & OVERFLOW */
-        html, body { overflow-x: hidden; width: 100%; max-width: 100%; }
-        
+        /* FIX OVERFLOW & LAYOUT STABILITY */
+        html, body { overflow-x: hidden; width: 100%; max-width: 100%; -webkit-tap-highlight-color: transparent; }
         body { transition: background-color 0.5s ease, color 0.5s ease; }
-        
         .dark body {
             background-color: #050507;
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(112, 0, 255, 0.05), transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.03), transparent 30%);
+            background-image: radial-gradient(circle at 50% 0%, rgba(112, 0, 255, 0.05), transparent 40%), radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.03), transparent 30%);
             background-attachment: fixed;
         }
-
         body { background-color: #F9F8F6; color: #2D2D2A; }
         .leaflet-container { background: transparent !important; }
         .leaflet-touch .leaflet-control-attribution, .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {display:none !important;}
         
-        /* SCROLL REVEAL */
-        .reveal { 
-            opacity: 0; 
-            transform: translateY(40px) scale(0.98); 
-            transition: all 1.0s cubic-bezier(0.16, 1, 0.3, 1); 
-        }
+        .reveal { opacity: 0; transform: translateY(40px) scale(0.98); transition: all 1.0s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0) scale(1); }
-
-        /* TYPEWRITER */
-        .typing-cursor::after {
-            content: '|';
-            animation: cursor .75s step-end infinite;
-            color: #7000ff;
-        }
-
-        /* GLOW SEARCH BAR ANIMATION */
-        @keyframes gradient-move {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .animate-glow-border {
-            background: linear-gradient(60deg, #7000ff, #00d4ff, #7000ff, #ff0099, #00d4ff);
-            background-size: 300% 300%;
-            animation: gradient-move 8s ease infinite;
-        }
-
-        /* SEARCH DROPDOWN TRANSITION */
+        .typing-cursor::after { content: '|'; animation: cursor .75s step-end infinite; color: #7000ff; }
+        
+        @keyframes gradient-move { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .animate-glow-border { background: linear-gradient(60deg, #7000ff, #00d4ff, #7000ff, #ff0099, #00d4ff); background-size: 300% 300%; animation: gradient-move 8s ease infinite; }
+        
         .dropdown-enter { opacity: 0; transform: translateY(-10px) scale(0.98); pointer-events: none; }
         .dropdown-active { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-
-        /* MODAL ANIMATION */
         .modal-backdrop-enter { opacity: 0; }
         .modal-backdrop-active { opacity: 1; }
         .modal-content-enter { opacity: 0; transform: scale(0.98) translateY(10px); }
         .modal-content-active { opacity: 1; transform: scale(1) translateY(0); }
-
-        /* CUSTOM SCROLLBAR */
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .modal-scroll::-webkit-scrollbar { width: 6px; }
         .modal-scroll::-webkit-scrollbar-track { background: transparent; }
         .modal-scroll::-webkit-scrollbar-thumb { background-color: #7000ff; border-radius: 4px; }
 
-        /* RADAR ANIMATION */
-        .radar-circle {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            border: 2px solid rgba(0, 212, 255, 0.5);
-            opacity: 0;
-            animation: radar-wave 2s infinite linear;
-        }
+        .radar-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 2px solid rgba(0, 212, 255, 0.5); opacity: 0; animation: radar-wave 2s infinite linear; }
         .radar-circle:nth-child(2) { animation-delay: 0.5s; }
         .radar-circle:nth-child(3) { animation-delay: 1s; }
+        @keyframes radar-wave { 0% { width: 0; height: 0; opacity: 1; border-width: 4px; } 100% { width: 100%; height: 100%; opacity: 0; border-width: 0px; } }
 
-        @keyframes radar-wave {
-            0% { width: 0; height: 0; opacity: 1; border-width: 4px; }
-            100% { width: 100%; height: 100%; opacity: 0; border-width: 0px; }
-        }
-
-        /* CUSTOM MARKER HEAD */
-        .custom-marker-head {
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            border: 2px solid white;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 0 15px rgba(112, 0, 255, 0.8);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            z-index: 2;
-        }
-        .custom-marker-container:hover .custom-marker-head {
-            transform: scale(1.25);
-            border-color: #00d4ff;
-            box-shadow: 0 0 25px #00d4ff;
-            z-index: 100;
-        }
-        .pulse-ring {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%; height: 100%;
-            border-radius: 50%;
-            border: 1px solid rgba(112, 0, 255, 0.6);
-            box-shadow: 0 0 10px rgba(112, 0, 255, 0.4);
-            animation: marker-pulse 2s infinite;
-            z-index: 1;
-        }
-        @keyframes marker-pulse {
-            0% { width: 100%; height: 100%; opacity: 1; border-width: 2px; }
-            100% { width: 250%; height: 250%; opacity: 0; border-width: 0px; }
-        }
+        .custom-marker-head { width: 44px; height: 44px; border-radius: 50%; border: 2px solid white; background-size: cover; background-position: center; box-shadow: 0 0 15px rgba(112, 0, 255, 0.8); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; z-index: 2; }
+        .custom-marker-container:hover .custom-marker-head { transform: scale(1.25); border-color: #00d4ff; box-shadow: 0 0 25px #00d4ff; z-index: 100; }
+        .pulse-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; border-radius: 50%; border: 1px solid rgba(112, 0, 255, 0.6); box-shadow: 0 0 10px rgba(112, 0, 255, 0.4); animation: marker-pulse 2s infinite; z-index: 1; }
+        @keyframes marker-pulse { 0% { width: 100%; height: 100%; opacity: 1; border-width: 2px; } 100% { width: 250%; height: 250%; opacity: 0; border-width: 0px; } }
     </style>
 </head>
 <body class="antialiased selection:bg-secondary selection:text-white dark:selection:text-space overflow-x-hidden pb-32 md:pb-0">
@@ -192,12 +114,8 @@
                     <a href="#map" class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition">PETA</a>
                     <a href="#kategori" class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition">SEKTOR</a>
                     <a href="#populer" class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition">TRENDING</a>
-                    
                     <div class="h-4 w-px bg-gray-300 dark:bg-white/20"></div>
-                    <button onclick="toggleTheme()" class="text-lg text-gray-500 dark:text-yellow-400 hover:scale-110 transition">
-                        <i class="ph-fill ph-sun hidden dark:block"></i>
-                        <i class="ph-fill ph-moon block dark:hidden text-primary"></i>
-                    </button>
+                    <button onclick="toggleTheme()" class="text-lg text-gray-500 dark:text-yellow-400 hover:scale-110 transition"><i class="ph-fill ph-sun hidden dark:block"></i><i class="ph-fill ph-moon block dark:hidden text-primary"></i></button>
                     
                     <div id="auth-section">
                         <button id="btn-login" onclick="loginWithGoogle()" class="bg-black dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-lg font-bold hover:scale-105 transition-all shadow-lg hover:shadow-primary/25 flex items-center gap-2">
@@ -210,31 +128,19 @@
                                 <span id="user-name" class="hidden lg:block font-bold text-gray-900 dark:text-white text-sm whitespace-nowrap">User</span>
                                 <i id="profile-arrow" class="ph-bold ph-caret-down text-gray-500 transition-transform duration-300"></i>
                             </button>
-                            
                             <div id="profile-menu" class="absolute right-0 top-full mt-3 w-64 origin-top-right transform transition-all duration-300 cubic-bezier(0.16, 1, 0.3, 1) opacity-0 translate-y-2 scale-95 pointer-events-none z-[500]">
                                 <div class="bg-white dark:bg-[#1e1e20] rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 overflow-hidden relative ring-1 ring-black/5">
                                     <div class="absolute -top-1.5 right-6 w-4 h-4 bg-white dark:bg-[#1e1e20] transform rotate-45 border-l border-t border-gray-100 dark:border-white/10 z-0"></div>
                                     <div class="p-4 border-b border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-black/20 relative z-10">
                                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Level Penjelajah</p>
-                                        <div class="flex items-center gap-2 mt-2">
-                                            <i class="ph-fill ph-medal text-yellow-500 text-xl drop-shadow-md"></i>
-                                            <span id="user-badge" class="font-extrabold text-base text-gray-900 dark:text-white tracking-tight">Explorer</span>
-                                        </div>
+                                        <div class="flex items-center gap-2 mt-2"><i class="ph-fill ph-medal text-yellow-500 text-xl drop-shadow-md"></i><span id="user-badge" class="font-extrabold text-base text-gray-900 dark:text-white tracking-tight">Explorer</span></div>
                                     </div>
                                     <div class="p-2 relative z-10">
-                                        <a href="#" onclick="showFavoritesModal(); toggleProfileMenu()" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-semibold text-gray-700 dark:text-gray-200 transition-colors group">
-                                            <div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-500/20 flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform"><i class="ph-bold ph-heart"></i></div>
-                                            Favorit Saya
-                                        </a>
-                                        <a href="#" onclick="showHistoryModal(); toggleProfileMenu()" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-semibold text-gray-700 dark:text-gray-200 transition-colors group">
-                                            <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform"><i class="ph-bold ph-clock-counter-clockwise"></i></div>
-                                            Riwayat
-                                        </a>
+                                        <a href="#" onclick="showFavoritesModal(); toggleProfileMenu()" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-semibold text-gray-700 dark:text-gray-200 transition-colors group"><div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-500/20 flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform"><i class="ph-bold ph-heart"></i></div>Favorit Saya</a>
+                                        <a href="#" onclick="showHistoryModal(); toggleProfileMenu()" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-semibold text-gray-700 dark:text-gray-200 transition-colors group"><div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform"><i class="ph-bold ph-clock-counter-clockwise"></i></div>Riwayat</a>
                                     </div>
                                     <div class="p-2 border-t border-gray-100 dark:border-white/10 relative z-10">
-                                        <button onclick="logout()" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-bold text-red-600 dark:text-red-400 transition-colors group">
-                                            <i class="ph-bold ph-sign-out text-lg group-hover:-translate-x-1 transition-transform"></i> Keluar
-                                        </button>
+                                        <button onclick="logout()" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-bold text-red-600 dark:text-red-400 transition-colors group"><i class="ph-bold ph-sign-out text-lg group-hover:-translate-x-1 transition-transform"></i> Keluar</button>
                                     </div>
                                 </div>
                             </div>
@@ -256,16 +162,11 @@
         <section id="hero-section" class="min-h-[90vh] flex flex-col justify-center items-center text-center relative py-10">
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full pointer-events-none -z-10"></div>
             <div class="flex flex-col items-center gap-6 max-w-6xl mx-auto w-full">
-                <div id="hero-logo" class="mb-2 opacity-0 transition-opacity duration-1000 ease-out">
-                    <img src="https://govirtual.id/web/image/logo-govirtual.webp" alt="Govirtual" class="h-10 md:h-12 w-auto object-contain brightness-0 dark:brightness-100">
-                </div>
+                <div id="hero-logo" class="mb-2 opacity-0 transition-opacity duration-1000 ease-out"><img src="https://govirtual.id/web/image/logo-govirtual.webp" alt="Govirtual" class="h-10 md:h-12 w-auto object-contain brightness-0 dark:brightness-100"></div>
                 <h1 class="text-5xl md:text-7xl font-semibold tracking-tight leading-tight text-gray-900 dark:text-white min-h-[140px] md:min-h-[180px] flex flex-col justify-center">
-                    <span id="typewriter-1" class="block"></span>
-                    <span id="typewriter-2" class="block text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-400"></span>
+                    <span id="typewriter-1" class="block"></span><span id="typewriter-2" class="block text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-400"></span>
                 </h1>
-                <p id="hero-subtitle" class="text-gray-500 dark:text-gray-400 text-lg md:text-xl mt-4 font-normal tracking-wide opacity-0 transition-opacity duration-1000">
-                    from anywhere with virtual reality tourism
-                </p>
+                <p id="hero-subtitle" class="text-gray-500 dark:text-gray-400 text-lg md:text-xl mt-4 font-normal tracking-wide opacity-0 transition-opacity duration-1000">from anywhere with virtual reality tourism</p>
                 <div id="hero-search" class="mt-12 w-full max-w-2xl opacity-0 transition-all duration-1000 translate-y-10 relative z-50">
                     <div class="relative group">
                         <div class="absolute -inset-0.5 rounded-xl blur opacity-30 group-hover:opacity-75 group-focus-within:opacity-100 transition duration-1000 group-focus-within:duration-200 animate-glow-border"></div>
@@ -369,7 +270,7 @@
         </section>
     </main>
 
-    <footer class="border-t border-gray-200 dark:border-white/10 bg-white dark:bg-cardDark">
+    <footer class="border-t border-gray-200 dark:border-white/10 bg-white dark:bg-cardDark pb-10">
         <div class="max-w-7xl mx-auto px-6 py-16">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                 <div class="space-y-6">
@@ -442,7 +343,34 @@
         </div>
     </div>
 
-    <div id="favorites-modal" class="fixed inset-0 z-[130] hidden flex items-center justify-center px-4">
+    <div id="mobile-profile-modal" class="fixed inset-0 z-[140] hidden flex items-end sm:items-center justify-center sm:px-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeMobileProfile()"></div>
+        <div class="relative w-full sm:max-w-md bg-white dark:bg-[#1e1e20] rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden border-t sm:border border-gray-100 dark:border-white/10 animate-slide-up">
+            <div class="p-6 border-b border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-white/5 flex flex-col items-center">
+                <img id="mob-profile-img" src="" class="w-20 h-20 rounded-full border-4 border-white dark:border-[#1e1e20] shadow-lg mb-3 object-cover">
+                <h3 id="mob-profile-name" class="text-xl font-bold text-gray-900 dark:text-white">User</h3>
+                <div class="flex items-center gap-1.5 mt-1 text-xs font-bold text-yellow-500 bg-yellow-500/10 px-3 py-1 rounded-full"><i class="ph-fill ph-medal"></i> Explorer</div>
+            </div>
+            <div class="p-4 space-y-2">
+                <button onclick="closeMobileProfile(); showFavoritesModal()" class="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition border border-transparent hover:border-gray-100 dark:hover:border-white/5 group">
+                    <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-500/20 text-red-500 flex items-center justify-center group-hover:scale-110 transition"><i class="ph-fill ph-heart text-xl"></i></div>
+                    <div class="text-left"><h4 class="font-bold text-gray-900 dark:text-white">Favorit Saya</h4><p class="text-xs text-gray-500">Lihat lokasi yang disimpan</p></div>
+                    <i class="ph-bold ph-caret-right ml-auto text-gray-300"></i>
+                </button>
+                <button onclick="closeMobileProfile(); showHistoryModal()" class="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition border border-transparent hover:border-gray-100 dark:hover:border-white/5 group">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-500 flex items-center justify-center group-hover:scale-110 transition"><i class="ph-fill ph-clock-counter-clockwise text-xl"></i></div>
+                    <div class="text-left"><h4 class="font-bold text-gray-900 dark:text-white">Riwayat Jelajah</h4><p class="text-xs text-gray-500">Jejak perjalanan terakhir</p></div>
+                    <i class="ph-bold ph-caret-right ml-auto text-gray-300"></i>
+                </button>
+            </div>
+            <div class="p-4 border-t border-gray-100 dark:border-white/10">
+                <button onclick="logout(); closeMobileProfile()" class="w-full py-3 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 font-bold hover:bg-red-100 dark:hover:bg-red-500/20 transition flex items-center justify-center gap-2"><i class="ph-bold ph-sign-out"></i> Keluar Akun</button>
+            </div>
+            <button onclick="closeMobileProfile()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white"><i class="ph-bold ph-x text-xl"></i></button>
+        </div>
+    </div>
+
+    <div id="favorites-modal" class="fixed inset-0 z-[150] hidden flex items-center justify-center px-4">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('favorites-modal').classList.add('hidden')"></div>
         <div class="relative bg-white dark:bg-[#1e1e20] w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 animate-slide-up flex flex-col max-h-[80vh]">
             <div class="p-6 border-b border-gray-100 dark:border-white/10 flex justify-between items-center">
@@ -453,7 +381,7 @@
         </div>
     </div>
 
-    <div id="history-modal" class="fixed inset-0 z-[130] hidden flex items-center justify-center px-4">
+    <div id="history-modal" class="fixed inset-0 z-[150] hidden flex items-center justify-center px-4">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('history-modal').classList.add('hidden')"></div>
         <div class="relative bg-white dark:bg-[#1e1e20] w-full max-w-md rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 animate-slide-up flex flex-col max-h-[80vh]">
             <div class="p-6 border-b border-gray-100 dark:border-white/10 flex justify-between items-center">
@@ -465,8 +393,6 @@
     </div>
 
     <div id="radar-widget" class="fixed z-[90] hidden md:flex flex-col gap-3 pointer-events-none transition-all duration-500 md:inset-x-auto md:right-8 md:bottom-8 md:items-end md:w-auto">
-        <div id="radar-panel-desktop" class="pointer-events-auto hidden w-80 bg-white/90 dark:bg-[#12121a]/90 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) opacity-0 transform translate-y-4 origin-bottom-right ring-1 ring-black/5">
-            </div>
         <button onclick="toggleRadarDesktop()" id="radar-btn-desktop" class="pointer-events-auto group relative flex items-center justify-center gap-2.5 bg-[#1e1e20] dark:bg-white text-white dark:text-black px-5 py-3 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 border border-white/10 dark:border-black/5 ring-4 ring-black/5 dark:ring-white/10">
             <i class="ph-fill ph-broadcast text-xl animate-pulse text-secondary dark:text-primary"></i>
             <span class="font-bold tracking-wide text-sm whitespace-nowrap">Scan Sekitar</span>
@@ -474,7 +400,7 @@
         </button>
     </div>
 
-    <div id="radar-content-wrapper" class="fixed bottom-24 inset-x-4 z-[95] pointer-events-none transition-all duration-500 md:hidden">
+    <div id="radar-content-wrapper" class="fixed bottom-24 inset-x-4 md:bottom-24 md:right-8 md:left-auto md:w-80 z-[95] pointer-events-none transition-all duration-500">
         <div id="radar-content" class="bg-white/90 dark:bg-[#12121a]/95 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-500 opacity-0 translate-y-10 scale-95 origin-bottom pointer-events-auto">
             <div class="p-4">
                 <div class="flex justify-between items-center mb-3 pb-3 border-b border-gray-100 dark:border-white/5">
@@ -534,10 +460,7 @@
     </div>
 
     <script>
-        const SHEET_URLS = {
-            'infrastruktur': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIvK72ykG4OND6TbQdD_ACi4Sv6TRlq8g9SKh_CNB_IkYKhB_rwlsD97sZpIoJNRB5NfC8Su87kD2p/pub?gid=0&single=true&output=csv',
-            'budaya': 'LINK_CSV_BUDAYA_DISINI', 'pariwisata': 'LINK_CSV_PARIWISATA_DISINI', 'religi': 'LINK_CSV_RELIGI_DISINI', 'warisan': 'LINK_CSV_WARISAN_DISINI', 'maritim': 'LINK_CSV_MARITIM_DISINI', 'pemerintahan': 'LINK_CSV_PEMERINTAHAN_DISINI', 'kesehatan': 'LINK_CSV_KESEHATAN_DISINI', 'pendidikan': 'LINK_CSV_PENDIDIKAN_DISINI', 'mice': 'LINK_CSV_MICE_DISINI', 'investasi': 'LINK_CSV_INVESTASI_DISINI'
-        };
+        const SHEET_URLS = { 'infrastruktur': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIvK72ykG4OND6TbQdD_ACi4Sv6TRlq8g9SKh_CNB_IkYKhB_rwlsD97sZpIoJNRB5NfC8Su87kD2p/pub?gid=0&single=true&output=csv', 'budaya': 'LINK_CSV_BUDAYA_DISINI', 'pariwisata': 'LINK_CSV_PARIWISATA_DISINI', 'religi': 'LINK_CSV_RELIGI_DISINI', 'warisan': 'LINK_CSV_WARISAN_DISINI', 'maritim': 'LINK_CSV_MARITIM_DISINI', 'pemerintahan': 'LINK_CSV_PEMERINTAHAN_DISINI', 'kesehatan': 'LINK_CSV_KESEHATAN_DISINI', 'pendidikan': 'LINK_CSV_PENDIDIKAN_DISINI', 'mice': 'LINK_CSV_MICE_DISINI', 'investasi': 'LINK_CSV_INVESTASI_DISINI' };
         const RADAR_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2nDXKAPsG_If3CedztM4rgPTZQKh-44TLjOfKkK2rrT_rMp9NLZoaoajAToIWxnsGSz0ujXWqMybt/pub?gid=839999161&single=true&output=csv'; 
         const STATS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2nDXKAPsG_If3CedztM4rgPTZQKh-44TLjOfKkK2rrT_rMp9NLZoaoajAToIWxnsGSz0ujXWqMybt/pub?gid=839999161&single=true&output=csv'; 
         const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse"; const GOOGLE_FORM_ENTRY_ID = "entry.123456"; 
@@ -554,9 +477,12 @@
         if(auth) {
             auth.onAuthStateChanged((currentUser) => {
                 const btnLogin = document.getElementById('btn-login'); const userProfile = document.getElementById('user-profile');
-                // Mobile Elements
+                // Mobile Tab Elements
                 const mobileTabIcon = document.getElementById('mobile-tab-icon');
                 const mobileTabAvatar = document.getElementById('mobile-tab-avatar');
+                // Mobile Modal Elements
+                const mobProfileImg = document.getElementById('mob-profile-img');
+                const mobProfileName = document.getElementById('mob-profile-name');
                 
                 if (currentUser) {
                     user = currentUser;
@@ -564,14 +490,17 @@
                     document.getElementById('user-avatar').src = user.photoURL;
                     document.getElementById('user-name').innerText = user.displayName;
                     
-                    // Mobile Tab Update
+                    // Mobile UI Update
                     if(mobileTabIcon) mobileTabIcon.classList.add('hidden');
                     if(mobileTabAvatar) { mobileTabAvatar.src = user.photoURL; mobileTabAvatar.classList.remove('hidden'); }
+                    if(mobProfileImg) mobProfileImg.src = user.photoURL;
+                    if(mobProfileName) mobProfileName.innerText = user.displayName;
+
                     checkBadges(user.uid);
                 } else {
                     user = null;
                     btnLogin.classList.remove('hidden'); userProfile.classList.add('hidden');
-                    // Mobile Tab Revert
+                    // Mobile UI Revert
                     if(mobileTabIcon) mobileTabIcon.classList.remove('hidden');
                     if(mobileTabAvatar) mobileTabAvatar.classList.add('hidden');
                 }
@@ -583,44 +512,25 @@
         function showFavoritesModal() { if(!user) return loginWithGoogle(); const list = document.getElementById('favorites-list'); list.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">Memuat data...</div>'; db.collection('users').doc(user.uid).collection('favorites').orderBy('timestamp', 'desc').get().then(snapshot => { if (snapshot.empty) { list.innerHTML = `<div class="col-span-full text-center py-10"><i class="ph-duotone ph-heart-break text-4xl text-gray-300 mb-2"></i><p class="text-gray-500">Belum ada favorit.</p></div>`; return; } let html = ''; snapshot.forEach(doc => { const data = doc.data(); html += `<div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 transition group cursor-pointer relative"><div onclick="window.open('${data.url}', '_blank')" class="flex items-center gap-3 flex-1"><div class="w-16 h-16 rounded-lg bg-gray-200 overflow-hidden shrink-0"><img src="${data.img}" class="w-full h-full object-cover"></div><div class="flex-1 min-w-0"><h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4><p class="text-xs text-gray-500">${data.loc}</p></div></div><button onclick="toggleFavorite('${data.name}', '${data.loc}', '${data.url}')" class="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full transition z-10"><i class="ph-fill ph-trash"></i></button></div>`; }); list.innerHTML = html; }).catch(err => list.innerHTML = `<p>Error: ${err.message}</p>`); document.getElementById('favorites-modal').classList.remove('hidden'); }
         function showHistoryModal() { if(!user) return loginWithGoogle(); const list = document.getElementById('history-list'); list.innerHTML = '<div class="p-6 text-center text-gray-400">Memuat riwayat...</div>'; db.collection('users').doc(user.uid).collection('history').orderBy('timestamp', 'desc').limit(20).get().then(snapshot => { if (snapshot.empty) { list.innerHTML = `<div class="p-6 text-center"><p class="text-gray-500 text-sm">Belum ada riwayat.</p></div>`; return; } let html = ''; snapshot.forEach(doc => { const data = doc.data(); const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Baru saja'; html += `<div onclick="window.open('${data.url}', '_blank')" class="p-4 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center justify-between group cursor-pointer transition"><div class="flex items-center gap-3 overflow-hidden"><div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center shrink-0"><i class="ph-bold ph-clock-counter-clockwise"></i></div><div class="min-w-0"><h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4><p class="text-xs text-gray-500">${date}</p></div></div><i class="ph-bold ph-caret-right text-gray-300 group-hover:text-primary transition shrink-0"></i></div>`; }); list.innerHTML = html; }); document.getElementById('history-modal').classList.remove('hidden'); }
         
-        // --- NEW TAB BAR LOGIC ---
         function setActiveTab(element) { document.querySelectorAll('.nav-tab').forEach(el => { el.classList.remove('text-primary'); el.classList.add('text-gray-400'); }); element.classList.remove('text-gray-400'); element.classList.add('text-primary'); }
-        function handleMobileAccount() { if (user) { showFavoritesModal(); } else { loginWithGoogle(); } }
-
-        // --- SPLIT RADAR LOGIC ---
-        async function toggleRadarMobile() {
-            const content = document.getElementById('radar-content');
-            isRadarOpen = !isRadarOpen;
-            if(isRadarOpen) {
-                content.classList.remove('opacity-0', 'translate-y-10', 'scale-95'); content.classList.add('opacity-100', 'translate-y-0', 'scale-100');
-                document.getElementById('radar-status-text').innerText = "Memindai...";
-                await loadRadarData(); startRadarTracking();
+        
+        // --- MOBILE ACCOUNT LOGIC (NEW MENU) ---
+        function handleMobileAccount() {
+            if (user) {
+                // Open new Mobile Profile Modal
+                document.getElementById('mobile-profile-modal').classList.remove('hidden');
             } else {
-                content.classList.add('opacity-0', 'translate-y-10', 'scale-95'); content.classList.remove('opacity-100', 'translate-y-0', 'scale-100');
-                stopRadarTracking();
+                loginWithGoogle();
             }
         }
+        function closeMobileProfile() { document.getElementById('mobile-profile-modal').classList.add('hidden'); }
 
-        // Logic Desktop Radar (Reusing Mobile Content Structure via JS Clone if needed, or separate)
-        // Since user wants simple desktop button, we'll keep the desktop panel separate but logic same.
-        // For simplicity, I'll redirect the Desktop button to open the Mobile Panel logic but styled for desktop? 
-        // No, let's keep it distinct for stability.
-        
-        async function toggleRadarDesktop() {
-            // Simplified: Reuse the mobile panel logic but maybe adjust positioning? 
-            // Actually, let's just trigger the mobile panel for now as it looks good floating.
-            // Or create a desktop specific panel.
-            // Let's use the mobile panel id but position it differently on desktop via CSS.
-            // The CSS #radar-content-wrapper handles desktop positioning (md:right-8 etc).
-            // So we just call the same function!
-            toggleRadarMobile(); 
+        async function toggleRadarMobile() {
+            const content = document.getElementById('radar-content'); isRadarOpen = !isRadarOpen;
+            if(isRadarOpen) { content.classList.remove('opacity-0', 'translate-y-10', 'scale-95'); content.classList.add('opacity-100', 'translate-y-0', 'scale-100'); document.getElementById('radar-status-text').innerText = "Memindai..."; await loadRadarData(); startRadarTracking(); } 
+            else { content.classList.add('opacity-0', 'translate-y-10', 'scale-95'); content.classList.remove('opacity-100', 'translate-y-0', 'scale-100'); stopRadarTracking(); }
         }
-
-        // Bridge for old onclicks
-        function toggleRadar() {
-            if(window.innerWidth < 768) toggleRadarMobile();
-            else toggleRadarDesktop();
-        }
+        function toggleRadarDesktop() { toggleRadarMobile(); } // Same logic for desktop button
 
         let currentReviewListener = null; let currentRating = 5; 
         function loadReviews(categoryId) { const list = document.getElementById('review-list'); list.innerHTML = '<p class="text-sm text-gray-500 italic animate-pulse">Menghubungkan...</p>'; if (currentReviewListener) currentReviewListener(); currentReviewListener = db.collection('reviews').where('categoryId', '==', categoryId).orderBy('timestamp', 'desc').limit(20).onSnapshot((snapshot) => { if (snapshot.empty) { list.innerHTML = '<p class="text-sm text-gray-500 italic">Belum ada ulasan.</p>'; return; } let html = ''; snapshot.forEach((doc) => { const r = doc.data(); let starsHtml = ''; for(let i=1; i<=5; i++) { starsHtml += i <= r.rating ? '<i class="ph-fill ph-star text-yellow-400 text-xs"></i>' : '<i class="ph-fill ph-star text-gray-300 text-xs"></i>'; } const timeString = r.timestamp ? new Date(r.timestamp.seconds * 1000).toLocaleDateString('id-ID') : 'Baru saja'; html += `<div class="flex gap-3 animate-slide-up"><img src="${r.userPhoto || 'https://ui-avatars.com/api/?name=User'}" class="w-8 h-8 rounded-full border border-gray-200 dark:border-white/10 shrink-0"><div class="bg-gray-100 dark:bg-white/5 p-3 rounded-lg rounded-tl-none w-full"><div class="flex justify-between items-start mb-1"><span class="font-bold text-xs text-gray-900 dark:text-white">${r.userName}</span><span class="text-[10px] text-gray-400">${timeString}</span></div><div class="flex mb-1">${starsHtml}</div><p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${r.text}</p></div></div>`; }); list.innerHTML = html; }); }
@@ -634,7 +544,14 @@
         function calculateDistance(lat1, lon1, lat2, lon2) { const R = 6371e3; const phi1 = lat1 * Math.PI/180; const phi2 = lat2 * Math.PI/180; const dPhi = (lat2-lat1) * Math.PI/180; const dLambda = (lon2-lon1) * Math.PI/180; const a = Math.sin(dPhi/2) * Math.sin(dPhi/2) + Math.cos(phi1) * Math.cos(phi2) * Math.sin(dLambda/2) * Math.sin(dLambda/2); return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); }
         function startRadarTracking() { if (!navigator.geolocation) { document.getElementById('radar-status-text').innerText = "GPS Error"; return; } document.getElementById('radar-status-text').innerText = "Mencari GPS..."; watchId = navigator.geolocation.watchPosition((position) => { const nearest = getNearestLocation(position.coords.latitude, position.coords.longitude); if (nearest) { showRadarResult(nearest.name, nearest.url); } else { showRadarEmpty(); } }, (err) => { document.getElementById('radar-status-text').innerText = "Izin Ditolak"; }, { enableHighAccuracy: true }); }
         function stopRadarTracking() { if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; } }
-        async function initBackgroundRadar() { if (!navigator.geolocation) return; await loadRadarData(); navigator.geolocation.getCurrentPosition((position) => { const nearest = getNearestLocation(position.coords.latitude, position.coords.longitude); if (nearest) { document.getElementById('toast-location').innerText = `Dekat ${nearest.name} (${nearest.distance.toFixed(0)}m)`; document.getElementById('toast-link').href = nearest.url.startsWith('http') ? nearest.url : `https://${nearest.url}`; document.getElementById('radar-toast').classList.remove('hidden'); } }); }
+        
+        async function initBackgroundRadar() { 
+            // DISABLE AUTO DETECT ON MOBILE
+            if (window.innerWidth < 768) return; 
+            
+            if (!navigator.geolocation) return; await loadRadarData(); navigator.geolocation.getCurrentPosition((position) => { const nearest = getNearestLocation(position.coords.latitude, position.coords.longitude); if (nearest) { document.getElementById('toast-location').innerText = `Dekat ${nearest.name} (${nearest.distance.toFixed(0)}m)`; document.getElementById('toast-link').href = nearest.url.startsWith('http') ? nearest.url : `https://${nearest.url}`; document.getElementById('radar-toast').classList.remove('hidden'); } }); 
+        }
+        
         function sendVisitorHit() { if (sessionStorage.getItem('visited')) return; fetch(`${GOOGLE_FORM_URL}?${GOOGLE_FORM_ENTRY_ID}=Hit&submit=Submit`, { mode: 'no-cors' }).then(() => sessionStorage.setItem('visited', 'true')); }
         async function fetchVisitorStats() { try { const response = await fetch(STATS_CSV_URL + '&t=' + Date.now()); const data = await response.text(); const rows = data.split('\n').slice(1); let monthlyCount = 0; const now = new Date(); rows.forEach(row => { const cols = row.split(','); if (cols[0]) { const ts = new Date(cols[0].replace(/"/g, '')); if (!isNaN(ts) && ts.getMonth() === now.getMonth()) monthlyCount++; } }); animateValue("visitor-count", 0, monthlyCount, 2000); } catch (e) {} }
         function animateValue(id, start, end, duration) { const obj = document.getElementById(id); if(!obj) return; let startTimestamp = null; const step = (timestamp) => { if (!startTimestamp) startTimestamp = timestamp; const progress = Math.min((timestamp - startTimestamp) / duration, 1); obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString('id-ID'); if (progress < 1) window.requestAnimationFrame(step); else obj.innerHTML = end > 1000 ? (end/1000).toFixed(1)+"K" : end; }; window.requestAnimationFrame(step); }
@@ -643,7 +560,6 @@
 
         const categories = [ { id: 'infrastruktur', name: 'Infrastruktur', icon: 'ph-bridge', count: 0, span: 'md:col-span-2 md:row-span-2', bg: 'https://infopublik.id/assets/upload/headline//FotoJet_-_2024-09-02T235743_108-min_(2).jpg', items: [] }, { id: 'budaya', name: 'Seni & Budaya', icon: 'ph-paint-brush-broad', count: 0, span: 'md:col-span-1', bg: 'https://www.finansialku.com/wp-content/uploads/2019/05/Sampai-Mancanegara-Lho-Ini-Dia-10-Budaya-Indonesia-Mendunia-04-Tari-Barong-Finansialku.jpg', items: [] }, { id: 'pariwisata', name: 'Pariwisata', icon: 'ph-airplane-tilt', count: 0, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4', items: [] }, { id: 'religi', name: 'Religi', icon: 'ph-mosque', count: 0, span: 'md:col-span-1', bg: 'https://eticon.co.id/wp-content/uploads/2022/01/Rekomendasi-tempat-wisata-religi-Islam-di-Indonesia.jpg', items: [] }, { id: 'warisan', name: 'Warisan Budaya', icon: 'ph-columns', count: 0, span: 'md:col-span-1', bg: 'https://www.gotravelaindonesia.com/wp-content/uploads/daftar-warisan-budaya-di-indonesia.jpg', items: [] }, { id: 'maritim', name: 'Kepulauan', icon: 'ph-boat', count: 0, span: 'md:col-span-2', bg: 'https://superlive.id/storage/superadventure/2018/10/22/07ef3dc28e67.jpg', items: [] }, { id: 'pemerintahan', name: 'Pemerintahan', icon: 'ph-bank', count: 0, span: 'md:col-span-1', bg: 'https://tangerangkota.go.id/assets/storage/files/photos/50013sejarah-singkat-kota-tangerang-dari-kota-industri-sampai-gerbang-globalisasi-50013.jpg', items: [] }, { id: 'kesehatan', name: 'Kesehatan', icon: 'ph-heartbeat', count: 0, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d', items: [] }, { id: 'pendidikan', name: 'Pendidikan', icon: 'ph-graduation-cap', count: 0, span: 'md:col-span-2', bg: 'https://images.unsplash.com/photo-1562774053-701939374585', items: [] }, { id: 'mice', name: 'MICE', icon: 'ph-presentation-chart', count: 0, span: 'md:col-span-1', bg: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04', items: [] }, { id: 'investasi', name: 'Investasi', icon: 'ph-trend-up', count: 0, span: 'md:col-span-1', bg: 'https://cdn.brighton.co.id/Uploads/Images/15775139/QL1wQ6AP/15992-1.webp', items: [] } ];
 
-        // --- PARALLEL FETCHING (FAST LOAD) ---
         async function loadAllCategories() {
             const fetchPromises = categories.map(async (cat) => {
                 const url = SHEET_URLS[cat.id]; const countEl = document.getElementById(`count-${cat.id}`);
