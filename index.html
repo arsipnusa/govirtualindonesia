@@ -377,7 +377,7 @@
 
     <div id="category-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center px-4">
         <div id="modal-backdrop" onclick="closeModal()" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 modal-backdrop-enter"></div>
-        <div id="modal-content" class="relative w-full max-w-4xl bg-white dark:bg-[#12121a] rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 transition-all duration-500 ease-out modal-content-enter flex flex-col max-h-[85vh]">
+        <div id="modal-content" class="relative w-full max-w-4xl md:w-[90vw] md:max-w-[1400px] md:h-[90vh] bg-white dark:bg-[#12121a] rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 transition-all duration-500 ease-out modal-content-enter flex flex-col max-h-[85vh] md:max-h-[90vh]">
             <div class="relative p-8 md:p-10 bg-gray-50 dark:bg-white/5 shrink-0">
                 <button onclick="closeModal()" class="absolute top-6 right-6 w-10 h-10 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-red-50 transition-all z-10 shadow-sm"><i class="ph-bold ph-x text-lg"></i></button>
                 <div class="flex items-start gap-6">
@@ -970,7 +970,7 @@ async function openShareModal(name, location, imgUrl, linkUrl) {
 
         // 4. Isi Data ke Hidden Template
         // Gunakan gambar proxy atau placeholder jika gambar asli kena CORS
-        const safeImgUrl = imgUrl.startsWith('http') ? imgUrl : `https://via.placeholder.com/540x960?text=${encodeURIComponent(name)}`;
+        const safeImgUrl = imgUrl.startsWith('http') ? imgUrl : `https://placehold.net/building-400x400.png?text=${encodeURIComponent(name)}`;
         // Alternatif: Gunakan layanan proxy gambar jika punya, untuk mengatasi masalah CORS pada html2canvas.
         // Untuk saat ini kita coba load langsung dengan crossorigin="anonymous" di tag HTML nya.
         
@@ -1276,7 +1276,7 @@ function renderModalGrid(loc) {
         <div class="group relative bg-white dark:bg-[#181820] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 animate-slide-up border border-gray-100 dark:border-white/5">
             
             <div onclick="visitTour('${i.url}','${i.name}','${i.loc}')" class="relative h-64 w-full cursor-pointer overflow-hidden">
-                <img src="${i.img || 'https://via.placeholder.com/500'}" loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                <img src="${i.img || 'https://placehold.net/building-400x400.png'}" loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
                 
                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
 
@@ -1285,7 +1285,7 @@ function renderModalGrid(loc) {
                             class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-red-500 transition-all shadow-lg active:scale-90" title="Simpan">
                         <i class="ph-bold ph-heart text-lg"></i>
                     </button>
-                    <button onclick="event.stopPropagation(); openShareModal('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.img || 'https://via.placeholder.com/500' }', '${i.url}')" 
+                    <button onclick="event.stopPropagation(); openShareModal('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.img || 'https://placehold.net/building-400x400.png' }', '${i.url}')" 
                             class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-blue-500 transition-all shadow-lg active:scale-90" title="Bagikan">
                         <i class="ph-bold ph-share-network text-lg"></i>
                     </button>
