@@ -1242,47 +1242,49 @@ function renderModalGrid(loc) {
     if(loc !== 'Semua') items = c.items.filter(i => i.loc === loc);
 
     document.getElementById('modal-grid-content').innerHTML = items.map(i => `
-        <div class="relative group animate-slide-up bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-2xl p-4 transition-all hover:border-primary/50 hover:shadow-lg">
-            <div class="flex items-start justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-xl bg-white dark:bg-black shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition shrink-0">
-                        <i class="ph-fill ph-goggles text-2xl"></i>
-                    </div>
-                    <div class="min-w-0">
-                        <h4 class="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">${i.name}</h4>
-                        <p class="text-[10px] text-gray-500 flex items-center gap-1 uppercase tracking-wider">
-                            <i class="ph-fill ph-map-pin text-secondary"></i> ${i.loc}
-                        </p>
+        <div class="group relative bg-[#181820] border border-white/5 hover:border-primary/50 rounded-2xl p-4 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 flex flex-col gap-4 animate-slide-up">
+            
+            <div class="flex items-start gap-4">
+                
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-inner">
+                    <i class="ph-fill ph-map-pin-area text-2xl text-primary"></i>
+                </div>
+
+                <div class="flex-1 min-w-0 pt-0.5">
+                    <h4 class="font-bold text-gray-100 text-sm truncate leading-tight mb-1">${i.name}</h4>
+                    <div class="flex items-center gap-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                        <i class="ph-fill ph-map-pin text-secondary"></i> 
+                        <span class="truncate">${i.loc}</span>
                     </div>
                 </div>
-                
-                <div class="flex gap-2">
-                     <button onclick="openShareModal('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.img || 'https://via.placeholder.com/500' }', '${i.url}')" 
-                            class="p-2.5 rounded-full bg-white dark:bg-white/5 shadow-sm hover:scale-110 transition-all active:scale-95 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/20">
-                        <i class="ph-bold ph-share-network"></i>
-                    </button>
 
+                <div class="flex flex-col gap-2 shrink-0">
                     <button onclick="toggleFavorite('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.url}', this)" 
-                            class="p-2.5 rounded-full bg-white dark:bg-white/5 shadow-sm hover:scale-110 transition-all active:scale-95">
-                        <i class="ph-bold ph-heart text-gray-400 transition-colors"></i>
+                            class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 transition-all hover:text-red-500 hover:scale-110 active:scale-95 border border-white/5">
+                        <i class="ph-bold ph-heart"></i>
+                    </button>
+                    <button onclick="openShareModal('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.img || 'https://via.placeholder.com/500' }', '${i.url}')" 
+                            class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 transition-all hover:text-blue-400 hover:scale-110 active:scale-95 border border-white/5">
+                        <i class="ph-bold ph-share-network"></i>
                     </button>
                 </div>
             </div>
-            
+
             <button onclick="visitTour('${i.url}','${i.name}','${i.loc}')" 
-                    class="w-full py-2.5 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
-                Jelajahi Sekarang <i class="ph-bold ph-arrow-square-out"></i>
+                    class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-primary text-gray-300 hover:text-white text-xs font-bold tracking-wide transition-all flex items-center justify-center gap-2 border border-white/5 group-hover:border-primary/50 group-hover:shadow-lg group-hover:shadow-primary/20">
+                <span>Mulai Jelajah</span>
+                <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
             </button>
         </div>
     `).join('');
 
-            document.querySelectorAll('.tab-btn').forEach(b => {
-                b.className = b.dataset.loc === loc ? 
-                    "tab-btn px-5 py-2 rounded-full text-sm font-bold bg-black dark:bg-white text-white dark:text-black shadow-lg transition-all" : 
-                    "tab-btn px-5 py-2 rounded-full text-sm font-bold border border-gray-200 dark:border-white/10 text-gray-500 hover:text-primary transition-all";
-            });
-        }
-        
+    // Update state tabs (Tetap sama)
+    document.querySelectorAll('.tab-btn').forEach(b => {
+        b.className = b.dataset.loc === loc ? 
+            "tab-btn px-5 py-2 rounded-full text-sm font-bold bg-white text-black shadow-lg transition-all" : 
+            "tab-btn px-5 py-2 rounded-full text-sm font-bold border border-white/10 text-gray-500 hover:text-white hover:border-white/30 transition-all";
+    });
+}    
         function closeModal() { document.getElementById('modal-backdrop').classList.remove('modal-backdrop-active'); document.getElementById('modal-content').classList.remove('modal-content-active'); setTimeout(() => modal.classList.add('hidden'), 300); }
         function showDropdown() { document.getElementById('search-dropdown').classList.remove('dropdown-enter'); document.getElementById('search-dropdown').classList.add('dropdown-active'); }
         function hideDropdownWithDelay() { setTimeout(() => { document.getElementById('search-dropdown').classList.remove('dropdown-active'); document.getElementById('search-dropdown').classList.add('dropdown-enter'); }, 200); }
