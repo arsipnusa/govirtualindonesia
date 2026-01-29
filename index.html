@@ -106,6 +106,7 @@
         .custom-marker-container:hover .custom-marker-head { transform: scale(1.25); border-color: #00d4ff; box-shadow: 0 0 25px #00d4ff; z-index: 100; }
         .pulse-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; border-radius: 50%; border: 1px solid rgba(112, 0, 255, 0.6); box-shadow: 0 0 10px rgba(112, 0, 255, 0.4); animation: marker-pulse 2s infinite; z-index: 1; }
         @keyframes marker-pulse { 0% { width: 100%; height: 100%; opacity: 1; border-width: 2px; } 100% { width: 250%; height: 250%; opacity: 0; border-width: 0px; } }
+        
         /* Efek item keluar saat dihapus */
         .item-exit {
             opacity: 0;
@@ -128,15 +129,15 @@
         .animate-pop { animation: heart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
         /* Badge Styles */
-.badge-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-.badge-locked { filter: grayscale(100%) opacity(0.4); transform: scale(0.95); }
-.badge-unlocked { 
-    filter: grayscale(0%); 
-    opacity: 1; 
-    border-color: rgba(112, 0, 255, 0.5); 
-    box-shadow: 0 0 15px rgba(112, 0, 255, 0.1); 
-}
-.badge-unlocked:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(112, 0, 255, 0.3); }
+        .badge-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .badge-locked { filter: grayscale(100%) opacity(0.4); transform: scale(0.95); }
+        .badge-unlocked { 
+            filter: grayscale(0%); 
+            opacity: 1; 
+            border-color: rgba(112, 0, 255, 0.5); 
+            box-shadow: 0 0 15px rgba(112, 0, 255, 0.1); 
+        }
+        .badge-unlocked:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(112, 0, 255, 0.3); }
     </style>
 </head>
 <body class="antialiased selection:bg-secondary selection:text-white dark:selection:text-space overflow-x-hidden pb-32 md:pb-0">
@@ -146,7 +147,7 @@
             <div class="absolute -left-4 top-0 bottom-0 w-1 bg-green-500 rounded-full"></div>
             <div class="w-10 h-10 rounded-full bg-green-500/10 text-green-500 flex items-center justify-center shrink-0 animate-pulse"><i class="ph-fill ph-map-pin text-xl"></i></div>
             <div class="flex-1 min-w-0">
-                <h4 class="text-sm font-bold text-gray-900 dark:text-white truncate">Lokasi Terdeteksi!</h4>
+                <h4 id="toast-title" class="text-sm font-bold text-gray-900 dark:text-white truncate">Lokasi Terdeteksi!</h4>
                 <p id="toast-location" class="text-xs text-gray-500 dark:text-gray-300 truncate">Memuat lokasi...</p>
             </div>
             <a id="toast-link" href="#" target="_blank" class="px-3 py-2 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition shadow-lg hover:shadow-green-500/30 whitespace-nowrap">Lihat</a>
@@ -158,18 +159,15 @@
         <div class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-500"></div>
         <div class="relative w-full max-w-xs bg-gradient-to-b from-gray-900 to-[#12121a] rounded-3xl shadow-[0_0_50px_rgba(112,0,255,0.3)] overflow-hidden border border-white/10 p-8 text-center animate-pop">
             <div class="absolute -top-24 -left-24 w-48 h-48 bg-primary/20 blur-[80px] rounded-full"></div>
-            
             <div class="relative mb-6">
                 <div class="w-24 h-24 bg-gradient-to-tr from-primary to-secondary rounded-full flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(112,0,255,0.5)] animate-bounce-slow">
                     <i id="badge-icon" class="ph-fill ph-seal-check text-5xl text-white"></i>
                 </div>
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/30 blur-2xl rounded-full -z-10"></div>
             </div>
-
             <h4 class="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-2">Pencapaian Baru!</h4>
             <h3 id="badge-name" class="text-2xl font-black text-white mb-2 leading-tight">Island Hopper</h3>
             <p id="badge-desc" class="text-sm text-gray-400 mb-8 px-2">Kamu telah menjelajahi lebih dari 5 pulau di nusantara secara virtual!</p>
-            
             <button onclick="closeBadgeModal()" class="w-full py-4 rounded-2xl bg-white text-black font-black uppercase tracking-widest text-xs hover:scale-105 transition-transform active:scale-95">
                 Mantap!
             </button>
@@ -209,7 +207,7 @@
                                         <div class="flex items-center gap-2 mt-2"><i class="ph-fill ph-medal text-yellow-500 text-xl drop-shadow-md"></i><span id="user-badge" class="font-extrabold text-base text-gray-900 dark:text-white tracking-tight">Explorer</span></div>
                                     </div>
                                     
-                                    <div class="px-4 py-2 border-b border-gray-100 dark:border-white/10 bg-gray-50/50 dark:bg-black/10 relative z-10">
+                                    <div onclick="openAchievementModal()" class="px-4 py-2 border-b border-gray-100 dark:border-white/10 bg-gray-50/50 dark:bg-black/10 relative z-10 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
                                         <div class="flex justify-between items-end mb-1">
                                             <span class="text-[10px] font-bold text-primary uppercase tracking-widest">Level Progress</span>
                                             <span id="xp-text" class="text-[10px] text-gray-500 font-medium">0 / 100 XP</span>
@@ -393,7 +391,7 @@
                 <div class="flex items-center gap-1.5 mt-1 text-xs font-bold text-yellow-500 bg-yellow-500/10 px-3 py-1 rounded-full"><i class="ph-fill ph-medal"></i> Explorer</div>
             </div>
             
-            <div class="px-6 py-4 border-b border-gray-100 dark:border-white/10 bg-gray-50/50 dark:bg-black/10">
+            <div onclick="closeMobileProfile(); openAchievementModal()" class="px-6 py-4 border-b border-gray-100 dark:border-white/10 bg-gray-50/50 dark:bg-black/10 cursor-pointer active:bg-gray-200 dark:active:bg-white/10">
                 <div class="flex justify-between items-end mb-1">
                     <span class="text-[10px] font-bold text-primary uppercase tracking-widest">Level Progress</span>
                     <span id="mob-xp-text" class="text-[10px] text-gray-500 font-medium">0 / 100 XP</span>
@@ -445,6 +443,56 @@
         </div>
     </div>
 
+    <div id="achievement-modal" class="fixed inset-0 z-[250] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300" onclick="closeAchievementModal()"></div>
+        <div class="relative w-full max-w-2xl bg-[#12121a] rounded-3xl shadow-2xl overflow-hidden border border-white/10 flex flex-col max-h-[85vh] animate-slide-up">
+            <div class="relative p-8 bg-gradient-to-br from-primary/20 to-black border-b border-white/10 shrink-0">
+                <button onclick="closeAchievementModal()" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-red-500 transition-all"><i class="ph-bold ph-x"></i></button>
+                <div class="flex items-center gap-6">
+                    <div class="relative">
+                        <img id="ach-user-img" src="" class="w-20 h-20 rounded-full border-4 border-primary shadow-[0_0_20px_rgba(112,0,255,0.5)]">
+                        <div class="absolute -bottom-2 -right-2 bg-yellow-500 text-black font-black text-xs px-2 py-1 rounded-lg border-2 border-[#12121a]" id="ach-level-badge">LVL 1</div>
+                    </div>
+                    <div class="flex-1">
+                        <h2 id="ach-user-name" class="text-2xl font-bold text-white">Nama User</h2>
+                        <p class="text-sm text-gray-400 mb-3">Penjelajah Virtual</p>
+                        <div class="w-full h-3 bg-black/50 rounded-full overflow-hidden border border-white/10 relative">
+                            <div id="ach-xp-bar" class="h-full bg-gradient-to-r from-primary via-purple-500 to-secondary transition-all duration-1000 relative" style="width: 0%">
+                                <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between mt-1 text-[10px] font-bold tracking-wider text-gray-500">
+                            <span id="ach-xp-text">0 XP</span>
+                            <span id="ach-next-level">Next: Level 2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-8 overflow-y-auto modal-scroll bg-[#050507]">
+                <h3 class="text-white font-bold text-lg mb-6 flex items-center gap-2"><i class="ph-fill ph-trophy text-yellow-500"></i> Koleksi Lencana</h3>
+                <div id="badge-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="logout-modal" class="fixed inset-0 z-[200] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300" onclick="closeLogoutModal()"></div>
+        <div class="relative w-full max-w-sm bg-white dark:bg-[#12121a] rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 p-6 animate-slide-up">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ph-fill ph-sign-out text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Mau Keluar?</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Sesi jelajahmu akan berakhir. Kamu yakin ingin keluar dari akun ini?</p>
+                <div class="flex gap-3">
+                    <button onclick="closeLogoutModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all">Batal</button>
+                    <button onclick="confirmLogout()" class="flex-1 py-3 rounded-xl bg-red-600 text-white font-bold shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all">Ya, Keluar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="radar-widget" class="fixed z-[90] hidden md:flex flex-col gap-3 pointer-events-none transition-all duration-500 md:inset-x-auto md:right-8 md:bottom-8 md:items-end md:w-auto">
         <button onclick="toggleRadarDesktop()" id="radar-btn-desktop" class="pointer-events-auto group relative flex items-center justify-center gap-2.5 bg-[#1e1e20] dark:bg-white text-white dark:text-black px-5 py-3 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 border border-white/10 dark:border-black/5 ring-4 ring-black/5 dark:ring-white/10">
             <i class="ph-fill ph-broadcast text-xl animate-pulse text-secondary dark:text-primary"></i>
@@ -487,35 +535,24 @@
     </div>
 
     <div class="md:hidden fixed bottom-6 left-4 right-4 h-16 bg-white/90 dark:bg-[#1A1A24]/90 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl flex justify-between items-center px-2 z-[100]">
-        
         <a href="#map" class="nav-tab flex-1 flex flex-col items-center justify-center h-full p-0 gap-0.5 text-gray-400 hover:text-primary transition group" onclick="setActiveTab(this)">
-            <div class="h-6 flex items-center justify-center">
-                <i class="ph-bold ph-map-trifold text-xl group-hover:scale-110 transition-transform"></i>
-            </div>
+            <div class="h-6 flex items-center justify-center"><i class="ph-bold ph-map-trifold text-xl group-hover:scale-110 transition-transform"></i></div>
             <span class="text-[10px] font-medium leading-none mt-0.5">Peta</span>
         </a>
-
         <a href="#kategori" class="nav-tab flex-1 flex flex-col items-center justify-center h-full p-0 gap-0.5 text-gray-400 hover:text-primary transition group" onclick="setActiveTab(this)">
-            <div class="h-6 flex items-center justify-center">
-                <i class="ph-bold ph-buildings text-xl group-hover:scale-110 transition-transform"></i>
-            </div>
+            <div class="h-6 flex items-center justify-center"><i class="ph-bold ph-buildings text-xl group-hover:scale-110 transition-transform"></i></div>
             <span class="text-[10px] font-medium leading-none mt-0.5">Sektor</span>
         </a>
-
         <div class="relative -top-6 w-16 flex justify-center">
             <button onclick="toggleRadarMobile()" class="w-14 h-14 rounded-full bg-gray-900 dark:bg-white text-white dark:text-black flex items-center justify-center shadow-2xl shadow-primary/30 border-4 border-white dark:border-[#050507] hover:scale-110 active:scale-95 transition-all group">
                 <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <i class="ph-fill ph-broadcast text-2xl relative z-10"></i>
             </button>
         </div>
-
         <a href="#populer" class="nav-tab flex-1 flex flex-col items-center justify-center h-full p-0 gap-0.5 text-gray-400 hover:text-primary transition group" onclick="setActiveTab(this)">
-            <div class="h-6 flex items-center justify-center">
-                <i class="ph-bold ph-fire text-xl group-hover:scale-110 transition-transform"></i>
-            </div>
+            <div class="h-6 flex items-center justify-center"><i class="ph-bold ph-fire text-xl group-hover:scale-110 transition-transform"></i></div>
             <span class="text-[10px] font-medium leading-none mt-0.5">Trending</span>
         </a>
-
         <button id="mobile-tab-account" onclick="handleMobileAccount()" class="nav-tab flex-1 flex flex-col items-center justify-center h-full p-0 gap-0.5 text-gray-400 hover:text-primary transition group">
             <div class="h-6 flex items-center justify-center">
                 <img id="mobile-tab-avatar" src="" class="hidden w-6 h-6 rounded-full border border-gray-300 dark:border-white/20 object-cover">
@@ -523,73 +560,29 @@
             </div>
             <span class="text-[10px] font-medium leading-none mt-0.5">Akun</span>
         </button>
-
     </div>
-    
-    <div id="logout-modal" class="fixed inset-0 z-[200] hidden flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300" onclick="closeLogoutModal()"></div>
-        <div class="relative w-full max-w-sm bg-white dark:bg-[#12121a] rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 p-6 animate-slide-up">
-            <div class="text-center">
-                <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="ph-fill ph-sign-out text-3xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Mau Keluar?</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Sesi jelajahmu akan berakhir. Kamu yakin ingin keluar dari akun ini?</p>
-                
-                <div class="flex gap-3">
-                    <button onclick="closeLogoutModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all">
-                        Batal
-                    </button>
-                    <button onclick="confirmLogout()" class="flex-1 py-3 rounded-xl bg-red-600 text-white font-bold shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all">
-                        Ya, Keluar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="achievement-modal" class="fixed inset-0 z-[250] hidden flex items-center justify-center px-4">
-    <div class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300" onclick="closeAchievementModal()"></div>
-    <div class="relative w-full max-w-2xl bg-[#12121a] rounded-3xl shadow-2xl overflow-hidden border border-white/10 flex flex-col max-h-[85vh] animate-slide-up">
-        
-        <div class="relative p-8 bg-gradient-to-br from-primary/20 to-black border-b border-white/10 shrink-0">
-            <button onclick="closeAchievementModal()" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-red-500 transition-all"><i class="ph-bold ph-x"></i></button>
-            
-            <div class="flex items-center gap-6">
-                <div class="relative">
-                    <img id="ach-user-img" src="" class="w-20 h-20 rounded-full border-4 border-primary shadow-[0_0_20px_rgba(112,0,255,0.5)]">
-                    <div class="absolute -bottom-2 -right-2 bg-yellow-500 text-black font-black text-xs px-2 py-1 rounded-lg border-2 border-[#12121a]" id="ach-level-badge">LVL 1</div>
-                </div>
-                <div class="flex-1">
-                    <h2 id="ach-user-name" class="text-2xl font-bold text-white">Nama User</h2>
-                    <p class="text-sm text-gray-400 mb-3">Penjelajah Virtual</p>
-                    
-                    <div class="w-full h-3 bg-black/50 rounded-full overflow-hidden border border-white/10 relative">
-                        <div id="ach-xp-bar" class="h-full bg-gradient-to-r from-primary via-purple-500 to-secondary transition-all duration-1000 relative" style="width: 0%">
-                            <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
-                        </div>
-                    </div>
-                    <div class="flex justify-between mt-1 text-[10px] font-bold tracking-wider text-gray-500">
-                        <span id="ach-xp-text">0 XP</span>
-                        <span id="ach-next-level">Next: Level 2</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-8 overflow-y-auto modal-scroll bg-[#050507]">
-            <h3 class="text-white font-bold text-lg mb-6 flex items-center gap-2"><i class="ph-fill ph-trophy text-yellow-500"></i> Koleksi Lencana</h3>
-            <div id="badge-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                </div>
-        </div>
-    </div>
-</div>
 
     <script>
+        // CONFIG
         const SHEET_URLS = { 'infrastruktur': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIvK72ykG4OND6TbQdD_ACi4Sv6TRlq8g9SKh_CNB_IkYKhB_rwlsD97sZpIoJNRB5NfC8Su87kD2p/pub?gid=0&single=true&output=csv', 'budaya': 'LINK_CSV_BUDAYA_DISINI', 'pariwisata': 'LINK_CSV_PARIWISATA_DISINI', 'religi': 'LINK_CSV_RELIGI_DISINI', 'warisan': 'LINK_CSV_WARISAN_DISINI', 'maritim': 'LINK_CSV_MARITIM_DISINI', 'pemerintahan': 'LINK_CSV_PEMERINTAHAN_DISINI', 'kesehatan': 'LINK_CSV_KESEHATAN_DISINI', 'pendidikan': 'LINK_CSV_PENDIDIKAN_DISINI', 'mice': 'LINK_CSV_MICE_DISINI', 'investasi': 'LINK_CSV_INVESTASI_DISINI' };
         const RADAR_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2nDXKAPsG_If3CedztM4rgPTZQKh-44TLjOfKkK2rrT_rMp9NLZoaoajAToIWxnsGSz0ujXWqMybt/pub?gid=839999161&single=true&output=csv'; 
         const STATS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2nDXKAPsG_If3CedztM4rgPTZQKh-44TLjOfKkK2rrT_rMp9NLZoaoajAToIWxnsGSz0ujXWqMybt/pub?gid=839999161&single=true&output=csv'; 
         const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse"; const GOOGLE_FORM_ENTRY_ID = "entry.123456"; 
+
+        const XP_PER_VISIT = 10;
+        const XP_LEVEL_UP = 100;
+        const badgesConfig = [
+            { id: 'first_step', name: 'Langkah Awal', icon: 'ph-footprints', desc: 'Mengunjungi destinasi pertama.', color: 'text-green-400' },
+            { id: 'island_hopper', name: 'Island Hopper', icon: 'ph-airplane-tilt', desc: 'Menjelajahi 5 lokasi berbeda.', color: 'text-blue-400' },
+            { id: 'globetrotter', name: 'Globetrotter', icon: 'ph-globe-hemisphere-west', desc: 'Sultan! Sudah ke 20 lokasi.', color: 'text-purple-400' },
+            { id: 'night_owl', name: 'Night Owl', icon: 'ph-moon-stars', desc: 'Jelajah malam (23:00 - 04:00).', color: 'text-indigo-400' },
+            { id: 'morning_glory', name: 'Morning Glory', icon: 'ph-sun-horizon', desc: 'Jelajah pagi buta (05:00 - 08:00).', color: 'text-orange-400' },
+            { id: 'weekend_warrior', name: 'Weekend Warrior', icon: 'ph-confetti', desc: 'Login di hari Sabtu/Minggu.', color: 'text-pink-400' },
+            { id: 'critic', name: 'Kritikus', icon: 'ph-star-half', desc: 'Memberikan ulasan pertama.', color: 'text-yellow-400' },
+            { id: 'influencer', name: 'Influencer', icon: 'ph-megaphone', desc: 'Menulis 5 ulasan.', color: 'text-red-400' },
+            { id: 'veteran', name: 'Veteran', icon: 'ph-medal', desc: 'Mencapai Level 5.', color: 'text-cyan-400' },
+            { id: 'legend', name: 'The Legend', icon: 'ph-crown', desc: 'Mencapai Level 10 (Max).', color: 'text-amber-400' }
+        ];
 
         let watchId = null; let isRadarOpen = false; let cachedLocations = []; let isRadarDataLoaded = false; 
         const firebaseConfig = { apiKey: "AIzaSyCvIqMWF1X6wKkg0SYFOj1phP-v-M0ZvGw", authDomain: "govirtual-web.firebaseapp.com", projectId: "govirtual-web", storageBucket: "govirtual-web.firebasestorage.app", messagingSenderId: "295951677456", appId: "1:295951677456:web:53308b4c56b65e7d83b295", measurementId: "G-9DBGEQFTV4" };
@@ -597,186 +590,9 @@
         let auth, db, user = null;
         try { firebase.initializeApp(firebaseConfig); auth = firebase.auth(); db = firebase.firestore(); console.log("Firebase Connected!"); } catch (error) { console.warn("Firebase Config belum diisi."); }
 
+        // --- AUTH & USER LOGIC ---
         function loginWithGoogle() { if(!auth) return alert("Firebase belum dikonfigurasi!"); const provider = new firebase.auth.GoogleAuthProvider(); auth.signInWithPopup(provider).catch(e => alert(e.message)); }
         
-        // GAMIFIKASI CONFIG & LOGIC
-        const XP_PER_VISIT = 10;
-        const XP_LEVEL_UP = 100;
-        // const badgeData = {
-        //     'Night Owl': { icon: 'ph-moon', desc: 'Eksplorasi di tengah malam? Kamu benar-benar penjaga malam nusantara!', color: 'from-blue-600 to-indigo-900' },
-        //     'Island Hopper': { icon: 'ph-mountains', desc: '5 Pulau telah dijejaki. Langkahmu di dunia virtual semakin jauh!', color: 'from-emerald-500 to-teal-700' },
-        //     'Culture Guardian': { icon: 'ph-bank', desc: 'Pelestari budaya! Kamu sangat tertarik dengan sejarah bangsa.', color: 'from-orange-500 to-red-600' }
-        // };
-
-        // --- KONFIGURASI 10 BADGE ---
-const badgesConfig = [
-    { id: 'first_step', name: 'Langkah Awal', icon: 'ph-footprints', desc: 'Mengunjungi destinasi pertama.', color: 'text-green-400' },
-    { id: 'island_hopper', name: 'Island Hopper', icon: 'ph-airplane-tilt', desc: 'Menjelajahi 5 lokasi berbeda.', color: 'text-blue-400' },
-    { id: 'globetrotter', name: 'Globetrotter', icon: 'ph-globe-hemisphere-west', desc: 'Sultan! Sudah ke 20 lokasi.', color: 'text-purple-400' },
-    { id: 'night_owl', name: 'Night Owl', icon: 'ph-moon-stars', desc: 'Jelajah malam (23:00 - 04:00).', color: 'text-indigo-400' },
-    { id: 'morning_glory', name: 'Morning Glory', icon: 'ph-sun-horizon', desc: 'Jelajah pagi buta (05:00 - 08:00).', color: 'text-orange-400' },
-    { id: 'weekend_warrior', name: 'Weekend Warrior', icon: 'ph-confetti', desc: 'Login di hari Sabtu/Minggu.', color: 'text-pink-400' },
-    { id: 'critic', name: 'Kritikus', icon: 'ph-star-half', desc: 'Memberikan ulasan pertama.', color: 'text-yellow-400' },
-    { id: 'influencer', name: 'Influencer', icon: 'ph-megaphone', desc: 'Menulis 5 ulasan.', color: 'text-red-400' },
-    { id: 'veteran', name: 'Veteran', icon: 'ph-medal', desc: 'Mencapai Level 5.', color: 'text-cyan-400' },
-    { id: 'legend', name: 'The Legend', icon: 'ph-crown', desc: 'Mencapai Level 10 (Max).', color: 'text-amber-400' }
-];
-
-// --- UPDATE PROGRESS LOGIC (Modified) ---
-async function updatePlayerProgress(actionType, detail) {
-    if (!user || !db) return;
-    const userRef = db.collection('users').doc(user.uid);
-    
-    try {
-        await db.runTransaction(async (transaction) => {
-            const userDoc = await transaction.get(userRef);
-            let data = userDoc.exists ? userDoc.data() : { xp: 0, level: 1, visitedTours: [], badges: [], reviewCount: 0 };
-            
-            // Default array jika undefined
-            if(!data.visitedTours) data.visitedTours = [];
-            if(!data.badges) data.badges = [];
-            if(!data.reviewCount) data.reviewCount = 0;
-
-            let newBadges = [];
-
-            // 1. LOGIC XP (Hanya tambah XP jika visit tour)
-            if (actionType === 'visit') {
-                data.xp += 10;
-                if (!data.visitedTours.includes(detail)) data.visitedTours.push(detail);
-            } else if (actionType === 'review') {
-                data.xp += 25; // Review dapet XP lebih gede
-                data.reviewCount += 1;
-            }
-
-            // Level Up Check
-            if (data.xp >= 100) {
-                data.xp -= 100;
-                data.level += 1;
-                showFavToast("Level Up!", `Selamat datang di Level ${data.level}!`, "ph-arrow-fat-up", "text-green-500");
-            }
-
-            // 2. LOGIC BADGE CHECKER (Otomatis cek semua kondisi)
-            const hour = new Date().getHours();
-            const day = new Date().getDay(); // 0=Minggu, 6=Sabtu
-
-            // Badge: First Step
-            if (data.visitedTours.length >= 1 && !data.badges.includes('first_step')) newBadges.push('first_step');
-            
-            // Badge: Island Hopper
-            if (data.visitedTours.length >= 5 && !data.badges.includes('island_hopper')) newBadges.push('island_hopper');
-            
-            // Badge: Globetrotter
-            if (data.visitedTours.length >= 20 && !data.badges.includes('globetrotter')) newBadges.push('globetrotter');
-
-            // Badge: Night Owl
-            if (actionType === 'visit' && (hour >= 23 || hour <= 4) && !data.badges.includes('night_owl')) newBadges.push('night_owl');
-
-            // Badge: Morning Glory
-            if (actionType === 'visit' && (hour >= 5 && hour <= 8) && !data.badges.includes('morning_glory')) newBadges.push('morning_glory');
-
-            // Badge: Weekend Warrior
-            if ((day === 0 || day === 6) && !data.badges.includes('weekend_warrior')) newBadges.push('weekend_warrior');
-
-            // Badge: Critic
-            if (data.reviewCount >= 1 && !data.badges.includes('critic')) newBadges.push('critic');
-
-            // Badge: Influencer
-            if (data.reviewCount >= 5 && !data.badges.includes('influencer')) newBadges.push('influencer');
-
-            // Badge: Veteran
-            if (data.level >= 5 && !data.badges.includes('veteran')) newBadges.push('veteran');
-
-            // Badge: Legend
-            if (data.level >= 10 && !data.badges.includes('legend')) newBadges.push('legend');
-
-            // Apply Badges
-            if (newBadges.length > 0) {
-                data.badges = [...data.badges, ...newBadges];
-                // Tampilkan Modal Badge Unlocked untuk badge pertama yg didapat
-                const badgeInfo = badgesConfig.find(b => b.id === newBadges[0]);
-                setTimeout(() => showBadgeModal(badgeInfo.name, badgeInfo.desc, badgeInfo.icon), 1000);
-            }
-
-            transaction.set(userRef, data, { merge: true });
-            renderXPUI(data);
-        });
-    } catch (e) { console.error("Error progress:", e); }
-}
-        function renderXPUI(data) {
-            const xpPercent = (data.xp / XP_LEVEL_UP) * 100;
-            const progressPercent = (data.visitedTours.length / 100) * 100; // Asumsi 100 total
-            
-            // Render Desktop XP Bar
-            if(document.getElementById('xp-bar')) {
-                document.getElementById('xp-bar').style.width = `${xpPercent}%`;
-                document.getElementById('xp-text').innerText = `${data.xp} / ${XP_LEVEL_UP} XP`;
-                document.getElementById('total-progress').innerText = `${progressPercent.toFixed(0)}% wilayah dijelajahi`;
-                document.getElementById('user-badge').innerText = `Level ${data.level} Explorer`;
-            }
-
-            // Render Mobile XP Bar (ID baru untuk mobile)
-            if(document.getElementById('mob-xp-bar')) {
-                document.getElementById('mob-xp-bar').style.width = `${xpPercent}%`;
-                document.getElementById('mob-xp-text').innerText = `${data.xp} / ${XP_LEVEL_UP} XP`;
-                document.getElementById('mob-total-progress').innerText = `${progressPercent.toFixed(0)}% wilayah dijelajahi`;
-            }
-        }
-
-        function openAchievementModal() {
-    if(!user) return loginWithGoogle();
-    
-    // Isi data user di header modal
-    document.getElementById('ach-user-img').src = user.photoURL;
-    document.getElementById('ach-user-name').innerText = user.displayName;
-    
-    // Ambil data terbaru dari Firestore
-    db.collection('users').doc(user.uid).get().then(doc => {
-        const data = doc.data() || { xp: 0, level: 1, badges: [] };
-        
-        // Render Header Stats
-        document.getElementById('ach-level-badge').innerText = `LVL ${data.level}`;
-        document.getElementById('ach-xp-bar').style.width = `${data.xp}%`;
-        document.getElementById('ach-xp-text').innerText = `${data.xp} / 100 XP`;
-        document.getElementById('ach-next-level').innerText = `Next: Level ${data.level + 1}`;
-
-        // Render Grid Badges
-        const grid = document.getElementById('badge-grid');
-        grid.innerHTML = badgesConfig.map(badge => {
-            const isUnlocked = data.badges && data.badges.includes(badge.id);
-            const statusClass = isUnlocked ? 'badge-unlocked bg-white/5 border-white/20' : 'badge-locked bg-black/40 border-transparent';
-            const iconColor = isUnlocked ? badge.color : 'text-gray-600';
-            const statusText = isUnlocked ? '<span class="text-green-400 text-[10px]">Tercapai</span>' : '<span class="text-gray-600 text-[10px]"><i class="ph-fill ph-lock"></i> Terkunci</span>';
-
-            return `
-            <div class="badge-card relative p-4 rounded-2xl border flex flex-col items-center text-center gap-3 ${statusClass}">
-                <div class="w-12 h-12 rounded-full bg-black/50 flex items-center justify-center text-2xl ${iconColor} shadow-inner">
-                    <i class="ph-fill ${badge.icon}"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-gray-200 text-sm leading-tight">${badge.name}</h4>
-                    <p class="text-[10px] text-gray-500 mt-1 leading-snug">${badge.desc}</p>
-                </div>
-                <div class="mt-auto pt-2">${statusText}</div>
-            </div>`;
-        }).join('');
-        
-        document.getElementById('achievement-modal').classList.remove('hidden');
-    });
-}
-
-function closeAchievementModal() { document.getElementById('achievement-modal').classList.add('hidden'); }
-
-function showBadgeModal(title, desc, icon) {
-    document.getElementById('badge-name').innerText = title;
-    document.getElementById('badge-desc').innerText = desc;
-    document.getElementById('badge-icon').className = `ph-fill ${icon} text-5xl text-white`;
-    document.getElementById('badge-modal').classList.remove('hidden');
-}
-
-        function closeBadgeModal() {
-            document.getElementById('badge-modal').classList.add('hidden');
-        }
-
         function logout() { document.getElementById('logout-modal').classList.remove('hidden'); }
         function closeLogoutModal() { document.getElementById('logout-modal').classList.add('hidden'); }
         function confirmLogout() { if(auth) { auth.signOut().then(() => { closeLogoutModal(); window.location.reload(); }); } }
@@ -799,7 +615,6 @@ function showBadgeModal(title, desc, icon) {
                     if(mobProfileImg) mobProfileImg.src = user.photoURL;
                     if(mobProfileName) mobProfileName.innerText = user.displayName;
                     
-                    // Listen to XP changes
                     db.collection('users').doc(currentUser.uid).onSnapshot((doc) => {
                         if (doc.exists) renderXPUI(doc.data());
                     });
@@ -812,12 +627,117 @@ function showBadgeModal(title, desc, icon) {
             });
         }
 
+        // --- GAMIFICATION LOGIC ---
+        async function updatePlayerProgress(actionType, detail) {
+            if (!user || !db) return;
+            const userRef = db.collection('users').doc(user.uid);
+            try {
+                await db.runTransaction(async (transaction) => {
+                    const userDoc = await transaction.get(userRef);
+                    let data = userDoc.exists ? userDoc.data() : { xp: 0, level: 1, visitedTours: [], badges: [], reviewCount: 0 };
+                    
+                    if(!data.visitedTours) data.visitedTours = [];
+                    if(!data.badges) data.badges = [];
+                    if(!data.reviewCount) data.reviewCount = 0;
+
+                    let newBadges = [];
+                    if (actionType === 'visit') {
+                        data.xp += 10;
+                        if (!data.visitedTours.includes(detail)) data.visitedTours.push(detail);
+                    } else if (actionType === 'review') {
+                        data.xp += 25; 
+                        data.reviewCount += 1;
+                    }
+
+                    if (data.xp >= XP_LEVEL_UP) {
+                        data.xp -= XP_LEVEL_UP;
+                        data.level += 1;
+                        showFavToast("Level Up!", `Selamat datang di Level ${data.level}!`, "ph-arrow-fat-up", "text-green-500");
+                    }
+
+                    const hour = new Date().getHours();
+                    const day = new Date().getDay(); 
+
+                    if (data.visitedTours.length >= 1 && !data.badges.includes('first_step')) newBadges.push('first_step');
+                    if (data.visitedTours.length >= 5 && !data.badges.includes('island_hopper')) newBadges.push('island_hopper');
+                    if (data.visitedTours.length >= 20 && !data.badges.includes('globetrotter')) newBadges.push('globetrotter');
+                    if (actionType === 'visit' && (hour >= 23 || hour <= 4) && !data.badges.includes('night_owl')) newBadges.push('night_owl');
+                    if (actionType === 'visit' && (hour >= 5 && hour <= 8) && !data.badges.includes('morning_glory')) newBadges.push('morning_glory');
+                    if ((day === 0 || day === 6) && !data.badges.includes('weekend_warrior')) newBadges.push('weekend_warrior');
+                    if (data.reviewCount >= 1 && !data.badges.includes('critic')) newBadges.push('critic');
+                    if (data.reviewCount >= 5 && !data.badges.includes('influencer')) newBadges.push('influencer');
+                    if (data.level >= 5 && !data.badges.includes('veteran')) newBadges.push('veteran');
+                    if (data.level >= 10 && !data.badges.includes('legend')) newBadges.push('legend');
+
+                    if (newBadges.length > 0) {
+                        data.badges = [...data.badges, ...newBadges];
+                        const badgeInfo = badgesConfig.find(b => b.id === newBadges[0]);
+                        setTimeout(() => showBadgeModal(badgeInfo.name, badgeInfo.desc, badgeInfo.icon), 1000);
+                    }
+
+                    transaction.set(userRef, data, { merge: true });
+                    renderXPUI(data);
+                });
+            } catch (e) { console.error("Error progress:", e); }
+        }
+
+        function renderXPUI(data) {
+            const xpPercent = (data.xp / XP_LEVEL_UP) * 100;
+            const progressPercent = (data.visitedTours.length / 100) * 100; 
+            
+            if(document.getElementById('xp-bar')) {
+                document.getElementById('xp-bar').style.width = `${xpPercent}%`;
+                document.getElementById('xp-text').innerText = `${data.xp} / ${XP_LEVEL_UP} XP`;
+                document.getElementById('total-progress').innerText = `${progressPercent.toFixed(0)}% wilayah dijelajahi`;
+                document.getElementById('user-badge').innerText = `Level ${data.level} Explorer`;
+            }
+            if(document.getElementById('mob-xp-bar')) {
+                document.getElementById('mob-xp-bar').style.width = `${xpPercent}%`;
+                document.getElementById('mob-xp-text').innerText = `${data.xp} / ${XP_LEVEL_UP} XP`;
+                document.getElementById('mob-total-progress').innerText = `${progressPercent.toFixed(0)}% wilayah dijelajahi`;
+            }
+        }
+
+        // --- MODAL & UI HANDLERS ---
+        function openAchievementModal() {
+            if(!user) return loginWithGoogle();
+            document.getElementById('ach-user-img').src = user.photoURL;
+            document.getElementById('ach-user-name').innerText = user.displayName;
+            
+            db.collection('users').doc(user.uid).get().then(doc => {
+                const data = doc.data() || { xp: 0, level: 1, badges: [] };
+                document.getElementById('ach-level-badge').innerText = `LVL ${data.level}`;
+                document.getElementById('ach-xp-bar').style.width = `${data.xp}%`;
+                document.getElementById('ach-xp-text').innerText = `${data.xp} / 100 XP`;
+                document.getElementById('ach-next-level').innerText = `Next: Level ${data.level + 1}`;
+
+                const grid = document.getElementById('badge-grid');
+                grid.innerHTML = badgesConfig.map(badge => {
+                    const isUnlocked = data.badges && data.badges.includes(badge.id);
+                    const statusClass = isUnlocked ? 'badge-unlocked bg-white/5 border-white/20' : 'badge-locked bg-black/40 border-transparent';
+                    const iconColor = isUnlocked ? badge.color : 'text-gray-600';
+                    const statusText = isUnlocked ? '<span class="text-green-400 text-[10px]">Tercapai</span>' : '<span class="text-gray-600 text-[10px]"><i class="ph-fill ph-lock"></i> Terkunci</span>';
+                    return `<div class="badge-card relative p-4 rounded-2xl border flex flex-col items-center text-center gap-3 ${statusClass}"><div class="w-12 h-12 rounded-full bg-black/50 flex items-center justify-center text-2xl ${iconColor} shadow-inner"><i class="ph-fill ${badge.icon}"></i></div><div><h4 class="font-bold text-gray-200 text-sm leading-tight">${badge.name}</h4><p class="text-[10px] text-gray-500 mt-1 leading-snug">${badge.desc}</p></div><div class="mt-auto pt-2">${statusText}</div></div>`;
+                }).join('');
+                document.getElementById('achievement-modal').classList.remove('hidden');
+            });
+        }
+
+        function closeAchievementModal() { document.getElementById('achievement-modal').classList.add('hidden'); }
+        function showBadgeModal(title, desc, icon) {
+            document.getElementById('badge-name').innerText = title;
+            document.getElementById('badge-desc').innerText = desc;
+            document.getElementById('badge-icon').className = `ph-fill ${icon} text-5xl text-white`;
+            document.getElementById('badge-modal').classList.remove('hidden');
+        }
+        function closeBadgeModal() { document.getElementById('badge-modal').classList.add('hidden'); }
+
+        // --- CORE FUNCTIONS (Visit, Favorite, Search) ---
         function visitTour(url, name, location) { 
             window.open(url, '_blank'); 
             if(user && db) { 
                 db.collection('users').doc(user.uid).collection('history').add({ name: name, location: location, url: url, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).catch(err => console.error(err)); 
-                // Trigger Gamification
-                updatePlayerProgress({ name, location });
+                updatePlayerProgress('visit', name);
             } 
         }
 
@@ -853,29 +773,11 @@ function showBadgeModal(title, desc, icon) {
             const list = document.getElementById('favorites-list'); 
             list.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">Memuat data...</div>'; 
             db.collection('users').doc(user.uid).collection('favorites').orderBy('timestamp', 'desc').get().then(snapshot => { 
-                if (snapshot.empty) { 
-                    list.innerHTML = `<div class="col-span-full text-center py-10"><i class="ph-duotone ph-heart-break text-4xl text-gray-300 mb-2"></i><p class="text-gray-500">Belum ada favorit.</p></div>`; 
-                    return; 
-                } 
+                if (snapshot.empty) { list.innerHTML = `<div class="col-span-full text-center py-10"><i class="ph-duotone ph-heart-break text-4xl text-gray-300 mb-2"></i><p class="text-gray-500">Belum ada favorit.</p></div>`; return; } 
                 let html = ''; 
                 snapshot.forEach(doc => { 
                     const data = doc.data(); 
-                    html += `
-                    <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 transition group cursor-pointer relative">
-                        <div onclick="window.open('${data.url}', '_blank')" class="flex items-center gap-3 flex-1">
-                            <div class="w-16 h-16 rounded-lg bg-gray-200 overflow-hidden shrink-0">
-                                <img src="${data.img}" class="w-full h-full object-cover">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4>
-                                <p class="text-xs text-gray-500">${data.loc}</p>
-                            </div>
-                        </div>
-                        <button onclick="toggleFavorite('${data.name.replace(/'/g,"\\'")}', '${data.loc}', '${data.url}', this)" 
-                                class="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full transition z-10">
-                            <i class="ph-fill ph-trash"></i>
-                        </button>
-                    </div>`; 
+                    html += `<div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 transition group cursor-pointer relative"><div onclick="window.open('${data.url}', '_blank')" class="flex items-center gap-3 flex-1"><div class="w-16 h-16 rounded-lg bg-gray-200 overflow-hidden shrink-0"><img src="${data.img}" class="w-full h-full object-cover"></div><div class="flex-1 min-w-0"><h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4><p class="text-xs text-gray-500">${data.loc}</p></div></div><button onclick="toggleFavorite('${data.name.replace(/'/g,"\\'")}', '${data.loc}', '${data.url}', this)" class="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full transition z-10"><i class="ph-fill ph-trash"></i></button></div>`; 
                 }); 
                 list.innerHTML = html; 
             }).catch(err => list.innerHTML = `<p>Error: ${err.message}</p>`); 
@@ -884,8 +786,17 @@ function showBadgeModal(title, desc, icon) {
         
         function showHistoryModal() { if(!user) return loginWithGoogle(); const list = document.getElementById('history-list'); list.innerHTML = '<div class="p-6 text-center text-gray-400">Memuat riwayat...</div>'; db.collection('users').doc(user.uid).collection('history').orderBy('timestamp', 'desc').limit(20).get().then(snapshot => { if (snapshot.empty) { list.innerHTML = `<div class="p-6 text-center"><p class="text-gray-500 text-sm">Belum ada riwayat.</p></div>`; return; } let html = ''; snapshot.forEach(doc => { const data = doc.data(); const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Baru saja'; html += `<div onclick="window.open('${data.url}', '_blank')" class="p-4 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center justify-between group cursor-pointer transition"><div class="flex items-center gap-3 overflow-hidden"><div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center shrink-0"><i class="ph-bold ph-clock-counter-clockwise"></i></div><div class="min-w-0"><h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4><p class="text-xs text-gray-500">${date}</p></div></div><i class="ph-bold ph-caret-right text-gray-300 group-hover:text-primary transition shrink-0"></i></div>`; }); list.innerHTML = html; }); document.getElementById('history-modal').classList.remove('hidden'); }
         
+        function showFavToast(title, msg, iconClass, iconColor) {
+            const toast = document.getElementById('radar-toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-location').innerText = msg;
+            // Reusing radar toast style for simplicity, but can be customized
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        // --- MAP, SEARCH & INITIALIZATION ---
         function setActiveTab(element) { document.querySelectorAll('.nav-tab').forEach(el => { el.classList.remove('text-primary'); el.classList.add('text-gray-400'); }); element.classList.remove('text-gray-400'); element.classList.add('text-primary'); }
-        
         function handleMobileAccount() { if (user) { document.getElementById('mobile-profile-modal').classList.remove('hidden'); } else { loginWithGoogle(); } }
         function closeMobileProfile() { document.getElementById('mobile-profile-modal').classList.add('hidden'); }
 
@@ -898,7 +809,7 @@ function showBadgeModal(title, desc, icon) {
 
         let currentReviewListener = null; let currentRating = 5; 
         function loadReviews(categoryId) { const list = document.getElementById('review-list'); list.innerHTML = '<p class="text-sm text-gray-500 italic animate-pulse">Menghubungkan...</p>'; if (currentReviewListener) currentReviewListener(); currentReviewListener = db.collection('reviews').where('categoryId', '==', categoryId).orderBy('timestamp', 'desc').limit(20).onSnapshot((snapshot) => { if (snapshot.empty) { list.innerHTML = '<p class="text-sm text-gray-500 italic">Belum ada ulasan.</p>'; return; } let html = ''; snapshot.forEach((doc) => { const r = doc.data(); let starsHtml = ''; for(let i=1; i<=5; i++) { starsHtml += i <= r.rating ? '<i class="ph-fill ph-star text-yellow-400 text-xs"></i>' : '<i class="ph-fill ph-star text-gray-300 text-xs"></i>'; } const timeString = r.timestamp ? new Date(r.timestamp.seconds * 1000).toLocaleDateString('id-ID') : 'Baru saja'; html += `<div class="flex gap-3 animate-slide-up"><img src="${r.userPhoto || 'https://ui-avatars.com/api/?name=User'}" class="w-8 h-8 rounded-full border border-gray-200 dark:border-white/10 shrink-0"><div class="bg-gray-100 dark:bg-white/5 p-3 rounded-lg rounded-tl-none w-full"><div class="flex justify-between items-start mb-1"><span class="font-bold text-xs text-gray-900 dark:text-white">${r.userName}</span><span class="text-[10px] text-gray-400">${timeString}</span></div><div class="flex mb-1">${starsHtml}</div><p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${r.text}</p></div></div>`; }); list.innerHTML = html; }); }
-        function submitReview() { if(!user) { alert("Login dulu!"); loginWithGoogle(); return; } const text = document.getElementById('review-input').value.trim(); if(!text) return alert("Isi ulasan!"); db.collection('reviews').add({ categoryId: currentActiveCatId, userId: user.uid, userName: user.displayName, userPhoto: user.photoURL, text: text, rating: currentRating, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => { document.getElementById('review-input').value = ""; setRating(5); }); }
+        function submitReview() { if(!user) { alert("Login dulu!"); loginWithGoogle(); return; } const text = document.getElementById('review-input').value.trim(); if(!text) return alert("Isi ulasan!"); db.collection('reviews').add({ categoryId: currentActiveCatId, userId: user.uid, userName: user.displayName, userPhoto: user.photoURL, text: text, rating: currentRating, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => { document.getElementById('review-input').value = ""; setRating(5); updatePlayerProgress('review', null); }); }
         function setRating(n) { currentRating = n; const stars = document.getElementById('star-container').children; for (let i = 0; i < stars.length; i++) { stars[i].className = i < n ? "ph-fill ph-star cursor-pointer text-yellow-400 transition transform hover:scale-110" : "ph-fill ph-star cursor-pointer text-gray-300 transition"; } }
         function checkBadges(uid) { document.getElementById('user-badge').innerText = "Explorer"; }
 
