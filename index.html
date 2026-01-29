@@ -102,6 +102,20 @@
         .custom-marker-container:hover .custom-marker-head { transform: scale(1.25); border-color: #00d4ff; box-shadow: 0 0 25px #00d4ff; z-index: 100; }
         .pulse-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; border-radius: 50%; border: 1px solid rgba(112, 0, 255, 0.6); box-shadow: 0 0 10px rgba(112, 0, 255, 0.4); animation: marker-pulse 2s infinite; z-index: 1; }
         @keyframes marker-pulse { 0% { width: 100%; height: 100%; opacity: 1; border-width: 2px; } 100% { width: 250%; height: 250%; opacity: 0; border-width: 0px; } }
+        @keyframes float-up-fade {
+    0% { transform: translateY(0) scale(0.5); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translateY(-40px) scale(1.2); opacity: 0; }
+}
+
+@keyframes heart-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+
+.animate-float-up { animation: float-up-fade 0.8s ease-out forwards; }
+.animate-pop { animation: heart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     </style>
 </head>
 <body class="antialiased selection:bg-secondary selection:text-white dark:selection:text-space overflow-x-hidden pb-32 md:pb-0">
@@ -489,7 +503,7 @@
 
         function visitTour(url, name, location) { window.open(url, '_blank'); if(user && db) { db.collection('users').doc(user.uid).collection('history').add({ name: name, location: location, url: url, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).catch(err => console.error(err)); } }
         async function toggleFavorite(name, location, url) { if(!user) { loginWithGoogle(); return; } const favRef = db.collection('users').doc(user.uid).collection('favorites'); const snapshot = await favRef.where('url', '==', url).get(); if (!snapshot.empty) { snapshot.forEach(doc => doc.ref.delete()); alert(`❌ Dihapus dari favorit: ${name}`); if(!document.getElementById('favorites-modal').classList.contains('hidden')) showFavoritesModal(); } else { const placeholderImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&size=128`; favRef.add({ name: name, loc: location, url: url, img: placeholderImg, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => alert(`❤️ Disimpan: ${name}`)); } }
-        function showFavoritesModal() { if(!user) return loginWithGoogle(); const list = document.getElementById('favorites-list'); list.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">Memuat data...</div>'; db.collection('users').doc(user.uid).collection('favorites').orderBy('timestamp', 'desc').get().then(snapshot => { if (snapshot.empty) { list.innerHTML = `<div class="col-span-full text-center py-10"><i class="ph-duotone ph-heart-break text-4xl text-gray-300 mb-2"></i><p class="text-gray-500">Belum ada favorit.</p></div>`; return; } let html = ''; snapshot.forEach(doc => { const data = doc.data(); html += `<div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 transition group cursor-pointer relative"><div onclick="window.open('${data.url}', '_blank')" class="flex items-center gap-3 flex-1"><div class="w-16 h-16 rounded-lg bg-gray-200 overflow-hidden shrink-0"><img src="${data.img}" class="w-full h-full object-cover"></div><div class="flex-1 min-w-0"><h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4><p class="text-xs text-gray-500">${data.loc}</p></div></div><button onclick="toggleFavorite('${data.name}', '${data.loc}', '${data.url}')" class="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full transition z-10"><i class="ph-fill ph-trash"></i></button></div>`; }); list.innerHTML = html; }).catch(err => list.innerHTML = `<p>Error: ${err.message}</p>`); document.getElementById('favorites-modal').classList.remove('hidden'); }
+        function showFavoritesModal() { if(!user) return loginWithGoogle(); const list = document.getElementById('favorites-list'); list.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">Memuat data...</div>'; db.collection('users').doc(user.uid).collection('favorites').orderBy('timestamp', 'desc').get().then(snapshot => { if (snapshot.empty) { list.innerHTML = `<div class="col-span-full text-center py-10"><i class="ph-duotone ph-heart-break text-4xl text-gray-300 mb-2"></i><p class="text-gray-500">Belum ada favorit.</p></div>`; return; } let html = ''; snapshot.forEach(doc => { const data = doc.data(); html += `<div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 transition group cursor-pointer relative"><div onclick="window.open('${data.url}', '_blank')" class="flex items-center gap-3 flex-1"><div class="w-16 h-16 rounded-lg bg-gray-200 overflow-hidden shrink-0"><img src="${data.img}" class="w-full h-full object-cover"></div><div class="flex-1 min-w-0"><h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4><p class="text-xs text-gray-500">${data.loc}</p></div></div><button onclick="toggleFavorite('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.url}')" class="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full transition z-10"><i class="ph-fill ph-trash"></i></button></div>`; }); list.innerHTML = html; }).catch(err => list.innerHTML = `<p>Error: ${err.message}</p>`); document.getElementById('favorites-modal').classList.remove('hidden'); }
         function showHistoryModal() { if(!user) return loginWithGoogle(); const list = document.getElementById('history-list'); list.innerHTML = '<div class="p-6 text-center text-gray-400">Memuat riwayat...</div>'; db.collection('users').doc(user.uid).collection('history').orderBy('timestamp', 'desc').limit(20).get().then(snapshot => { if (snapshot.empty) { list.innerHTML = `<div class="p-6 text-center"><p class="text-gray-500 text-sm">Belum ada riwayat.</p></div>`; return; } let html = ''; snapshot.forEach(doc => { const data = doc.data(); const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Baru saja'; html += `<div onclick="window.open('${data.url}', '_blank')" class="p-4 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center justify-between group cursor-pointer transition"><div class="flex items-center gap-3 overflow-hidden"><div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center shrink-0"><i class="ph-bold ph-clock-counter-clockwise"></i></div><div class="min-w-0"><h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4><p class="text-xs text-gray-500">${date}</p></div></div><i class="ph-bold ph-caret-right text-gray-300 group-hover:text-primary transition shrink-0"></i></div>`; }); list.innerHTML = html; }); document.getElementById('history-modal').classList.remove('hidden'); }
         
         function setActiveTab(element) { document.querySelectorAll('.nav-tab').forEach(el => { el.classList.remove('text-primary'); el.classList.add('text-gray-400'); }); element.classList.remove('text-gray-400'); element.classList.add('text-primary'); }
@@ -560,9 +574,52 @@
         function closeModal() { document.getElementById('modal-backdrop').classList.remove('modal-backdrop-active'); document.getElementById('modal-content').classList.remove('modal-content-active'); setTimeout(() => modal.classList.add('hidden'), 300); }
         function showDropdown() { document.getElementById('search-dropdown').classList.remove('dropdown-enter'); document.getElementById('search-dropdown').classList.add('dropdown-active'); }
         function hideDropdownWithDelay() { setTimeout(() => { document.getElementById('search-dropdown').classList.remove('dropdown-active'); document.getElementById('search-dropdown').classList.add('dropdown-enter'); }, 200); }
-        function renderResults(res) { if (res.length === 0) { dropdownContainer.innerHTML = `<div class="p-4 text-center text-gray-500 text-sm">Tidak ditemukan.</div>`; return; } let html = `<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Hasil Pencarian</p>`; res.forEach(i => { let color = i.type==='Kategori'?'text-purple-400 bg-purple-500/20':i.type==='Destinasi'?'text-green-400 bg-green-500/20':'text-blue-400 bg-blue-500/20'; let act = i.action==='modal'?`openModal('${i.id}')`:`visitTour('${i.link}','${i.name}','${i.sub}')`; html += `<div onclick="${act}" class="flex items-center justify-between p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-lg ${color} flex items-center justify-center shrink-0"><i class="ph-fill ${i.icon} text-xl"></i></div><div><h4 class="text-gray-200 font-medium text-sm md:text-base line-clamp-1">${i.name}</h4><p class="text-gray-500 text-xs">${i.sub}</p></div></div><div class="w-8 h-8 rounded-lg border border-gray-600 flex items-center justify-center text-gray-400 group-hover/item:bg-primary group-hover/item:text-white transition-all"><i class="ph-bold ph-arrow-right"></i></div></div>`; }); dropdownContainer.innerHTML = html; }
-        function renderDefault() { const defs = popularTours.slice(0,3).map(t=>({type:'Trending',name:t.name,sub:t.loc,icon:'ph-fire',link:t.link})); let html=`<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Rekomendasi</p>`; defs.forEach(i=>{ html+=`<div onclick="visitTour('${i.link}','${i.name}','${i.sub}')" class="flex items-center justify-between p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center shrink-0"><i class="ph-fill ${i.icon} text-xl"></i></div><div><h4 class="text-gray-200 font-medium text-sm md:text-base">${i.name}</h4><p class="text-gray-500 text-xs">${i.sub}</p></div></div><i class="ph-bold ph-arrow-right text-gray-400"></i></div>`; }); dropdownContainer.innerHTML = html; }
-        searchInput.addEventListener('input', (e) => { const k = e.target.value.toLowerCase(); if(k.length===0) { renderDefault(); return; } renderResults(allSearchData.filter(i => i.name.toLowerCase().includes(k))); });
+function renderResults(res) {
+    if (res.length === 0) {
+        dropdownContainer.innerHTML = `<div class="p-4 text-center text-gray-500 text-sm">Tidak ditemukan.</div>`;
+        return;
+    }
+    let html = `<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Hasil Pencarian</p>`;
+    res.forEach(i => {
+        let color = i.type==='Kategori'?'text-purple-400 bg-purple-500/20':i.type==='Destinasi'?'text-green-400 bg-green-500/20':'text-blue-400 bg-blue-500/20';
+        let act = i.action==='modal'?`openModal('${i.id}')`:`visitTour('${i.link}','${i.name}','${i.sub}')`;
+        
+        // PERUBAHAN DISINI: Pakai justify-start dan gap-4
+        html += `
+        <div onclick="${act}" class="flex items-center justify-start gap-4 p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
+            <div class="w-10 h-10 rounded-lg ${color} flex items-center justify-center shrink-0">
+                <i class="ph-fill ${i.icon} text-xl"></i>
+            </div>
+            <div class="flex-1">
+                <h4 class="text-gray-200 font-medium text-sm md:text-base line-clamp-1 text-left">${i.name}</h4>
+                <p class="text-gray-500 text-xs text-left">${i.sub}</p>
+            </div>
+            <div class="w-8 h-8 rounded-lg border border-gray-600 flex items-center justify-center text-gray-400 group-hover/item:bg-primary group-hover/item:text-white transition-all shrink-0">
+                <i class="ph-bold ph-arrow-right"></i>
+            </div>
+        </div>`;
+    });
+    dropdownContainer.innerHTML = html;
+}        
+function renderDefault() {
+    const defs = popularTours.slice(0,3).map(t=>({type:'Trending',name:t.name,sub:t.loc,icon:'ph-fire',link:t.link}));
+    let html=`<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Rekomendasi</p>`;
+    defs.forEach(i=>{
+        // PERUBAHAN DISINI: justify-start agar rata kiri
+        html+=`
+        <div onclick="visitTour('${i.link}','${i.name}','${i.sub}')" class="flex items-center justify-start gap-4 p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
+            <div class="w-10 h-10 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center shrink-0">
+                <i class="ph-fill ${i.icon} text-xl"></i>
+            </div>
+            <div class="flex-1">
+                <h4 class="text-gray-200 font-medium text-sm md:text-base text-left">${i.name}</h4>
+                <p class="text-gray-500 text-xs text-left">${i.sub}</p>
+            </div>
+            <i class="ph-bold ph-arrow-right text-gray-400 shrink-0"></i>
+        </div>`;
+    });
+    dropdownContainer.innerHTML = html;
+}        searchInput.addEventListener('input', (e) => { const k = e.target.value.toLowerCase(); if(k.length===0) { renderDefault(); return; } renderResults(allSearchData.filter(i => i.name.toLowerCase().includes(k))); });
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); }); renderDefault();
 
         window.onload = function() {
@@ -593,6 +650,53 @@
                 });
             });
         }
+
+        async function toggleFavorite(name, location, url) {
+    if (!user) {
+        loginWithGoogle();
+        return;
+    }
+
+    // Ambil elemen tombol yang diklik (menggunakan event target)
+    const btn = event.currentTarget;
+    const icon = btn.querySelector('i');
+    
+    const favRef = db.collection('users').doc(user.uid).collection('favorites');
+    const snapshot = await favRef.where('url', '==', url).get();
+
+    // Buat elemen teks melayang
+    const floatingText = document.createElement('span');
+    floatingText.className = "absolute inset-0 flex items-center justify-center text-[10px] font-bold pointer-events-none z-50 animate-float-up";
+    
+    if (!snapshot.empty) {
+        // PROSES HAPUS
+        snapshot.forEach(doc => doc.ref.delete());
+        
+        floatingText.innerText = "Removed";
+        floatingText.classList.add("text-gray-500");
+        icon.className = "ph-bold ph-heart"; // Balik ke outline
+        
+        if (!document.getElementById('favorites-modal').classList.contains('hidden')) showFavoritesModal();
+    } else {
+        // PROSES TAMBAH
+        const placeholderImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=7000ff&color=fff&size=128`;
+        favRef.add({
+            name: name, loc: location, url: url, img: placeholderImg,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        floatingText.innerText = "Favorit!";
+        floatingText.classList.add("text-red-500");
+        
+        // Efek Pop pada Icon
+        icon.className = "ph-fill ph-heart text-red-500 animate-pop";
+    }
+
+    // Masukkan teks ke tombol dan hapus setelah animasi selesai
+    btn.classList.add('relative');
+    btn.appendChild(floatingText);
+    setTimeout(() => floatingText.remove(), 800);
+}
     </script>
 </body>
 </html>
