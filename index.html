@@ -31,6 +31,8 @@
     <meta property="og:description" content="Platform virtual tour 360° untuk menjelajahi wisata, budaya, dan infrastruktur Indonesia secara online dan interaktif.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://arsipnusa.github.io/govirtualindonesia/">
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -641,6 +643,80 @@
         </button>
     </div>
 
+    <div style="position: fixed; left: -9999px; top: 0; z-index: -1; pointer-events: none; visibility: hidden;">
+    <div id="postcard-template" class="relative w-[540px] h-[960px] bg-[#12121a] overflow-hidden flex flex-col font-sans text-white">
+        <div class="absolute inset-0 z-0">
+            <img id="pc-bg-img" src="" class="w-full h-full object-cover" crossorigin="anonymous">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#12121a] via-[#12121a]/50 to-black/30"></div>
+        </div>
+
+        <div class="relative z-10 p-8 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="https://govirtual.id/web/image/logo-govirtual.webp" class="h-8 brightness-0 invert" crossorigin="anonymous">
+            </div>
+            <div class="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-bold tracking-widest uppercase">
+                Virtual Explorer
+            </div>
+        </div>
+
+        <div class="relative z-10 mt-auto p-8 pb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/80 backdrop-blur-md text-white font-bold text-sm mb-4 shadow-lg">
+                <i class="ph-fill ph-map-pin"></i> Sedang Menjelajah
+            </div>
+            <h1 id="pc-dest-name" class="text-5xl font-black leading-tight mb-2 drop-shadow-lg">Nama Destinasi</h1>
+            <p id="pc-dest-loc" class="text-xl text-gray-300 font-medium flex items-center gap-2 drop-shadow-md"><i class="ph-bold ph-push-pin"></i> Lokasi, Indonesia</p>
+        </div>
+
+        <div class="relative z-10 p-8 bg-[#12121a]/80 backdrop-blur-xl border-t border-white/10 flex items-center gap-5">
+            <div class="relative shrink-0">
+                <img id="pc-user-img" src="" class="w-20 h-20 rounded-full border-4 border-primary shadow-[0_0_20px_rgba(112,0,255,0.6)] object-cover" crossorigin="anonymous">
+                <div id="pc-user-level" class="absolute -bottom-2 -right-2 px-3 py-1 bg-yellow-500 text-black text-[10px] font-black rounded-full border-2 border-[#12121a]">LVL 1</div>
+            </div>
+            <div>
+                <h3 id="pc-user-name" class="text-2xl font-bold mb-1">Nama User</h3>
+                <p class="text-primary text-sm font-bold tracking-wider uppercase">Penjelajah Nusantara</p>
+                <p class="text-gray-500 text-xs mt-2 italic">Bergabunglah di govirtual.id</p>
+            </div>
+             <div class="ml-auto">
+                <i class="ph-fill ph-qr-code text-5xl text-white/30"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="share-modal" class="fixed inset-0 z-[350] hidden flex items-center justify-center px-4">
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity duration-300" onclick="closeShareModal()"></div>
+    <div class="relative w-full max-w-md bg-[#12121a] rounded-3xl shadow-2xl overflow-hidden border border-white/10 p-6 animate-slide-up flex flex-col max-h-[90vh]">
+        <div class="flex justify-between items-center mb-4 shrink-0">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="ph-fill ph-share-network text-primary"></i> Bagikan Momenmu</h3>
+            <button onclick="closeShareModal()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:text-red-500 transition"><i class="ph-bold ph-x"></i></button>
+        </div>
+        
+        <div id="share-loading" class="hidden flex-col items-center justify-center py-20 gap-4">
+            <div class="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+            <p class="text-gray-400 text-sm animate-pulse">Sedang mencetak kartu pos...</p>
+        </div>
+
+        <div id="share-result" class="hidden flex-col gap-6 overflow-y-auto modal-scroll">
+            <div class="relative rounded-2xl overflow-hidden shadow-xl border border-white/10 bg-black/50">
+                <img id="postcard-preview-img" src="" class="w-full h-auto object-contain">
+            </div>
+            <div class="grid grid-cols-2 gap-3 shrink-0">
+                <button onclick="downloadPostcard()" class="py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-bold transition flex items-center justify-center gap-2 border border-white/10">
+                    <i class="ph-bold ph-download-simple"></i> Simpan Gambar
+                </button>
+                <button id="btn-web-share" onclick="shareWebAPI()" class="py-3 rounded-xl bg-primary hover:bg-primary/80 text-white font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-primary/30 hidden md:hidden">
+                    <i class="ph-bold ph-share-fat"></i> Share Apps
+                </button>
+                 <button id="btn-copy-link" onclick="copyLinkShare()" class="py-3 rounded-xl bg-primary hover:bg-primary/80 text-white font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-primary/30 md:flex">
+                    <i class="ph-bold ph-link"></i> Salin Link
+                </button>
+            </div>
+             <p class="text-center text-xs text-gray-500">Simpan gambar untuk dibagikan ke Instagram Story / WhatsApp Status!</p>
+        </div>
+    </div>
+</div>
+
     <script>
         // CONFIG
         const SHEET_URLS = { 'infrastruktur': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIvK72ykG4OND6TbQdD_ACi4Sv6TRlq8g9SKh_CNB_IkYKhB_rwlsD97sZpIoJNRB5NfC8Su87kD2p/pub?gid=0&single=true&output=csv', 'budaya': 'LINK_CSV_BUDAYA_DISINI', 'pariwisata': 'LINK_CSV_PARIWISATA_DISINI', 'religi': 'LINK_CSV_RELIGI_DISINI', 'warisan': 'LINK_CSV_WARISAN_DISINI', 'maritim': 'LINK_CSV_MARITIM_DISINI', 'pemerintahan': 'LINK_CSV_PEMERINTAHAN_DISINI', 'kesehatan': 'LINK_CSV_KESEHATAN_DISINI', 'pendidikan': 'LINK_CSV_PENDIDIKAN_DISINI', 'mice': 'LINK_CSV_MICE_DISINI', 'investasi': 'LINK_CSV_INVESTASI_DISINI' };
@@ -862,6 +938,134 @@ async function updatePlayerProgress(actionType, detail) {
         }
         function closeBadgeModal() { document.getElementById('badge-modal').classList.add('hidden'); }
 
+        // =========================================
+// LOGIC VIRTUAL POSTCARD GENERATOR
+// =========================================
+
+let currentPostcardDataUrl = null;
+let currentShareLink = null;
+
+async function openShareModal(name, location, imgUrl, linkUrl) {
+    // 1. Cek Login Wajib
+    if (!user) {
+        showFavToast("Login Diperlukan", "Login dulu untuk membuat kartu pos!", "ph-lock-key", "text-yellow-500");
+        loginWithGoogle();
+        return;
+    }
+
+    // 2. Buka Modal & Tampilkan Loading
+    const modal = document.getElementById('share-modal');
+    const loading = document.getElementById('share-loading');
+    const result = document.getElementById('share-result');
+    
+    modal.classList.remove('hidden');
+    loading.classList.remove('hidden');
+    result.classList.add('hidden');
+    currentShareLink = linkUrl || window.location.href;
+
+    try {
+        // 3. Ambil Data User Terbaru dari Firestore (untuk level yang akurat)
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        const userData = userDoc.data() || { level: 1 };
+
+        // 4. Isi Data ke Hidden Template
+        // Gunakan gambar proxy atau placeholder jika gambar asli kena CORS
+        const safeImgUrl = imgUrl.startsWith('http') ? imgUrl : `https://via.placeholder.com/540x960?text=${encodeURIComponent(name)}`;
+        // Alternatif: Gunakan layanan proxy gambar jika punya, untuk mengatasi masalah CORS pada html2canvas.
+        // Untuk saat ini kita coba load langsung dengan crossorigin="anonymous" di tag HTML nya.
+        
+        document.getElementById('pc-bg-img').src = safeImgUrl;
+        document.getElementById('pc-dest-name').innerText = name;
+        document.getElementById('pc-dest-loc').innerText = location;
+        
+        // Data User
+        document.getElementById('pc-user-img').src = user.photoURL || 'https://ui-avatars.com/api/?name=User';
+        document.getElementById('pc-user-name').innerText = user.displayName || 'Explorer';
+        document.getElementById('pc-user-level').innerText = `LVL ${userData.level || 1}`;
+
+        // Beri waktu sedikit agar gambar di template termuat
+        await new Promise(r => setTimeout(r, 1000));
+
+        // 5. Generate Gambar dengan html2canvas
+        const template = document.getElementById('postcard-template');
+        const canvas = await html2canvas(template, {
+            useCORS: true, // PENTING: agar bisa load gambar dari domain lain (Google, dll)
+            scale: 2, // Kualitas retina (2x lipat)
+            backgroundColor: '#12121a', // Warna background cadangan
+            logging: false // Matikan log biar bersih
+        });
+
+        // 6. Tampilkan Hasil di Preview Modal
+        currentPostcardDataUrl = canvas.toDataURL("image/jpeg", 0.9); // Format JPEG kualitas 90%
+        document.getElementById('postcard-preview-img').src = currentPostcardDataUrl;
+
+        // Cek dukungan Web Share API (biasanya cuma di HP)
+        if (navigator.share) {
+            document.getElementById('btn-web-share').classList.remove('hidden');
+             document.getElementById('btn-copy-link').classList.add('hidden');
+        } else {
+             document.getElementById('btn-web-share').classList.add('hidden');
+             document.getElementById('btn-copy-link').classList.remove('hidden');
+        }
+
+        // Selesai Loading
+        loading.classList.add('hidden');
+        result.classList.remove('hidden');
+        result.classList.add('animate-pop');
+
+    } catch (error) {
+        console.error("Gagal membuat postcard:", error);
+        closeShareModal();
+        showFavToast("Gagal", "Terjadi kesalahan saat membuat gambar. Coba lagi nanti.", "ph-warning-circle", "text-red-500");
+    }
+}
+
+function closeShareModal() {
+    document.getElementById('share-modal').classList.add('hidden');
+    document.getElementById('share-result').classList.remove('animate-pop');
+}
+
+// Fungsi Download Gambar
+function downloadPostcard() {
+    if (!currentPostcardDataUrl) return;
+    const link = document.createElement('a');
+    link.download = `Govirtual-Postcard-${Date.now()}.jpg`;
+    link.href = currentPostcardDataUrl;
+    link.click();
+    showFavToast("Tersimpan!", "Gambar telah diunduh.", "ph-check-circle", "text-green-500");
+}
+
+// Fungsi Share Native (HP Android/iOS)
+async function shareWebAPI() {
+    if (!currentPostcardDataUrl || !navigator.share) return;
+    
+    try {
+        // Convert Data URL ke Blob agar bisa dishare sebagai file
+        const blob = await (await fetch(currentPostcardDataUrl)).blob();
+        const file = new File([blob], "postcard.jpg", { type: blob.type });
+
+        await navigator.share({
+            title: 'Petualangan Virtual Saya!',
+            text: `Cek lokasi keren ini di Govirtual Indonesia! ${currentShareLink}`,
+            files: [file]
+        });
+    } catch (err) {
+        console.log("Share dibatalkan atau error:", err);
+        // Fallback jika share file gagal, coba share link aja
+        if (err.name !== 'AbortError') copyLinkShare();
+    }
+}
+
+// Fungsi Copy Link (Fallback Desktop)
+function copyLinkShare() {
+    if(!currentShareLink) return;
+    navigator.clipboard.writeText(currentShareLink).then(() => {
+         showFavToast("Link Disalin!", "Siap dibagikan ke temanmu.", "ph-link", "text-blue-500");
+    }).catch(() => {
+         showFavToast("Gagal Menyalin", "Browser tidak mendukung.", "ph-x-circle", "text-red-500");
+    });
+}
+
         // --- CORE FUNCTIONS (Visit, Favorite, Search) ---
         function visitTour(url, name, location) { 
             window.open(url, '_blank'); 
@@ -1031,38 +1235,46 @@ function showFlyingXP(amount) {
         let currentActiveCatId = null; 
         function openModal(cid) { currentActiveCatId = cid; const c = categories.find(x => x.id === cid); if(!c) return; document.getElementById('modal-title').innerText = c.name; document.getElementById('modal-icon').className = `ph-fill ${c.icon} text-3xl md:text-4xl`; document.getElementById('modal-desc').innerText = categoryCopywriting[cid]; const uniqueLocs = ['Semua', ...new Set(c.items.map(i => i.loc))]; const tabs = document.getElementById('modal-tabs'); if(c.items.length>0) { tabs.innerHTML = uniqueLocs.map(l => `<button onclick="renderModalGrid('${l}')" class="tab-btn px-5 py-2 rounded-full text-sm font-bold border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 transition-all whitespace-nowrap" data-loc="${l}">${l}</button>`).join(''); tabs.parentElement.classList.remove('hidden'); document.getElementById('review-section').classList.remove('hidden'); renderModalGrid('Semua'); loadReviews(cid); } else { tabs.parentElement.classList.add('hidden'); document.getElementById('review-section').classList.add('hidden'); document.getElementById('modal-grid-content').innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400 italic">Belum ada data.</div>`; } modal.classList.remove('hidden'); setTimeout(() => { document.getElementById('modal-backdrop').classList.add('modal-backdrop-active'); document.getElementById('modal-content').classList.add('modal-content-active'); }, 10); hideDropdownWithDelay(); }
         
-        function renderModalGrid(loc) {
-            const c = categories.find(x => x.id === currentActiveCatId);
-            if(!c) return;
-            let items = c.items;
-            if(loc !== 'Semua') items = c.items.filter(i => i.loc === loc);
+function renderModalGrid(loc) {
+    const c = categories.find(x => x.id === currentActiveCatId);
+    if(!c) return;
+    let items = c.items;
+    if(loc !== 'Semua') items = c.items.filter(i => i.loc === loc);
 
-            document.getElementById('modal-grid-content').innerHTML = items.map(i => `
-                <div class="relative group animate-slide-up bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-2xl p-4 transition-all hover:border-primary/50 hover:shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-xl bg-white dark:bg-black shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition shrink-0">
-                                <i class="ph-fill ph-goggles text-2xl"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <h4 class="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">${i.name}</h4>
-                                <p class="text-[10px] text-gray-500 flex items-center gap-1 uppercase tracking-wider">
-                                    <i class="ph-fill ph-map-pin text-secondary"></i> ${i.loc}
-                                </p>
-                            </div>
-                        </div>
-                        <button onclick="toggleFavorite('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.url}', this)" 
-                                class="p-2.5 rounded-full bg-white dark:bg-white/5 shadow-sm hover:scale-110 transition-all active:scale-95">
-                            <i class="ph-bold ph-heart text-gray-400 transition-colors"></i>
-                        </button>
+    document.getElementById('modal-grid-content').innerHTML = items.map(i => `
+        <div class="relative group animate-slide-up bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-2xl p-4 transition-all hover:border-primary/50 hover:shadow-lg">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-white dark:bg-black shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition shrink-0">
+                        <i class="ph-fill ph-goggles text-2xl"></i>
                     </div>
-                    
-                    <button onclick="visitTour('${i.url}','${i.name}','${i.loc}')" 
-                            class="w-full py-2.5 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
-                        Jelajahi Sekarang <i class="ph-bold ph-arrow-square-out"></i>
+                    <div class="min-w-0">
+                        <h4 class="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">${i.name}</h4>
+                        <p class="text-[10px] text-gray-500 flex items-center gap-1 uppercase tracking-wider">
+                            <i class="ph-fill ph-map-pin text-secondary"></i> ${i.loc}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-2">
+                     <button onclick="openShareModal('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.img || 'https://via.placeholder.com/500' }', '${i.url}')" 
+                            class="p-2.5 rounded-full bg-white dark:bg-white/5 shadow-sm hover:scale-110 transition-all active:scale-95 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/20">
+                        <i class="ph-bold ph-share-network"></i>
+                    </button>
+
+                    <button onclick="toggleFavorite('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.url}', this)" 
+                            class="p-2.5 rounded-full bg-white dark:bg-white/5 shadow-sm hover:scale-110 transition-all active:scale-95">
+                        <i class="ph-bold ph-heart text-gray-400 transition-colors"></i>
                     </button>
                 </div>
-            `).join('');
+            </div>
+            
+            <button onclick="visitTour('${i.url}','${i.name}','${i.loc}')" 
+                    class="w-full py-2.5 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
+                Jelajahi Sekarang <i class="ph-bold ph-arrow-square-out"></i>
+            </button>
+        </div>
+    `).join('');
 
             document.querySelectorAll('.tab-btn').forEach(b => {
                 b.className = b.dataset.loc === loc ? 
@@ -1181,8 +1393,27 @@ window.activateMap = function() {
             let cl; function updMap(theme) { if(cl) map.removeLayer(cl); cl = L.tileLayer(theme === 'dark' ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' }).addTo(map); } updMap('dark'); window.toggleTheme = function() { const isDark = document.documentElement.classList.toggle('dark'); updMap(isDark ? 'dark' : 'light'); };
             loadAllCategories(); initBackgroundRadar(); sendVisitorHit(); fetchVisitorStats();
         };
+// UPDATE BAGIAN INI DI DALAM window.onload atau di script paling bawah
 
-        document.getElementById('tour-grid').innerHTML = popularTours.map(t => `<div onclick="visitTour('${t.link}','${t.name}','${t.loc}')" class="bg-white dark:bg-cardDark border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-500 group reveal cursor-pointer"><div class="h-64 overflow-hidden relative"><img src="${t.img}?q=80&w=500&auto=format" loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700"><div class="absolute bottom-4 left-4 text-white"><h3 class="text-2xl font-bold mb-1 drop-shadow-lg">${t.name}</h3><div class="flex items-center text-gray-200 text-sm drop-shadow-md"><i class="ph-fill ph-map-pin mr-1 text-primary"></i> ${t.loc}</div></div></div><div class="p-6"><button class="w-full py-3 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-primary hover:text-white font-bold transition-all flex items-center justify-center gap-2 text-gray-900 dark:text-white">Mulai Jelajah</button></div></div>`).join('');
+document.getElementById('tour-grid').innerHTML = popularTours.map(t => `
+<div class="bg-white dark:bg-cardDark border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-500 group reveal relative">
+    <button onclick="openShareModal('${t.name.replace(/'/g,"\\'")}', '${t.loc}', '${t.img}', '${t.link}')" 
+            class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center text-white hover:bg-primary transition-all shadow-lg scale-90 hover:scale-110 active:scale-95 group-hover:opacity-100 opacity-0 translate-y-[-10px] group-hover:translate-y-0 duration-300 cursor-pointer">
+        <i class="ph-bold ph-share-network text-lg"></i>
+    </button>
+    
+    <div onclick="visitTour('${t.link}','${t.name}','${t.loc}')" class="h-64 overflow-hidden relative cursor-pointer">
+        <img src="${t.img}?q=80&w=500&auto=format" loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+        <div class="absolute bottom-4 left-4 text-white">
+            <h3 class="text-2xl font-bold mb-1 drop-shadow-lg">${t.name}</h3>
+            <div class="flex items-center text-gray-200 text-sm drop-shadow-md"><i class="ph-fill ph-map-pin mr-1 text-primary"></i> ${t.loc}</div>
+        </div>
+    </div>
+    <div class="p-6">
+        <button onclick="visitTour('${t.link}','${t.name}','${t.loc}')" class="w-full py-3 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-primary hover:text-white font-bold transition-all flex items-center justify-center gap-2 text-gray-900 dark:text-white">Mulai Jelajah</button>
+    </div>
+</div>
+`).join('');
         function typeWriter(id, txt, spd, cb) { let i=0; let el=document.getElementById(id); el.classList.add('typing-cursor'); function t(){if(i<txt.length){el.innerHTML+=txt.charAt(i);i++;setTimeout(t,spd)}else{el.classList.remove('typing-cursor');if(cb)cb()}} t(); }
         const observer = new IntersectionObserver((e) => { e.forEach(en => { if(en.isIntersecting) en.target.classList.add('active'); }); }, { threshold: 0.1 }); document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
