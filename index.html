@@ -476,6 +476,57 @@
         </div>
     </div>
 
+    <div id="welcome-modal" class="fixed inset-0 z-[400] hidden flex items-center justify-center px-4">
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-xl transition-opacity duration-500"></div>
+    <div class="relative w-full max-w-lg bg-[#12121a] rounded-3xl shadow-2xl overflow-hidden border border-white/10 animate-pop">
+        
+        <div class="relative h-40 bg-gradient-to-br from-primary to-purple-900 overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+            <div class="text-center z-10">
+                <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-2 border border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+                    <i class="ph-fill ph-rocket-launch text-4xl text-white"></i>
+                </div>
+                <h2 class="text-white font-black text-xl tracking-widest uppercase">Govirtual ID</h2>
+            </div>
+        </div>
+
+        <div class="p-8">
+            <h3 class="text-2xl font-bold text-white mb-2 text-center">Selamat Datang, Explorer! 🌍</h3>
+            <p class="text-gray-400 text-center text-sm mb-8 leading-relaxed">
+                Dunia virtual ini bukan sekadar peta. Ini adalah arena petualanganmu. Jadilah yang pertama menaklukkan nusantara!
+            </p>
+
+            <div class="space-y-4 mb-8">
+                <div class="flex items-start gap-4 p-3 rounded-xl bg-white/5 border border-white/5">
+                    <div class="w-10 h-10 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center shrink-0 text-xl"><i class="ph-fill ph-lightning"></i></div>
+                    <div>
+                        <h4 class="font-bold text-white text-sm">Kumpulkan XP</h4>
+                        <p class="text-xs text-gray-500">Dapatkan <span class="text-yellow-400 font-bold">+10 XP</span> setiap kali kamu membuka lokasi baru.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4 p-3 rounded-xl bg-white/5 border border-white/5">
+                    <div class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0 text-xl"><i class="ph-fill ph-trophy"></i></div>
+                    <div>
+                        <h4 class="font-bold text-white text-sm">Raih Lencana Langka</h4>
+                        <p class="text-xs text-gray-500">Buka Achievement unik seperti "Night Owl" atau "Island Hopper".</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4 p-3 rounded-xl bg-white/5 border border-white/5">
+                    <div class="w-10 h-10 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0 text-xl"><i class="ph-fill ph-crown"></i></div>
+                    <div>
+                        <h4 class="font-bold text-white text-sm">Naik Level</h4>
+                        <p class="text-xs text-gray-500">Tingkatkan levelmu dari Explorer hingga menjadi <span class="text-purple-400 font-bold">The Legend</span>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="finishOnboarding()" class="group w-full py-4 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white font-black uppercase tracking-widest text-sm shadow-lg shadow-primary/25 hover:scale-[1.02] active:scale-95 transition-all">
+                Siap Meluncur <i class="ph-bold ph-arrow-right ml-2 inline-block group-hover:translate-x-1 transition-transform"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
     <div id="logout-modal" class="fixed inset-0 z-[200] hidden flex items-center justify-center px-4">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300" onclick="closeLogoutModal()"></div>
         <div class="relative w-full max-w-sm bg-white dark:bg-[#12121a] rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 p-6 animate-slide-up">
@@ -597,36 +648,79 @@
         function closeLogoutModal() { document.getElementById('logout-modal').classList.add('hidden'); }
         function confirmLogout() { if(auth) { auth.signOut().then(() => { closeLogoutModal(); window.location.reload(); }); } }
 
-        if(auth) {
-            auth.onAuthStateChanged((currentUser) => {
-                const btnLogin = document.getElementById('btn-login'); const userProfile = document.getElementById('user-profile');
-                const mobileTabIcon = document.getElementById('mobile-tab-icon');
-                const mobileTabAvatar = document.getElementById('mobile-tab-avatar');
-                const mobProfileImg = document.getElementById('mob-profile-img');
-                const mobProfileName = document.getElementById('mob-profile-name');
-                
-                if (currentUser) {
-                    user = currentUser;
-                    btnLogin.classList.add('hidden'); userProfile.classList.remove('hidden');
-                    document.getElementById('user-avatar').src = user.photoURL;
-                    document.getElementById('user-name').innerText = user.displayName;
-                    if(mobileTabIcon) mobileTabIcon.classList.add('hidden');
-                    if(mobileTabAvatar) { mobileTabAvatar.src = user.photoURL; mobileTabAvatar.classList.remove('hidden'); }
-                    if(mobProfileImg) mobProfileImg.src = user.photoURL;
-                    if(mobProfileName) mobProfileName.innerText = user.displayName;
-                    
-                    db.collection('users').doc(currentUser.uid).onSnapshot((doc) => {
-                        if (doc.exists) renderXPUI(doc.data());
-                    });
+// --- UPDATE AUTH LISTENER (Include Welcome Check) ---
+if(auth) {
+    auth.onAuthStateChanged((currentUser) => {
+        const btnLogin = document.getElementById('btn-login'); 
+        const userProfile = document.getElementById('user-profile');
+        // ... (Variable elemen mobile tab lainnya tetap sama) ...
+        const mobileTabIcon = document.getElementById('mobile-tab-icon');
+        const mobileTabAvatar = document.getElementById('mobile-tab-avatar');
+        const mobProfileImg = document.getElementById('mob-profile-img');
+        const mobProfileName = document.getElementById('mob-profile-name');
+        
+        if (currentUser) {
+            user = currentUser;
+            
+            // UI Updates Basic
+            if(btnLogin) btnLogin.classList.add('hidden'); 
+            if(userProfile) userProfile.classList.remove('hidden');
+            if(document.getElementById('user-avatar')) document.getElementById('user-avatar').src = user.photoURL;
+            if(document.getElementById('user-name')) document.getElementById('user-name').innerText = user.displayName;
+            
+            if(mobileTabIcon) mobileTabIcon.classList.add('hidden');
+            if(mobileTabAvatar) { mobileTabAvatar.src = user.photoURL; mobileTabAvatar.classList.remove('hidden'); }
+            if(mobProfileImg) mobProfileImg.src = user.photoURL;
+            if(mobProfileName) mobProfileName.innerText = user.displayName;
+            
+            // --- LOGIC BARU: Cek Data User & Welcome Modal ---
+            const userRef = db.collection('users').doc(currentUser.uid);
+            
+            userRef.onSnapshot((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    renderXPUI(data);
+
+                    // CEK APAKAH SUDAH LIHAT WELCOME SCREEN?
+                    // Jika data.hasSeenWelcome belum ada (undefined) atau false, TAMPILKAN MODAL
+                    if (!data.hasSeenWelcome) {
+                        document.getElementById('welcome-modal').classList.remove('hidden');
+                    }
                 } else {
-                    user = null;
-                    btnLogin.classList.remove('hidden'); userProfile.classList.add('hidden');
-                    if(mobileTabIcon) mobileTabIcon.classList.remove('hidden');
-                    if(mobileTabAvatar) mobileTabAvatar.classList.add('hidden');
+                    // Jika User Baru Login Pertama Kali (Dokumen belum ada)
+                    // Kita set data awal biar XP bar jalan
+                    userRef.set({
+                        xp: 0, level: 1, visitedTours: [], badges: [], hasSeenWelcome: false
+                    }, { merge: true });
                 }
             });
-        }
 
+        } else {
+            user = null;
+            if(btnLogin) btnLogin.classList.remove('hidden'); 
+            if(userProfile) userProfile.classList.add('hidden');
+            if(mobileTabIcon) mobileTabIcon.classList.remove('hidden');
+            if(mobileTabAvatar) mobileTabAvatar.classList.add('hidden');
+        }
+    });
+}
+
+// --- FUNGSI TOMBOL "SIAP MELUNCUR" ---
+function finishOnboarding() {
+    if(!user) return;
+    
+    // Tutup Modal
+    document.getElementById('welcome-modal').classList.add('hidden');
+    
+    // Update Database: Tandai user sudah lihat tutorial
+    db.collection('users').doc(user.uid).set({
+        hasSeenWelcome: true
+    }, { merge: true }).then(() => {
+        // Opsional: Langsung kasih hadiah XP Login Pertama
+        showFavToast("Bonus Login!", "+50 XP Starter Pack", "ph-gift", "text-pink-500");
+        updatePlayerProgress('review', 'bonus'); // Pake trigger review biar dapet XP gede
+    });
+}
         // --- GAMIFICATION LOGIC ---
         async function updatePlayerProgress(actionType, detail) {
             if (!user || !db) return;
