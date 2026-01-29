@@ -1188,7 +1188,38 @@ function showFlyingXP(amount) {
         function setRating(n) { currentRating = n; const stars = document.getElementById('star-container').children; for (let i = 0; i < stars.length; i++) { stars[i].className = i < n ? "ph-fill ph-star cursor-pointer text-yellow-400 transition transform hover:scale-110" : "ph-fill ph-star cursor-pointer text-gray-300 transition"; } }
         function checkBadges(uid) { document.getElementById('user-badge').innerText = "Explorer"; }
 
-        async function fetchCSV(url) { if (!url || url.includes('LINK_CSV')) return []; try { const response = await fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now()); const data = await response.text(); const rows = data.replace(/\r/g, '').split('\n').slice(1); return rows.map(row => { const cols = row.split(',').map(item => item.trim()); if(cols.length < 2) return null; return { name: cols[1] || "Unknown", loc: cols[2] || "Indonesia", url: cols[5] || "#" }; }).filter(item => item !== null); } catch (e) { return []; } }
+        async function fetchCSV(url) {
+    if (!url || url.includes('LINK_CSV')) return [];
+    try {
+        const response = await fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now());
+        const text = await response.text();
+        const rows = text.replace(/\r/g, '').split('\n');
+
+        // 1. DETEKSI HEADER (Cari kolom "Thumbnail URL" ada di nomor berapa)
+        // Kita ubah ke huruf kecil semua biar pencariannya tidak sensitif huruf besar/kecil
+        const headers = rows[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
+        
+        // Cari index kolom yang namanya mengandung "thumbnail url" atau "gambar"
+        const imgIndex = headers.indexOf('thumbnail url'); 
+
+        // 2. Mapping Data
+        return rows.slice(1).map(row => {
+            // Split data CSV (Handle koma di dalam tanda kutip jika ada)
+            const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(item => item.trim().replace(/^"|"$/g, ''));
+            
+            if(cols.length < 2) return null;
+
+            return {
+                name: cols[1] || "Unknown",
+                loc: cols[2] || "Indonesia",
+                // LOGIC BARU: Ambil dari kolom "Thumbnail URL" yang ditemukan tadi
+                // Jika tidak ketemu kolomnya, dia akan string kosong "" (dan trigger placeholder di HTML)
+                img: (imgIndex > -1 ? cols[imgIndex] : "") || "", 
+                url: cols[5] || "#"
+            };
+        }).filter(item => item !== null);
+    } catch (e) { return []; }
+}
         async function loadRadarData() { if (isRadarDataLoaded) return; try { const response = await fetch(RADAR_CSV_URL + '&t=' + Date.now()); const data = await response.text(); const rows = data.replace(/\r/g, '').split('\n').slice(1); cachedLocations = rows.map(row => { const cols = row.split(',').map(item => item.trim()); if (cols.length < 5 || isNaN(parseFloat(cols[2]))) return null; return { name: cols[1], lat: parseFloat(cols[2]), lng: parseFloat(cols[3]), radius: parseFloat(cols[4]), url: cols[5] }; }).filter(item => item !== null); isRadarDataLoaded = true; } catch (e) { document.getElementById('radar-status-text').innerText = "Gagal koneksi"; } }
         function getNearestLocation(userLat, userLng) { for (let loc of cachedLocations) { const distance = calculateDistance(userLat, userLng, loc.lat, loc.lng); if (distance <= loc.radius) return { ...loc, distance }; } return null; }
         function calculateDistance(lat1, lon1, lat2, lon2) { const R = 6371e3; const phi1 = lat1 * Math.PI/180; const phi2 = lat2 * Math.PI/180; const dPhi = (lat2-lat1) * Math.PI/180; const dLambda = (lon2-lon1) * Math.PI/180; const a = Math.sin(dPhi/2) * Math.sin(dPhi/2) + Math.cos(phi1) * Math.cos(phi2) * Math.sin(dLambda/2) * Math.sin(dLambda/2); return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); }
