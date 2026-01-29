@@ -138,6 +138,20 @@
             box-shadow: 0 0 15px rgba(112, 0, 255, 0.1); 
         }
         .badge-unlocked:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(112, 0, 255, 0.3); }
+        /* Angka XP Melayang */
+.flying-xp {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 900;
+    color: #fbbf24; /* Kuning Emas */
+    font-size: 1.5rem;
+    z-index: 9999;
+    pointer-events: none;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    white-space: nowrap;
+}
     </style>
 </head>
 <body class="antialiased selection:bg-secondary selection:text-white dark:selection:text-space overflow-x-hidden pb-32 md:pb-0">
@@ -478,7 +492,7 @@
 
     <div id="welcome-modal" class="fixed inset-0 z-[400] hidden flex items-center justify-center px-4">
     <div class="absolute inset-0 bg-black/90 backdrop-blur-xl transition-opacity duration-500"></div>
-    <div class="relative w-full max-w-lg bg-[#12121a] rounded-3xl shadow-2xl overflow-hidden border border-white/10 animate-pop">
+    <div class="relative w-full max-w-sm bg-[#12121a] rounded-3xl shadow-2xl overflow-hidden border border-white/10 animate-pop">
         
         <div class="relative h-40 bg-gradient-to-br from-primary to-purple-900 overflow-hidden flex items-center justify-center">
             <div class="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
@@ -717,7 +731,7 @@ function finishOnboarding() {
         hasSeenWelcome: true
     }, { merge: true }).then(() => {
         // Opsional: Langsung kasih hadiah XP Login Pertama
-        showFavToast("Bonus Login!", "+50 XP Starter Pack", "ph-gift", "text-pink-500");
+        showFlyingXP(50);
         updatePlayerProgress('review', 'bonus'); // Pake trigger review biar dapet XP gede
     });
 }
@@ -737,10 +751,12 @@ function finishOnboarding() {
                     let newBadges = [];
                     if (actionType === 'visit') {
                         data.xp += 10;
+                        showFlyingXP(10);
                         if (!data.visitedTours.includes(detail)) data.visitedTours.push(detail);
                     } else if (actionType === 'review') {
                         data.xp += 25; 
                         data.reviewCount += 1;
+                        showFlyingXP(25);
                     }
 
                     if (data.xp >= XP_LEVEL_UP) {
@@ -880,14 +896,55 @@ function finishOnboarding() {
         
         function showHistoryModal() { if(!user) return loginWithGoogle(); const list = document.getElementById('history-list'); list.innerHTML = '<div class="p-6 text-center text-gray-400">Memuat riwayat...</div>'; db.collection('users').doc(user.uid).collection('history').orderBy('timestamp', 'desc').limit(20).get().then(snapshot => { if (snapshot.empty) { list.innerHTML = `<div class="p-6 text-center"><p class="text-gray-500 text-sm">Belum ada riwayat.</p></div>`; return; } let html = ''; snapshot.forEach(doc => { const data = doc.data(); const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Baru saja'; html += `<div onclick="window.open('${data.url}', '_blank')" class="p-4 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center justify-between group cursor-pointer transition"><div class="flex items-center gap-3 overflow-hidden"><div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center shrink-0"><i class="ph-bold ph-clock-counter-clockwise"></i></div><div class="min-w-0"><h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4><p class="text-xs text-gray-500">${date}</p></div></div><i class="ph-bold ph-caret-right text-gray-300 group-hover:text-primary transition shrink-0"></i></div>`; }); list.innerHTML = html; }); document.getElementById('history-modal').classList.remove('hidden'); }
         
-        function showFavToast(title, msg, iconClass, iconColor) {
-            const toast = document.getElementById('radar-toast');
-            document.getElementById('toast-title').innerText = title;
-            document.getElementById('toast-location').innerText = msg;
-            // Reusing radar toast style for simplicity, but can be customized
-            toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 3000);
-        }
+
+
+        // Fungsi Animasi XP Terbang ke Target
+function showFlyingXP(amount) {
+    // 1. Buat Elemen Angka
+    const el = document.createElement('div');
+    el.innerText = `+${amount} XP`;
+    el.className = 'flying-xp animate-pop'; // Pake animasi pop biar munculnya enak
+    document.body.appendChild(el);
+
+    // 2. Tentukan Target Terbang (Mobile vs Desktop)
+    const isMobile = window.innerWidth < 768;
+    // Mobile: Terbang ke Tab Akun (Bawah Kanan) | Desktop: Terbang ke Avatar (Atas Kanan)
+    const targetId = isMobile ? 'mobile-tab-account' : 'user-avatar';
+    const target = document.getElementById(targetId);
+
+    if (target) {
+        // Hitung posisi target relative terhadap viewport
+        const rect = target.getBoundingClientRect();
+        // Titik tengah elemen target
+        const endX = rect.left + (rect.width / 2);
+        const endY = rect.top + (rect.height / 2);
+        
+        // Titik tengah layar (posisi awal)
+        const startX = window.innerWidth / 2;
+        const startY = window.innerHeight / 2;
+
+        // Jarak yang harus ditempuh
+        const moveX = endX - startX;
+        const moveY = endY - startY;
+
+        // 3. Jalankan Animasi WAAPI
+        const animation = el.animate([
+            { transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: 0 },
+            { transform: 'translate(-50%, -50%) scale(1.5)', opacity: 1, offset: 0.2 }, // Efek membesar dikit
+            { transform: `translate(${moveX}px, ${moveY}px) scale(0.2)`, opacity: 0, offset: 1 } // Terbang & mengecil
+        ], {
+            duration: 800, // Durasi terbang 0.8 detik
+            easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+            fill: 'forwards'
+        });
+
+        // 4. Hapus elemen setelah sampai
+        animation.onfinish = () => el.remove();
+    } else {
+        // Fallback kalau target gak ketemu (hilang biasa)
+        setTimeout(() => el.remove(), 1000);
+    }
+}
 
         // --- MAP, SEARCH & INITIALIZATION ---
         function setActiveTab(element) { document.querySelectorAll('.nav-tab').forEach(el => { el.classList.remove('text-primary'); el.classList.add('text-gray-400'); }); element.classList.remove('text-gray-400'); element.classList.add('text-primary'); }
