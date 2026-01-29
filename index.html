@@ -381,6 +381,18 @@
                 <h3 id="mob-profile-name" class="text-xl font-bold text-gray-900 dark:text-white">User</h3>
                 <div class="flex items-center gap-1.5 mt-1 text-xs font-bold text-yellow-500 bg-yellow-500/10 px-3 py-1 rounded-full"><i class="ph-fill ph-medal"></i> Explorer</div>
             </div>
+            
+            <div class="px-6 py-4 border-b border-gray-100 dark:border-white/10 bg-gray-50/50 dark:bg-black/10">
+                <div class="flex justify-between items-end mb-1">
+                    <span class="text-[10px] font-bold text-primary uppercase tracking-widest">Level Progress</span>
+                    <span id="mob-xp-text" class="text-[10px] text-gray-500 font-medium">0 / 100 XP</span>
+                </div>
+                <div class="w-full h-1.5 bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden">
+                    <div id="mob-xp-bar" class="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                <p id="mob-total-progress" class="text-[9px] text-gray-400 mt-2 italic text-right">0% wilayah dijelajahi</p>
+            </div>
+
             <div class="p-4 space-y-2">
                 <button onclick="closeMobileProfile(); showFavoritesModal()" class="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition border border-transparent hover:border-gray-100 dark:hover:border-white/5 group">
                     <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-500/20 text-red-500 flex items-center justify-center group-hover:scale-110 transition"><i class="ph-fill ph-heart text-xl"></i></div>
@@ -593,11 +605,20 @@
         function renderXPUI(data) {
             const xpPercent = (data.xp / XP_LEVEL_UP) * 100;
             const progressPercent = (data.visitedTours.length / 100) * 100; // Asumsi 100 total
+            
+            // Render Desktop XP Bar
             if(document.getElementById('xp-bar')) {
                 document.getElementById('xp-bar').style.width = `${xpPercent}%`;
                 document.getElementById('xp-text').innerText = `${data.xp} / ${XP_LEVEL_UP} XP`;
                 document.getElementById('total-progress').innerText = `${progressPercent.toFixed(0)}% wilayah dijelajahi`;
                 document.getElementById('user-badge').innerText = `Level ${data.level} Explorer`;
+            }
+
+            // Render Mobile XP Bar (ID baru untuk mobile)
+            if(document.getElementById('mob-xp-bar')) {
+                document.getElementById('mob-xp-bar').style.width = `${xpPercent}%`;
+                document.getElementById('mob-xp-text').innerText = `${data.xp} / ${XP_LEVEL_UP} XP`;
+                document.getElementById('mob-total-progress').innerText = `${progressPercent.toFixed(0)}% wilayah dijelajahi`;
             }
         }
 
