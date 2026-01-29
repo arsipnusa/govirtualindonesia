@@ -1244,29 +1244,28 @@ function renderModalGrid(loc) {
     document.getElementById('modal-grid-content').innerHTML = items.map(i => `
         <div class="group relative bg-[#181820] border border-white/5 hover:border-primary/50 rounded-2xl p-4 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 flex flex-col gap-4 animate-slide-up">
             
-            <div class="flex items-start gap-4">
-                
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-inner">
+            <div class="absolute top-3 right-3 flex gap-2 z-10">
+                <button onclick="openShareModal('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.img || 'https://via.placeholder.com/500' }', '${i.url}')" 
+                        class="w-8 h-8 rounded-lg bg-black/40 hover:bg-white/10 backdrop-blur-sm flex items-center justify-center text-gray-400 transition-all hover:text-blue-400 border border-white/5" title="Bagikan">
+                    <i class="ph-bold ph-share-network"></i>
+                </button>
+                <button onclick="toggleFavorite('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.url}', this)" 
+                        class="w-8 h-8 rounded-lg bg-black/40 hover:bg-white/10 backdrop-blur-sm flex items-center justify-center text-gray-400 transition-all hover:text-red-500 border border-white/5" title="Simpan ke Favorit">
+                    <i class="ph-bold ph-heart"></i>
+                </button>
+            </div>
+
+            <div class="flex items-start gap-3 mt-1">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center shrink-0 shadow-inner">
                     <i class="ph-fill ph-map-pin-area text-2xl text-primary"></i>
                 </div>
 
-                <div class="flex-1 min-w-0 pt-0.5">
-                    <h4 class="font-bold text-gray-100 text-sm truncate leading-tight mb-1">${i.name}</h4>
-                    <div class="flex items-center gap-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                        <i class="ph-fill ph-map-pin text-secondary"></i> 
+                <div class="flex-1 min-w-0 pr-16">
+                    <h4 class="font-bold text-gray-100 text-base leading-tight mb-1 truncate">${i.name}</h4>
+                    <div class="flex items-center gap-1.5 text-xs font-medium text-gray-400">
+                        <i class="ph-fill ph-map-pin text-secondary shrink-0"></i> 
                         <span class="truncate">${i.loc}</span>
                     </div>
-                </div>
-
-                <div class="flex flex-col gap-2 shrink-0">
-                    <button onclick="toggleFavorite('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.url}', this)" 
-                            class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 transition-all hover:text-red-500 hover:scale-110 active:scale-95 border border-white/5">
-                        <i class="ph-bold ph-heart"></i>
-                    </button>
-                    <button onclick="openShareModal('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.img || 'https://via.placeholder.com/500' }', '${i.url}')" 
-                            class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 transition-all hover:text-blue-400 hover:scale-110 active:scale-95 border border-white/5">
-                        <i class="ph-bold ph-share-network"></i>
-                    </button>
                 </div>
             </div>
 
@@ -1284,8 +1283,8 @@ function renderModalGrid(loc) {
             "tab-btn px-5 py-2 rounded-full text-sm font-bold bg-white text-black shadow-lg transition-all" : 
             "tab-btn px-5 py-2 rounded-full text-sm font-bold border border-white/10 text-gray-500 hover:text-white hover:border-white/30 transition-all";
     });
-}    
-        function closeModal() { document.getElementById('modal-backdrop').classList.remove('modal-backdrop-active'); document.getElementById('modal-content').classList.remove('modal-content-active'); setTimeout(() => modal.classList.add('hidden'), 300); }
+}   
+function closeModal() { document.getElementById('modal-backdrop').classList.remove('modal-backdrop-active'); document.getElementById('modal-content').classList.remove('modal-content-active'); setTimeout(() => modal.classList.add('hidden'), 300); }
         function showDropdown() { document.getElementById('search-dropdown').classList.remove('dropdown-enter'); document.getElementById('search-dropdown').classList.add('dropdown-active'); }
         function hideDropdownWithDelay() { setTimeout(() => { document.getElementById('search-dropdown').classList.remove('dropdown-active'); document.getElementById('search-dropdown').classList.add('dropdown-enter'); }, 200); }
         
