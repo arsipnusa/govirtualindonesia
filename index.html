@@ -51,11 +51,15 @@
                         'cursor': 'cursor .75s step-end infinite',
                         'radar-ping': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
                         'slide-up': 'slideUp 0.5s ease-out forwards',
+                        'pop': 'pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                        'bounce-slow': 'bounce-slow 3s ease-in-out infinite',
                     },
                     keyframes: {
                         float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
                         cursor: { '0%, 100%': { borderColor: 'transparent' }, '50%': { borderColor: 'currentColor' } },
-                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        pop: { '0%': { transform: 'scale(0.8)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+                        'bounce-slow': { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } }
                     }
                 }
             }
@@ -103,11 +107,25 @@
         .pulse-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; border-radius: 50%; border: 1px solid rgba(112, 0, 255, 0.6); box-shadow: 0 0 10px rgba(112, 0, 255, 0.4); animation: marker-pulse 2s infinite; z-index: 1; }
         @keyframes marker-pulse { 0% { width: 100%; height: 100%; opacity: 1; border-width: 2px; } 100% { width: 250%; height: 250%; opacity: 0; border-width: 0px; } }
         /* Efek item keluar saat dihapus */
-.item-exit {
-    opacity: 0;
-    transform: scale(0.9) translateX(-20px);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
+        .item-exit {
+            opacity: 0;
+            transform: scale(0.9) translateX(-20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Animasi Favorit */
+        @keyframes float-up-fade {
+            0% { transform: translateY(0) scale(0.5); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-40px) scale(1.2); opacity: 0; }
+        }
+        @keyframes heart-pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); }
+        }
+        .animate-float-up { animation: float-up-fade 0.8s ease-out forwards; }
+        .animate-pop { animation: heart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     </style>
 </head>
 <body class="antialiased selection:bg-secondary selection:text-white dark:selection:text-space overflow-x-hidden pb-32 md:pb-0">
@@ -122,6 +140,28 @@
             </div>
             <a id="toast-link" href="#" target="_blank" class="px-3 py-2 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition shadow-lg hover:shadow-green-500/30 whitespace-nowrap">Lihat</a>
             <button onclick="document.getElementById('radar-toast').classList.add('hidden')" class="absolute top-0 right-2 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"><i class="ph-bold ph-x text-xs"></i></button>
+        </div>
+    </div>
+
+    <div id="badge-modal" class="fixed inset-0 z-[300] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-500"></div>
+        <div class="relative w-full max-w-xs bg-gradient-to-b from-gray-900 to-[#12121a] rounded-3xl shadow-[0_0_50px_rgba(112,0,255,0.3)] overflow-hidden border border-white/10 p-8 text-center animate-pop">
+            <div class="absolute -top-24 -left-24 w-48 h-48 bg-primary/20 blur-[80px] rounded-full"></div>
+            
+            <div class="relative mb-6">
+                <div class="w-24 h-24 bg-gradient-to-tr from-primary to-secondary rounded-full flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(112,0,255,0.5)] animate-bounce-slow">
+                    <i id="badge-icon" class="ph-fill ph-seal-check text-5xl text-white"></i>
+                </div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/30 blur-2xl rounded-full -z-10"></div>
+            </div>
+
+            <h4 class="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-2">Pencapaian Baru!</h4>
+            <h3 id="badge-name" class="text-2xl font-black text-white mb-2 leading-tight">Island Hopper</h3>
+            <p id="badge-desc" class="text-sm text-gray-400 mb-8 px-2">Kamu telah menjelajahi lebih dari 5 pulau di nusantara secara virtual!</p>
+            
+            <button onclick="closeBadgeModal()" class="w-full py-4 rounded-2xl bg-white text-black font-black uppercase tracking-widest text-xs hover:scale-105 transition-transform active:scale-95">
+                Mantap!
+            </button>
         </div>
     </div>
 
@@ -157,6 +197,18 @@
                                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Level Penjelajah</p>
                                         <div class="flex items-center gap-2 mt-2"><i class="ph-fill ph-medal text-yellow-500 text-xl drop-shadow-md"></i><span id="user-badge" class="font-extrabold text-base text-gray-900 dark:text-white tracking-tight">Explorer</span></div>
                                     </div>
+                                    
+                                    <div class="px-4 py-2 border-b border-gray-100 dark:border-white/10 bg-gray-50/50 dark:bg-black/10 relative z-10">
+                                        <div class="flex justify-between items-end mb-1">
+                                            <span class="text-[10px] font-bold text-primary uppercase tracking-widest">Level Progress</span>
+                                            <span id="xp-text" class="text-[10px] text-gray-500 font-medium">0 / 100 XP</span>
+                                        </div>
+                                        <div class="w-full h-1.5 bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden">
+                                            <div id="xp-bar" class="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-1000" style="width: 0%"></div>
+                                        </div>
+                                        <p id="total-progress" class="text-[9px] text-gray-400 mt-2 italic text-right">0% wilayah dijelajahi</p>
+                                    </div>
+
                                     <div class="p-2 relative z-10">
                                         <a href="#" onclick="showFavoritesModal(); toggleProfileMenu()" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-semibold text-gray-700 dark:text-gray-200 transition-colors group"><div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-500/20 flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform"><i class="ph-bold ph-heart"></i></div>Favorit Saya</a>
                                         <a href="#" onclick="showHistoryModal(); toggleProfileMenu()" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-semibold text-gray-700 dark:text-gray-200 transition-colors group"><div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform"><i class="ph-bold ph-clock-counter-clockwise"></i></div>Riwayat</a>
@@ -450,27 +502,28 @@
         </button>
 
     </div>
+    
     <div id="logout-modal" class="fixed inset-0 z-[200] hidden flex items-center justify-center px-4">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300" onclick="closeLogoutModal()"></div>
-    <div class="relative w-full max-w-sm bg-white dark:bg-[#12121a] rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 p-6 animate-slide-up">
-        <div class="text-center">
-            <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="ph-fill ph-sign-out text-3xl"></i>
-            </div>
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Mau Keluar?</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Sesi jelajahmu akan berakhir. Kamu yakin ingin keluar dari akun ini?</p>
-            
-            <div class="flex gap-3">
-                <button onclick="closeLogoutModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all">
-                    Batal
-                </button>
-                <button onclick="confirmLogout()" class="flex-1 py-3 rounded-xl bg-red-600 text-white font-bold shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all">
-                    Ya, Keluar
-                </button>
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300" onclick="closeLogoutModal()"></div>
+        <div class="relative w-full max-w-sm bg-white dark:bg-[#12121a] rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 p-6 animate-slide-up">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ph-fill ph-sign-out text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Mau Keluar?</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Sesi jelajahmu akan berakhir. Kamu yakin ingin keluar dari akun ini?</p>
+                
+                <div class="flex gap-3">
+                    <button onclick="closeLogoutModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all">
+                        Batal
+                    </button>
+                    <button onclick="confirmLogout()" class="flex-1 py-3 rounded-xl bg-red-600 text-white font-bold shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all">
+                        Ya, Keluar
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <script>
         const SHEET_URLS = { 'infrastruktur': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIvK72ykG4OND6TbQdD_ACi4Sv6TRlq8g9SKh_CNB_IkYKhB_rwlsD97sZpIoJNRB5NfC8Su87kD2p/pub?gid=0&single=true&output=csv', 'budaya': 'LINK_CSV_BUDAYA_DISINI', 'pariwisata': 'LINK_CSV_PARIWISATA_DISINI', 'religi': 'LINK_CSV_RELIGI_DISINI', 'warisan': 'LINK_CSV_WARISAN_DISINI', 'maritim': 'LINK_CSV_MARITIM_DISINI', 'pemerintahan': 'LINK_CSV_PEMERINTAHAN_DISINI', 'kesehatan': 'LINK_CSV_KESEHATAN_DISINI', 'pendidikan': 'LINK_CSV_PENDIDIKAN_DISINI', 'mice': 'LINK_CSV_MICE_DISINI', 'investasi': 'LINK_CSV_INVESTASI_DISINI' };
@@ -485,7 +538,84 @@
         try { firebase.initializeApp(firebaseConfig); auth = firebase.auth(); db = firebase.firestore(); console.log("Firebase Connected!"); } catch (error) { console.warn("Firebase Config belum diisi."); }
 
         function loginWithGoogle() { if(!auth) return alert("Firebase belum dikonfigurasi!"); const provider = new firebase.auth.GoogleAuthProvider(); auth.signInWithPopup(provider).catch(e => alert(e.message)); }
-        function logout() { if(auth) auth.signOut(); }
+        
+        // GAMIFIKASI CONFIG & LOGIC
+        const XP_PER_VISIT = 10;
+        const XP_LEVEL_UP = 100;
+        const badgeData = {
+            'Night Owl': { icon: 'ph-moon', desc: 'Eksplorasi di tengah malam? Kamu benar-benar penjaga malam nusantara!', color: 'from-blue-600 to-indigo-900' },
+            'Island Hopper': { icon: 'ph-mountains', desc: '5 Pulau telah dijejaki. Langkahmu di dunia virtual semakin jauh!', color: 'from-emerald-500 to-teal-700' },
+            'Culture Guardian': { icon: 'ph-bank', desc: 'Pelestari budaya! Kamu sangat tertarik dengan sejarah bangsa.', color: 'from-orange-500 to-red-600' }
+        };
+
+        async function updatePlayerProgress(tourData) {
+            if (!user || !db) return;
+            const userRef = db.collection('users').doc(user.uid);
+            try {
+                await db.runTransaction(async (transaction) => {
+                    const userDoc = await transaction.get(userRef);
+                    let data = userDoc.exists ? userDoc.data() : { xp: 0, level: 1, visitedTours: [], badges: [] };
+
+                    // 1. Tambah XP
+                    data.xp += XP_PER_VISIT;
+                    if (data.xp >= XP_LEVEL_UP) {
+                        data.xp = data.xp - XP_LEVEL_UP;
+                        data.level += 1;
+                        // Trigger Level Up bisa disini
+                    }
+
+                    // 2. Track Unique Visit
+                    if (!data.visitedTours.includes(tourData.name)) {
+                        data.visitedTours.push(tourData.name);
+                    }
+
+                    // 3. Logic Badge Night Owl
+                    const hour = new Date().getHours();
+                    if ((hour >= 23 || hour <= 4) && !data.badges.includes('Night Owl')) {
+                        data.badges.push('Night Owl');
+                        setTimeout(() => showBadgeModal('Night Owl'), 1000); 
+                    }
+                    
+                    // Logic Badge Island Hopper (Simple Check)
+                    if (data.visitedTours.length >= 5 && !data.badges.includes('Island Hopper')) {
+                        data.badges.push('Island Hopper');
+                        setTimeout(() => showBadgeModal('Island Hopper'), 2000);
+                    }
+
+                    transaction.set(userRef, data, { merge: true });
+                    renderXPUI(data);
+                });
+            } catch (e) {
+                console.error("Gagal update progress:", e);
+            }
+        }
+
+        function renderXPUI(data) {
+            const xpPercent = (data.xp / XP_LEVEL_UP) * 100;
+            const progressPercent = (data.visitedTours.length / 100) * 100; // Asumsi 100 total
+            if(document.getElementById('xp-bar')) {
+                document.getElementById('xp-bar').style.width = `${xpPercent}%`;
+                document.getElementById('xp-text').innerText = `${data.xp} / ${XP_LEVEL_UP} XP`;
+                document.getElementById('total-progress').innerText = `${progressPercent.toFixed(0)}% wilayah dijelajahi`;
+                document.getElementById('user-badge').innerText = `Level ${data.level} Explorer`;
+            }
+        }
+
+        function showBadgeModal(badgeName) {
+            const data = badgeData[badgeName] || { icon: 'ph-seal-check', desc: 'Pencapaian luar biasa!', color: 'from-primary to-secondary' };
+            document.getElementById('badge-name').innerText = badgeName;
+            document.getElementById('badge-desc').innerText = data.desc;
+            document.getElementById('badge-icon').className = `ph-fill ${data.icon} text-5xl text-white`;
+            document.getElementById('badge-modal').classList.remove('hidden');
+        }
+
+        function closeBadgeModal() {
+            document.getElementById('badge-modal').classList.add('hidden');
+        }
+
+        function logout() { document.getElementById('logout-modal').classList.remove('hidden'); }
+        function closeLogoutModal() { document.getElementById('logout-modal').classList.add('hidden'); }
+        function confirmLogout() { if(auth) { auth.signOut().then(() => { closeLogoutModal(); window.location.reload(); }); } }
 
         if(auth) {
             auth.onAuthStateChanged((currentUser) => {
@@ -504,7 +634,11 @@
                     if(mobileTabAvatar) { mobileTabAvatar.src = user.photoURL; mobileTabAvatar.classList.remove('hidden'); }
                     if(mobProfileImg) mobProfileImg.src = user.photoURL;
                     if(mobProfileName) mobProfileName.innerText = user.displayName;
-                    checkBadges(user.uid);
+                    
+                    // Listen to XP changes
+                    db.collection('users').doc(currentUser.uid).onSnapshot((doc) => {
+                        if (doc.exists) renderXPUI(doc.data());
+                    });
                 } else {
                     user = null;
                     btnLogin.classList.remove('hidden'); userProfile.classList.add('hidden');
@@ -514,83 +648,76 @@
             });
         }
 
-        function visitTour(url, name, location) { window.open(url, '_blank'); if(user && db) { db.collection('users').doc(user.uid).collection('history').add({ name: name, location: location, url: url, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).catch(err => console.error(err)); } }
-async function toggleFavorite(name, location, url, btn) {
-    if (!user) {
-        loginWithGoogle();
-        return;
-    }
-
-    const icon = btn ? btn.querySelector('i') : null;
-    const favRef = db.collection('users').doc(user.uid).collection('favorites');
-    const snapshot = await favRef.where('url', '==', url).get();
-
-    if (!snapshot.empty) {
-        // Jika hapus dilakukan di dalam modal favorit
-        const modalItem = btn ? btn.closest('.relative') : null;
-        
-        if (modalItem && !document.getElementById('favorites-modal').classList.contains('hidden')) {
-            // Pasang animasi fade-out dulu
-            modalItem.classList.add('item-exit');
-            
-            // Tunggu animasi beres (400ms), baru hapus dari DB & refresh list
-            setTimeout(async () => {
-                const deletePromises = [];
-                snapshot.forEach(doc => deletePromises.push(doc.ref.delete()));
-                await Promise.all(deletePromises);
-                showFavoritesModal();
-            }, 400);
-        } else {
-            // Kalau hapus dari card biasa (bukan di modal)
-            snapshot.forEach(doc => doc.ref.delete());
-            if (icon) icon.className = "ph-bold ph-heart text-gray-400";
+        function visitTour(url, name, location) { 
+            window.open(url, '_blank'); 
+            if(user && db) { 
+                db.collection('users').doc(user.uid).collection('history').add({ name: name, location: location, url: url, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).catch(err => console.error(err)); 
+                // Trigger Gamification
+                updatePlayerProgress({ name, location });
+            } 
         }
-    } else {
-        // Logika Tambah Favorit (Stay Merah)
-        const placeholderImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=7000ff&color=fff&size=128`;
-        favRef.add({
-            name: name, loc: location, url: url, img: placeholderImg,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        if (icon) icon.className = "ph-fill ph-heart text-red-500 animate-pop";
-    }
-}
-function showFavoritesModal() { 
-    if(!user) return loginWithGoogle(); 
-    const list = document.getElementById('favorites-list'); 
-    list.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">Memuat data...</div>'; 
-    
-    db.collection('users').doc(user.uid).collection('favorites').orderBy('timestamp', 'desc').get().then(snapshot => { 
-        if (snapshot.empty) { 
-            list.innerHTML = `<div class="col-span-full text-center py-10"><i class="ph-duotone ph-heart-break text-4xl text-gray-300 mb-2"></i><p class="text-gray-500">Belum ada favorit.</p></div>`; 
-            return; 
+
+        async function toggleFavorite(name, location, url, btn) {
+            if (!user) { loginWithGoogle(); return; }
+            const icon = btn ? btn.querySelector('i') : null;
+            const favRef = db.collection('users').doc(user.uid).collection('favorites');
+            const snapshot = await favRef.where('url', '==', url).get();
+
+            if (!snapshot.empty) {
+                const modalItem = btn ? btn.closest('.relative') : null;
+                if (modalItem && !document.getElementById('favorites-modal').classList.contains('hidden')) {
+                    modalItem.classList.add('item-exit');
+                    setTimeout(async () => {
+                        const deletePromises = [];
+                        snapshot.forEach(doc => deletePromises.push(doc.ref.delete()));
+                        await Promise.all(deletePromises);
+                        showFavoritesModal();
+                    }, 400);
+                } else {
+                    snapshot.forEach(doc => doc.ref.delete());
+                    if (icon) icon.className = "ph-bold ph-heart text-gray-400";
+                }
+            } else {
+                const placeholderImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=7000ff&color=fff&size=128`;
+                favRef.add({ name: name, loc: location, url: url, img: placeholderImg, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                if (icon) icon.className = "ph-fill ph-heart text-red-500 animate-pop";
+            }
+        }
+
+        function showFavoritesModal() { 
+            if(!user) return loginWithGoogle(); 
+            const list = document.getElementById('favorites-list'); 
+            list.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">Memuat data...</div>'; 
+            db.collection('users').doc(user.uid).collection('favorites').orderBy('timestamp', 'desc').get().then(snapshot => { 
+                if (snapshot.empty) { 
+                    list.innerHTML = `<div class="col-span-full text-center py-10"><i class="ph-duotone ph-heart-break text-4xl text-gray-300 mb-2"></i><p class="text-gray-500">Belum ada favorit.</p></div>`; 
+                    return; 
+                } 
+                let html = ''; 
+                snapshot.forEach(doc => { 
+                    const data = doc.data(); 
+                    html += `
+                    <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 transition group cursor-pointer relative">
+                        <div onclick="window.open('${data.url}', '_blank')" class="flex items-center gap-3 flex-1">
+                            <div class="w-16 h-16 rounded-lg bg-gray-200 overflow-hidden shrink-0">
+                                <img src="${data.img}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4>
+                                <p class="text-xs text-gray-500">${data.loc}</p>
+                            </div>
+                        </div>
+                        <button onclick="toggleFavorite('${data.name.replace(/'/g,"\\'")}', '${data.loc}', '${data.url}', this)" 
+                                class="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full transition z-10">
+                            <i class="ph-fill ph-trash"></i>
+                        </button>
+                    </div>`; 
+                }); 
+                list.innerHTML = html; 
+            }).catch(err => list.innerHTML = `<p>Error: ${err.message}</p>`); 
+            document.getElementById('favorites-modal').classList.remove('hidden'); 
         } 
         
-        let html = ''; 
-        snapshot.forEach(doc => { 
-            const data = doc.data(); 
-            // PERBAIKAN: Tambahkan 'this' di argumen keempat toggleFavorite
-            html += `
-            <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-primary/50 transition group cursor-pointer relative">
-                <div onclick="window.open('${data.url}', '_blank')" class="flex items-center gap-3 flex-1">
-                    <div class="w-16 h-16 rounded-lg bg-gray-200 overflow-hidden shrink-0">
-                        <img src="${data.img}" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4>
-                        <p class="text-xs text-gray-500">${data.loc}</p>
-                    </div>
-                </div>
-                <button onclick="toggleFavorite('${data.name.replace(/'/g,"\\'")}', '${data.loc}', '${data.url}', this)" 
-                        class="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full transition z-10">
-                    <i class="ph-fill ph-trash"></i>
-                </button>
-            </div>`; 
-        }); 
-        list.innerHTML = html; 
-    }).catch(err => list.innerHTML = `<p>Error: ${err.message}</p>`); 
-    document.getElementById('favorites-modal').classList.remove('hidden'); 
-}    
         function showHistoryModal() { if(!user) return loginWithGoogle(); const list = document.getElementById('history-list'); list.innerHTML = '<div class="p-6 text-center text-gray-400">Memuat riwayat...</div>'; db.collection('users').doc(user.uid).collection('history').orderBy('timestamp', 'desc').limit(20).get().then(snapshot => { if (snapshot.empty) { list.innerHTML = `<div class="p-6 text-center"><p class="text-gray-500 text-sm">Belum ada riwayat.</p></div>`; return; } let html = ''; snapshot.forEach(doc => { const data = doc.data(); const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Baru saja'; html += `<div onclick="window.open('${data.url}', '_blank')" class="p-4 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center justify-between group cursor-pointer transition"><div class="flex items-center gap-3 overflow-hidden"><div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center shrink-0"><i class="ph-bold ph-clock-counter-clockwise"></i></div><div class="min-w-0"><h4 class="font-bold text-gray-900 dark:text-white text-sm truncate">${data.name}</h4><p class="text-xs text-gray-500">${date}</p></div></div><i class="ph-bold ph-caret-right text-gray-300 group-hover:text-primary transition shrink-0"></i></div>`; }); list.innerHTML = html; }); document.getElementById('history-modal').classList.remove('hidden'); }
         
         function setActiveTab(element) { document.querySelectorAll('.nav-tab').forEach(el => { el.classList.remove('text-primary'); el.classList.add('text-gray-400'); }); element.classList.remove('text-gray-400'); element.classList.add('text-primary'); }
@@ -657,94 +784,98 @@ function showFavoritesModal() {
         const searchInput = document.getElementById('search-input'); const dropdownContainer = document.querySelector('#search-dropdown > div'); const modal = document.getElementById('category-modal');
         let currentActiveCatId = null; 
         function openModal(cid) { currentActiveCatId = cid; const c = categories.find(x => x.id === cid); if(!c) return; document.getElementById('modal-title').innerText = c.name; document.getElementById('modal-icon').className = `ph-fill ${c.icon} text-3xl md:text-4xl`; document.getElementById('modal-desc').innerText = categoryCopywriting[cid]; const uniqueLocs = ['Semua', ...new Set(c.items.map(i => i.loc))]; const tabs = document.getElementById('modal-tabs'); if(c.items.length>0) { tabs.innerHTML = uniqueLocs.map(l => `<button onclick="renderModalGrid('${l}')" class="tab-btn px-5 py-2 rounded-full text-sm font-bold border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 transition-all whitespace-nowrap" data-loc="${l}">${l}</button>`).join(''); tabs.parentElement.classList.remove('hidden'); document.getElementById('review-section').classList.remove('hidden'); renderModalGrid('Semua'); loadReviews(cid); } else { tabs.parentElement.classList.add('hidden'); document.getElementById('review-section').classList.add('hidden'); document.getElementById('modal-grid-content').innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400 italic">Belum ada data.</div>`; } modal.classList.remove('hidden'); setTimeout(() => { document.getElementById('modal-backdrop').classList.add('modal-backdrop-active'); document.getElementById('modal-content').classList.add('modal-content-active'); }, 10); hideDropdownWithDelay(); }
+        
         function renderModalGrid(loc) {
-    const c = categories.find(x => x.id === currentActiveCatId);
-    if(!c) return;
-    let items = c.items;
-    if(loc !== 'Semua') items = c.items.filter(i => i.loc === loc);
+            const c = categories.find(x => x.id === currentActiveCatId);
+            if(!c) return;
+            let items = c.items;
+            if(loc !== 'Semua') items = c.items.filter(i => i.loc === loc);
 
-    document.getElementById('modal-grid-content').innerHTML = items.map(i => `
-        <div class="relative group animate-slide-up bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-2xl p-4 transition-all hover:border-primary/50 hover:shadow-lg">
-            <div class="flex items-start justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-xl bg-white dark:bg-black shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition shrink-0">
-                        <i class="ph-fill ph-goggles text-2xl"></i>
+            document.getElementById('modal-grid-content').innerHTML = items.map(i => `
+                <div class="relative group animate-slide-up bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-2xl p-4 transition-all hover:border-primary/50 hover:shadow-lg">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-white dark:bg-black shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition shrink-0">
+                                <i class="ph-fill ph-goggles text-2xl"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">${i.name}</h4>
+                                <p class="text-[10px] text-gray-500 flex items-center gap-1 uppercase tracking-wider">
+                                    <i class="ph-fill ph-map-pin text-secondary"></i> ${i.loc}
+                                </p>
+                            </div>
+                        </div>
+                        <button onclick="toggleFavorite('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.url}', this)" 
+                                class="p-2.5 rounded-full bg-white dark:bg-white/5 shadow-sm hover:scale-110 transition-all active:scale-95">
+                            <i class="ph-bold ph-heart text-gray-400 transition-colors"></i>
+                        </button>
                     </div>
-                    <div class="min-w-0">
-                        <h4 class="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">${i.name}</h4>
-                        <p class="text-[10px] text-gray-500 flex items-center gap-1 uppercase tracking-wider">
-                            <i class="ph-fill ph-map-pin text-secondary"></i> ${i.loc}
-                        </p>
-                    </div>
+                    
+                    <button onclick="visitTour('${i.url}','${i.name}','${i.loc}')" 
+                            class="w-full py-2.5 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
+                        Jelajahi Sekarang <i class="ph-bold ph-arrow-square-out"></i>
+                    </button>
                 </div>
-                <button onclick="toggleFavorite('${i.name.replace(/'/g,"\\'")}', '${i.loc}', '${i.url}', this)" 
-                        class="p-2.5 rounded-full bg-white dark:bg-white/5 shadow-sm hover:scale-110 transition-all active:scale-95">
-                    <i class="ph-bold ph-heart text-gray-400 transition-colors"></i>
-                </button>
-            </div>
-            
-            <button onclick="visitTour('${i.url}','${i.name}','${i.loc}')" 
-                    class="w-full py-2.5 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
-                Jelajahi Sekarang <i class="ph-bold ph-arrow-square-out"></i>
-            </button>
-        </div>
-    `).join('');
+            `).join('');
 
-    // Update state tabs seperti biasa
-    document.querySelectorAll('.tab-btn').forEach(b => {
-        b.className = b.dataset.loc === loc ? 
-            "tab-btn px-5 py-2 rounded-full text-sm font-bold bg-black dark:bg-white text-white dark:text-black shadow-lg transition-all" : 
-            "tab-btn px-5 py-2 rounded-full text-sm font-bold border border-gray-200 dark:border-white/10 text-gray-500 hover:text-primary transition-all";
-    });
-}function closeModal() { document.getElementById('modal-backdrop').classList.remove('modal-backdrop-active'); document.getElementById('modal-content').classList.remove('modal-content-active'); setTimeout(() => modal.classList.add('hidden'), 300); }
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.className = b.dataset.loc === loc ? 
+                    "tab-btn px-5 py-2 rounded-full text-sm font-bold bg-black dark:bg-white text-white dark:text-black shadow-lg transition-all" : 
+                    "tab-btn px-5 py-2 rounded-full text-sm font-bold border border-gray-200 dark:border-white/10 text-gray-500 hover:text-primary transition-all";
+            });
+        }
+        
+        function closeModal() { document.getElementById('modal-backdrop').classList.remove('modal-backdrop-active'); document.getElementById('modal-content').classList.remove('modal-content-active'); setTimeout(() => modal.classList.add('hidden'), 300); }
         function showDropdown() { document.getElementById('search-dropdown').classList.remove('dropdown-enter'); document.getElementById('search-dropdown').classList.add('dropdown-active'); }
         function hideDropdownWithDelay() { setTimeout(() => { document.getElementById('search-dropdown').classList.remove('dropdown-active'); document.getElementById('search-dropdown').classList.add('dropdown-enter'); }, 200); }
-function renderResults(res) {
-    if (res.length === 0) {
-        dropdownContainer.innerHTML = `<div class="p-4 text-center text-gray-500 text-sm">Tidak ditemukan.</div>`;
-        return;
-    }
-    let html = `<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Hasil Pencarian</p>`;
-    res.forEach(i => {
-        let color = i.type==='Kategori'?'text-purple-400 bg-purple-500/20':i.type==='Destinasi'?'text-green-400 bg-green-500/20':'text-blue-400 bg-blue-500/20';
-        let act = i.action==='modal'?`openModal('${i.id}')`:`visitTour('${i.link}','${i.name}','${i.sub}')`;
         
-        // PERUBAHAN DISINI: Pakai justify-start dan gap-4
-        html += `
-        <div onclick="${act}" class="flex items-center justify-start gap-4 p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
-            <div class="w-10 h-10 rounded-lg ${color} flex items-center justify-center shrink-0">
-                <i class="ph-fill ${i.icon} text-xl"></i>
-            </div>
-            <div class="flex-1">
-                <h4 class="text-gray-200 font-medium text-sm md:text-base line-clamp-1 text-left">${i.name}</h4>
-                <p class="text-gray-500 text-xs text-left">${i.sub}</p>
-            </div>
-            <div class="w-8 h-8 rounded-lg border border-gray-600 flex items-center justify-center text-gray-400 group-hover/item:bg-primary group-hover/item:text-white transition-all shrink-0">
-                <i class="ph-bold ph-arrow-right"></i>
-            </div>
-        </div>`;
-    });
-    dropdownContainer.innerHTML = html;
-}        
-function renderDefault() {
-    const defs = popularTours.slice(0,3).map(t=>({type:'Trending',name:t.name,sub:t.loc,icon:'ph-fire',link:t.link}));
-    let html=`<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Rekomendasi</p>`;
-    defs.forEach(i=>{
-        // PERUBAHAN DISINI: justify-start agar rata kiri
-        html+=`
-        <div onclick="visitTour('${i.link}','${i.name}','${i.sub}')" class="flex items-center justify-start gap-4 p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
-            <div class="w-10 h-10 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center shrink-0">
-                <i class="ph-fill ${i.icon} text-xl"></i>
-            </div>
-            <div class="flex-1">
-                <h4 class="text-gray-200 font-medium text-sm md:text-base text-left">${i.name}</h4>
-                <p class="text-gray-500 text-xs text-left">${i.sub}</p>
-            </div>
-            <i class="ph-bold ph-arrow-right text-gray-400 shrink-0"></i>
-        </div>`;
-    });
-    dropdownContainer.innerHTML = html;
-}        searchInput.addEventListener('input', (e) => { const k = e.target.value.toLowerCase(); if(k.length===0) { renderDefault(); return; } renderResults(allSearchData.filter(i => i.name.toLowerCase().includes(k))); });
+        function renderResults(res) {
+            if (res.length === 0) {
+                dropdownContainer.innerHTML = `<div class="p-4 text-center text-gray-500 text-sm">Tidak ditemukan.</div>`;
+                return;
+            }
+            let html = `<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Hasil Pencarian</p>`;
+            res.forEach(i => {
+                let color = i.type==='Kategori'?'text-purple-400 bg-purple-500/20':i.type==='Destinasi'?'text-green-400 bg-green-500/20':'text-blue-400 bg-blue-500/20';
+                let act = i.action==='modal'?`openModal('${i.id}')`:`visitTour('${i.link}','${i.name}','${i.sub}')`;
+                
+                html += `
+                <div onclick="${act}" class="flex items-center justify-start gap-4 p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
+                    <div class="w-10 h-10 rounded-lg ${color} flex items-center justify-center shrink-0">
+                        <i class="ph-fill ${i.icon} text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-gray-200 font-medium text-sm md:text-base line-clamp-1 text-left">${i.name}</h4>
+                        <p class="text-gray-500 text-xs text-left">${i.sub}</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-lg border border-gray-600 flex items-center justify-center text-gray-400 group-hover/item:bg-primary group-hover/item:text-white transition-all shrink-0">
+                        <i class="ph-bold ph-arrow-right"></i>
+                    </div>
+                </div>`;
+            });
+            dropdownContainer.innerHTML = html;
+        }       
+        
+        function renderDefault() {
+            const defs = popularTours.slice(0,3).map(t=>({type:'Trending',name:t.name,sub:t.loc,icon:'ph-fire',link:t.link}));
+            let html=`<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Rekomendasi</p>`;
+            defs.forEach(i=>{
+                html+=`
+                <div onclick="visitTour('${i.link}','${i.name}','${i.sub}')" class="flex items-center justify-start gap-4 p-3 hover:bg-white/5 rounded-lg cursor-pointer group/item transition-colors mb-1">
+                    <div class="w-10 h-10 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center shrink-0">
+                        <i class="ph-fill ${i.icon} text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-gray-200 font-medium text-sm md:text-base text-left">${i.name}</h4>
+                        <p class="text-gray-500 text-xs text-left">${i.sub}</p>
+                    </div>
+                    <i class="ph-bold ph-arrow-right text-gray-400 shrink-0"></i>
+                </div>`;
+            });
+            dropdownContainer.innerHTML = html;
+        }
+        
+        searchInput.addEventListener('input', (e) => { const k = e.target.value.toLowerCase(); if(k.length===0) { renderDefault(); return; } renderResults(allSearchData.filter(i => i.name.toLowerCase().includes(k))); });
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); }); renderDefault();
 
         window.onload = function() {
@@ -775,27 +906,6 @@ function renderDefault() {
                 });
             });
         }
-        // Ganti fungsi logout lama jadi ini
-function logout() {
-    // Bukannya langsung logout, kita tampilin modal dulu
-    document.getElementById('logout-modal').classList.remove('hidden');
-}
-
-// Fungsi kalau user klik "Batal"
-function closeLogoutModal() {
-    document.getElementById('logout-modal').classList.add('hidden');
-}
-
-// Fungsi konfirmasi logout yang sebenernya
-function confirmLogout() {
-    if(auth) {
-        auth.signOut().then(() => {
-            closeLogoutModal();
-            // Opsional: Refresh halaman biar state balik bersih
-            window.location.reload();
-        });
-    }
-}
     </script>
 </body>
 </html>
