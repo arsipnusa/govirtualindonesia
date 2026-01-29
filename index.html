@@ -284,22 +284,36 @@
                 <p class="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">Jelajahi nusantara dari ujung ke ujung melalui titik interaktif yang menghubungkan Anda dengan keindahan Indonesia.</p>
             </div>
             <div class="bg-cardLight dark:bg-cardDark rounded-2xl p-2 border border-gray-200 dark:border-white/10 shadow-2xl reveal">
-                <div class="bg-gray-100 dark:bg-black rounded-xl overflow-hidden relative h-[600px] w-full z-0">
-                    <div id="map-canvas" class="w-full h-full z-10"></div>
-                    <div class="absolute top-6 left-6 z-[400] bg-white dark:bg-cardDark/90 backdrop-blur-md px-5 py-3 rounded-lg shadow-lg border border-gray-200 dark:border-white/10 pointer-events-none">
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Peta Digital</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Arahkan kursor ke marker</p>
-                    </div>
-                    <div id="map-preview-card" class="absolute bottom-6 left-6 z-[400] w-64 md:w-80 bg-white/80 dark:bg-black/80 backdrop-blur-xl rounded-xl p-3 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 translate-y-4 transition-all duration-300 pointer-events-none">
-                        <div class="relative h-40 w-full rounded-lg overflow-hidden mb-3">
-                            <img id="preview-img" src="" class="w-full h-full object-cover">
-                            <div class="absolute top-2 right-2 bg-black/50 backdrop-blur px-2 py-1 rounded text-[10px] text-white font-bold uppercase tracking-wider">360° Tour</div>
-                        </div>
-                        <h4 id="preview-title" class="text-lg font-bold text-gray-900 dark:text-white leading-tight mb-1">Nama Lokasi</h4>
-                        <div class="flex items-center text-secondary text-xs font-medium mb-2"><i class="ph-fill ph-map-pin mr-1"></i> <span id="preview-loc">Lokasi</span></div>
-                        <div class="text-[10px] text-gray-400 flex items-center gap-1"><i class="ph-bold ph-mouse-left"></i> Klik untuk menjelajah</div>
-                    </div>
-                </div>
+<div class="group relative h-[600px] w-full rounded-xl overflow-hidden bg-gray-100 dark:bg-black z-0">
+    
+    <div id="map-canvas" class="w-full h-full z-10 transition-all duration-500 grayscale group-hover:grayscale-0"></div>
+
+    <div id="map-overlay" onclick="activateMap()" class="absolute inset-0 z-[20] flex flex-col items-center justify-center bg-black/10 backdrop-blur-[2px] group-hover:bg-black/5 transition-all cursor-pointer">
+        
+        <button class="px-6 py-3 rounded-full bg-white dark:bg-[#12121a] text-gray-900 dark:text-white font-bold shadow-2xl flex items-center gap-2 transform group-hover:scale-110 transition-all duration-300 border border-gray-200 dark:border-white/10">
+            <i class="ph-fill ph-hand-tap text-primary text-xl"></i>
+            <span>Sentuh untuk Interaksi</span>
+        </button>
+        <p class="mt-2 text-xs text-white drop-shadow-md font-medium opacity-0 group-hover:opacity-100 transition-opacity">Gunakan 2 jari untuk menggeser di Mobile</p>
+    </div>
+
+    <div class="absolute top-6 left-6 z-[30] pointer-events-none">
+        <div class="bg-white/90 dark:bg-cardDark/90 backdrop-blur-md px-5 py-3 rounded-lg shadow-lg border border-gray-200 dark:border-white/10">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Peta Digital</h3>
+            <p id="map-status" class="text-xs text-gray-500 dark:text-gray-400">Mode: Terkunci</p>
+        </div>
+    </div>
+
+    <div id="map-preview-card" class="absolute bottom-6 left-6 z-[30] w-64 md:w-80 bg-white/80 dark:bg-black/80 backdrop-blur-xl rounded-xl p-3 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 translate-y-4 transition-all duration-300 pointer-events-none">
+        <div class="relative h-40 w-full rounded-lg overflow-hidden mb-3">
+            <img id="preview-img" src="" class="w-full h-full object-cover">
+            <div class="absolute top-2 right-2 bg-black/50 backdrop-blur px-2 py-1 rounded text-[10px] text-white font-bold uppercase tracking-wider">360° Tour</div>
+        </div>
+        <h4 id="preview-title" class="text-lg font-bold text-gray-900 dark:text-white leading-tight mb-1">Nama Lokasi</h4>
+        <div class="flex items-center text-secondary text-xs font-medium mb-2"><i class="ph-fill ph-map-pin mr-1"></i> <span id="preview-loc">Lokasi</span></div>
+        <div class="text-[10px] text-gray-400 flex items-center gap-1"><i class="ph-bold ph-mouse-left"></i> Klik untuk menjelajah</div>
+    </div>
+</div>
             </div>
         </section>
 
@@ -1116,7 +1130,53 @@ function showFlyingXP(amount) {
             const obs = new IntersectionObserver((e) => { e.forEach(entry => { if(!entry.isIntersecting) nav.classList.remove('-translate-y-32', 'opacity-0'); else nav.classList.add('-translate-y-32', 'opacity-0'); }); }, { rootMargin: "-100px 0px 0px 0px" });
             if(hero) obs.observe(hero);
 
-            const map = L.map('map-canvas').setView([-2.5, 118], 5); window.map = map;
+            // --- LOGIC MAP BARU (ANTI SCROLL TRAP) ---
+// 1. Init Map dengan fitur drag/zoom DIMATIKAN dulu
+const map = L.map('map-canvas', {
+    scrollWheelZoom: false, // Matikan scroll zoom
+    dragging: false,        // Matikan geser
+    tap: false,             // Matikan tap mobile
+    zoomControl: false      // Sembunyikan tombol zoom dulu
+}).setView([-2.5, 118], 5);
+
+// Tambahkan Zoom Control manual di pojok kanan bawah (biar ga ketutupan UI lain)
+L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+window.map = map; // Global variable
+
+// 2. Fungsi Mengaktifkan Peta
+window.activateMap = function() {
+    const overlay = document.getElementById('map-overlay');
+    const status = document.getElementById('map-status');
+    
+    // Hilangkan overlay dengan animasi
+    overlay.classList.add('opacity-0', 'pointer-events-none');
+    
+    // Aktifkan fitur interaktif Leaflet
+    map.dragging.enable();
+    map.scrollWheelZoom.enable();
+    if (map.tap) map.tap.enable();
+    
+    // Update status teks
+    status.innerText = "Mode: Interaktif (Scroll untuk Zoom)";
+    status.classList.add('text-green-500');
+    
+    // (Opsional) Kembalikan ke mode terkunci jika mouse keluar dari area peta
+    const mapContainer = document.querySelector('#map-canvas').parentElement;
+    mapContainer.addEventListener('mouseleave', () => {
+        // Balikin overlay
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        
+        // Matikan lagi interaksi
+        map.dragging.disable();
+        map.scrollWheelZoom.disable();
+        
+        status.innerText = "Mode: Terkunci";
+        status.classList.remove('text-green-500');
+    }, { once: true }); // once: true biar event listenernya ga numpuk
+};
+
+// ... (Lanjutkan dengan kode marker popularTours.forEach seperti sebelumnya) ...
             popularTours.forEach(t => { const icon = L.divIcon({ className:'bg-transparent', html:`<div class="custom-marker-container relative w-full h-full flex items-center justify-center group"><div class="pulse-ring"></div><div class="custom-marker-head" style="background-image: url('${t.img}');"></div></div>`, iconSize:[50,50] }); const m = L.marker([t.lat, t.lng], {icon}).addTo(map); m.on('mouseover', function() { document.getElementById('preview-img').src = t.img; document.getElementById('preview-title').innerText = t.name; document.getElementById('preview-loc').innerText = t.loc; document.getElementById('map-preview-card').classList.remove('opacity-0', 'translate-y-4'); }); m.on('mouseout', function() { document.getElementById('map-preview-card').classList.add('opacity-0', 'translate-y-4'); }); m.on('click', () => window.open(t.link)); });
             let cl; function updMap(theme) { if(cl) map.removeLayer(cl); cl = L.tileLayer(theme === 'dark' ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' }).addTo(map); } updMap('dark'); window.toggleTheme = function() { const isDark = document.documentElement.classList.toggle('dark'); updMap(isDark ? 'dark' : 'light'); };
             loadAllCategories(); initBackgroundRadar(); sendVisitorHit(); fetchVisitorStats();
